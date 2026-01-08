@@ -10,24 +10,43 @@ from contextlib import contextmanager
 BadgeKind = Literal["info", "success", "warning", "danger", "muted", "primary"]
 
 
-# Design Tokens
+# Design Tokens - Digital Luxury
 tokens = {
     "spacing": {"xs": "0.25rem", "sm": "0.5rem", "md": "1rem", "lg": "1.5rem", "xl": "2rem"},
-    "radius": {"sm": "4px", "md": "8px", "lg": "12px"},
-    "shadow": {"sm": "0 1px 3px rgba(0,0,0,0.12)", "md": "0 4px 6px rgba(0,0,0,0.16)"}
+    "radius": {"sm": "6px", "md": "12px", "lg": "16px"},  # Increased for premium feel
+    "shadow": {
+        "sm": "0 4px 12px rgba(0,0,0,0.3)",
+        "md": "0 8px 24px rgba(0,0,0,0.4)",
+        "deep": "0 20px 40px rgba(0,0,0,0.6)"  # Ambient occlusion
+    },
+    "blur": {"glass": "20px", "heavy": "30px"}  # For glassmorphism
 }
 
-# Theme Colors - Black & Gold palette
+# Theme Colors - Cold Royal Obsidian (Digital Luxury)
 colors = {
     "light": {
-        "bg": "#0B0B0B", "card_bg": "#141414", "text": "#F5F5F5", "muted": "#A1A1A1",
-        "border": "#2A2A2A", "primary": "#C9A24D", "success": "#10b981",
-        "warning": "#f59e0b", "danger": "#ef4444"
+        "bg": "#020406",  # bg-void: OLED-safe base
+        "card_bg": "#0B1015",  # bg-obsidian: Card surface with navy tint
+        "glass_bg": "rgba(11, 16, 21, 0.70)",  # Glassmorphism overlay
+        "text": "#E8DCCA",  # gold-champagne: Primary text (platinum/beige)
+        "muted": "#8C7B50",  # gold-muted: Secondary text (oxidized)
+        "border": "#D4AF37",  # gold-metallic: Active borders/icons
+        "primary": "#D4AF37",  # gold-metallic: Primary accent
+        "success": "#00A86B",  # success-emerald: Cold, desaturated
+        "warning": "#D4AF37",  # Gold for warnings
+        "danger": "#800020"  # error-crimson: Deep jewel tone
     },
     "dark": {
-        "bg": "#0B0B0B", "card_bg": "#141414", "text": "#F5F5F5", "muted": "#A1A1A1",
-        "border": "#2A2A2A", "primary": "#C9A24D", "success": "#10b981",
-        "warning": "#f59e0b", "danger": "#ef4444"
+        "bg": "#020406",  # bg-void: OLED-safe base
+        "card_bg": "#0B1015",  # bg-obsidian: Card surface
+        "glass_bg": "rgba(11, 16, 21, 0.70)",  # Glassmorphism overlay
+        "text": "#E8DCCA",  # gold-champagne: Primary text
+        "muted": "#8C7B50",  # gold-muted: Secondary text
+        "border": "#D4AF37",  # gold-metallic: Borders
+        "primary": "#D4AF37",  # gold-metallic: Primary
+        "success": "#00A86B",  # success-emerald
+        "warning": "#D4AF37",  # Gold warnings
+        "danger": "#800020"  # error-crimson
     }
 }
 
@@ -49,6 +68,9 @@ def inject_ui_kit_css(theme: str = "light") -> None:
     
     css = f"""
     <style>
+        /* Import Luxury Fonts */
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
+        
         /* CSS RESET - Remove any leaked backgrounds/pseudo-elements */
         * {{
             background-image: none !important;
@@ -62,6 +84,18 @@ def inject_ui_kit_css(theme: str = "light") -> None:
         .stApp {{
             background-color: {c['bg']} !important;
             color: {c['text']} !important;
+            font-family: 'Manrope', -apple-system, sans-serif !important;
+        }}        
+        /* Typography Hierarchy */
+        h1, h2, h3, .ui-heading {{
+            font-family: 'Playfair Display', serif !important;
+            font-weight: 700 !important;
+            letter-spacing: -0.02em !important;
+        }}
+        
+        .ui-data, .ui-mono, .ui-kpi-value, .metric-value {{
+            font-family: 'JetBrains Mono', monospace !important;
+            font-variant-numeric: tabular-nums !important;
         }}
         
         section.main, .block-container {{
@@ -137,15 +171,31 @@ def inject_ui_kit_css(theme: str = "light") -> None:
             border: 1px solid {c['primary']}40;
         }}
         
-        /* UI Card - Force solid background, no transparency */
+        /* UI Card - Gradient Border + Noise Texture + Deep Shadow */
         .ui-card {{
+            position: relative;
             background: {c['card_bg']} !important;
-            border: 1px solid {c['border']};
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.02'/%3E%3C/svg%3E") !important;
+            border: 1px solid transparent;
             border-radius: {t['radius']['md']};
             padding: {t['spacing']['md']};
             margin-bottom: {t['spacing']['md']};
-            box-shadow: {t['shadow']['sm']};
+            box-shadow: {t['shadow']['deep']};
             opacity: 1 !important;
+            background-clip: padding-box;
+        }}
+        
+        .ui-card::before {{
+            content: '';
+            position: absolute;
+            top: -1px;
+            left: -1px;
+            right: -1px;
+            bottom: -1px;
+            border-radius: {t['radius']['md']};
+            background: linear-gradient(135deg, #E3DAC9 0%, #C5A059 50%, transparent 100%);
+            z-index: -1;
+            opacity: 0.4;
         }}
         
         .ui-card-title {{
@@ -155,27 +205,47 @@ def inject_ui_kit_css(theme: str = "light") -> None:
             margin-bottom: {t['spacing']['sm']};
         }}
         
-        /* KPI Metric - Force solid background */
+        /* KPI Metric - Luxury with gradient border */
         .ui-kpi {{
+            position: relative;
             background: {c['card_bg']} !important;
-            border: 1px solid {c['border']};
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.02'/%3E%3C/svg%3E") !important;
+            border: 1px solid transparent;
             border-radius: {t['radius']['md']};
-            padding: {t['spacing']['md']};
+            padding: {t['spacing']['lg']};
             text-align: center;
-            box-shadow: {t['shadow']['sm']};
+            box-shadow: {t['shadow']['deep']};
             opacity: 1 !important;
+            background-clip: padding-box;
+        }}
+        
+        .ui-kpi::before {{
+            content: '';
+            position: absolute;
+            top: -1px;
+            left: -1px;
+            right: -1px;
+            bottom: -1px;
+            border-radius: {t['radius']['md']};
+            background: linear-gradient(135deg, #E3DAC9 0%, #C5A059 50%, transparent 100%);
+            z-index: -1;
+            opacity: 0.3;
         }}
         
         .ui-kpi-label {{
-            font-size: 0.85rem;
+            font-size: 0.75rem;
             color: {c['muted']} !important;
-            margin-bottom: {t['spacing']['xs']};
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: {t['spacing']['sm']};
         }}
         
         .ui-kpi-value {{
-            font-size: 1.8rem;
-            font-weight: 700;
+            font-family: 'JetBrains Mono', monospace !important;
+            font-size: 2.2rem;
+            font-weight: 600;
             color: {c['text']} !important;
+            font-variant-numeric: tabular-nums;
         }}
         
         .ui-kpi-delta {{
@@ -285,6 +355,109 @@ def inject_ui_kit_css(theme: str = "light") -> None:
             line-height: 1.6;
         }}
         
+        /* Glassmorphism Navigation/Header */
+        .glass-nav {{
+            background: {c['glass_bg']} !important;
+            backdrop-filter: blur({t['blur']['glass']}) !important;
+            -webkit-backdrop-filter: blur({t['blur']['glass']}) !important;
+            border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+        }}
+        
+        /* Concierge Data Table - Professional Mobile Layout */
+        .concierge-table {{
+            width: 100%;
+            border-collapse: collapse;
+            background: {c['card_bg']} !important;
+            border-radius: {t['radius']['md']};
+            overflow: hidden;
+            box-shadow: {t['shadow']['deep']};
+        }}
+        
+        .concierge-table thead {{
+            background: {c['bg']} !important;
+            border-bottom: 2px solid {c['border']};
+        }}
+        
+        .concierge-table th {{
+            padding: 1rem;
+            text-align: left;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: {c['border']} !important;
+            font-family: 'Manrope', sans-serif !important;
+        }}
+        
+        .concierge-table tbody tr {{
+            border-bottom: 1px solid rgba(212, 175, 55, 0.1);
+            transition: background 0.2s ease;
+        }}
+        
+        .concierge-table tbody tr:nth-child(even) {{
+            background: rgba(255, 255, 255, 0.03) !important;
+        }}
+        
+        .concierge-table tbody tr:hover {{
+            background: rgba(212, 175, 55, 0.08) !important;
+        }}
+        
+        .concierge-table td {{
+            padding: 1rem;
+            color: {c['text']} !important;
+            font-size: 0.9rem;
+        }}
+        
+        .concierge-table td.numeric {{
+            font-family: 'JetBrains Mono', monospace !important;
+            font-variant-numeric: tabular-nums;
+            text-align: right;
+        }}
+        
+        /* Concierge Input - Underline Style with Float Label */
+        .concierge-input-wrapper {{
+            position: relative;
+            margin: 1.5rem 0;
+        }}
+        
+        .concierge-input {{
+            width: 100%;
+            padding: 0.75rem 0;
+            background: transparent !important;
+            border: none;
+            border-bottom: 1px solid {c['muted']};
+            color: {c['text']} !important;
+            font-family: 'Manrope', sans-serif;
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }}
+        
+        .concierge-input:focus {{
+            border-bottom-color: {c['border']};
+            box-shadow: 0 1px 0 0 {c['border']}, 0 4px 12px rgba(212, 175, 55, 0.2);
+        }}
+        
+        .concierge-label {{
+            position: absolute;
+            left: 0;
+            top: 0.75rem;
+            color: {c['muted']} !important;
+            font-size: 1rem;
+            pointer-events: none;
+            transition: all 0.3s ease;
+        }}
+        
+        .concierge-input:focus + .concierge-label,
+        .concierge-input:not(:placeholder-shown) + .concierge-label {{
+            top: -1.25rem;
+            font-size: 0.75rem;
+            color: {c['border']} !important;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+        }}
+        
         /* Responsive - Mobile Full Support */
         @media only screen and (max-width: 768px) {{
             /* Force container padding smaller */
@@ -321,10 +494,44 @@ def inject_ui_kit_css(theme: str = "light") -> None:
             }}
             
             /* Tables scrollable */
-            table {{
+            table, .concierge-table {{
                 display: block;
                 overflow-x: auto;
                 white-space: nowrap;
+            }}
+            
+            /* Concierge table mobile - stack layout */
+            .concierge-table thead {{
+                display: none;
+            }}
+            
+            .concierge-table tbody tr {{
+                display: block;
+                margin-bottom: 1rem;
+                border: 1px solid {c['border']};
+                border-radius: {t['radius']['sm']};
+                padding: 0.75rem;
+            }}
+            
+            .concierge-table td {{
+                display: block;
+                text-align: right;
+                padding: 0.5rem 0;
+                border-bottom: 1px solid rgba(212, 175, 55, 0.1);
+            }}
+            
+            .concierge-table td:last-child {{
+                border-bottom: none;
+            }}
+            
+            .concierge-table td::before {{
+                content: attr(data-label);
+                float: left;
+                font-size: 0.75rem;
+                text-transform: uppercase;
+                letter-spacing: 0.05em;
+                color: {c['muted']} !important;
+                font-weight: 600;
             }}
             
             /* Reduce font sizes slightly */
@@ -521,6 +728,82 @@ def card(title: Optional[str] = None, icon: Optional[str] = None):
     # Delegate to ui_card
     with ui_card(title=title, icon=icon) as container:
         yield container
+
+
+def concierge_input(label: str, key: str, input_type: str = "text", placeholder: str = " ") -> str:
+    """Render a luxury underline input with floating label.
+    
+    Args:
+        label: Input label (floats up on focus)
+        key: Streamlit widget key
+        input_type: HTML input type (text, email, tel, number)
+        placeholder: Placeholder (use space for float effect)
+    
+    Returns:
+        Input value from st.text_input
+    """
+    html = f"""
+    <div class="concierge-input-wrapper">
+        <input type="{input_type}" class="concierge-input" placeholder="{placeholder}" />
+        <label class="concierge-label">{label}</label>
+    </div>
+    """
+    st.markdown(html, unsafe_allow_html=True)
+    # Use native Streamlit input for actual data capture (hidden with custom CSS if needed)
+    return st.text_input(label, key=key, label_visibility="collapsed")
+
+
+def concierge_table(data: list[dict], columns: list[dict]) -> None:
+    """Render a luxury data table with zebra striping and monospace numbers.
+    
+    Args:
+        data: List of row dictionaries
+        columns: List of column configs [{"key": "name", "label": "Name", "numeric": False}, ...]
+    
+    Example:
+        concierge_table(
+            data=[{"name": "Item 1", "price": "$1,250.00"}, ...],
+            columns=[
+                {"key": "name", "label": "Item", "numeric": False},
+                {"key": "price", "label": "Price", "numeric": True}
+            ]
+        )
+    """
+    thead_html = "".join([f"<th>{col['label']}</th>" for col in columns])
+    
+    tbody_rows = []
+    for row in data:
+        cells = []
+        for col in columns:
+            value = row.get(col['key'], '')
+            cell_class = 'numeric' if col.get('numeric', False) else ''
+            data_label = col['label']  # For mobile responsive label
+            cells.append(f'<td class="{cell_class}" data-label="{data_label}">{value}</td>')
+        tbody_rows.append(f"<tr>{''.join(cells)}</tr>")
+    
+    tbody_html = "".join(tbody_rows)
+    
+    table_html = f"""
+    <table class="concierge-table">
+        <thead>
+            <tr>{thead_html}</tr>
+        </thead>
+        <tbody>
+            {tbody_html}
+        </tbody>
+    </table>
+    """
+    
+    st.markdown(table_html, unsafe_allow_html=True)
+
+
+def glass_header(content: str) -> None:
+    """Render a glassmorphism header/navigation bar.
+    
+    Args:
+        content: HTML content for the header
+    """
+    st.markdown(f'<div class="glass-nav">{content}</div>', unsafe_allow_html=True)
 
 
 def info_card(
