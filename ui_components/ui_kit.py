@@ -25,8 +25,8 @@ colors = {
         "warning": "#f59e0b", "danger": "#ef4444"
     },
     "dark": {
-        "bg": "#0f172a", "card_bg": "#1e293b", "text": "#f1f5f9", "muted": "#94a3b8",
-        "border": "#334155", "primary": "#3b82f6", "success": "#34d399",
+        "bg": "#0a0f1e", "card_bg": "#1a1f2e", "text": "#f1f5f9", "muted": "#94a3b8",
+        "border": "#2a2f3e", "primary": "#3b82f6", "success": "#34d399",
         "warning": "#fbbf24", "danger": "#f87171"
     }
 }
@@ -39,8 +39,8 @@ def inject_ui_kit_css(theme: str = "light") -> None:
         theme: "light" or "dark" (default: "light")
     """
     # Guard: inject only once per theme change
-    current_theme = st.session_state.get("_css_theme", None)
-    if st.session_state.get("_css_injected") and current_theme == theme:
+    guard_key = f"_css_injected_{theme}"
+    if st.session_state.get(guard_key, False):
         return
     
     theme = theme if theme in ["light", "dark"] else "light"
@@ -49,10 +49,43 @@ def inject_ui_kit_css(theme: str = "light") -> None:
     
     css = f"""
     <style>
-        /* Global Theme */
+        /* CSS RESET - Remove any leaked backgrounds/pseudo-elements */
+        * {{
+            background-image: none !important;
+        }}
+        *::before, *::after {{
+            content: none !important;
+            display: none !important;
+        }}
+        
+        /* Global Theme - Force background and text colors */
         .stApp {{
-            background-color: {c['bg']};
-            color: {c['text']};
+            background-color: {c['bg']} !important;
+            color: {c['text']} !important;
+        }}
+        
+        section.main, .block-container {{
+            background-color: {c['bg']} !important;
+            color: {c['text']} !important;
+        }}
+        
+        /* All text elements */
+        .stMarkdown, .stText, .stCaption, p, div, span {{
+            color: {c['text']} !important;
+            background: transparent !important;
+        }}
+        
+        /* Inputs and controls */
+        input, select, textarea, button {{
+            background-color: {c['card_bg']} !important;
+            color: {c['text']} !important;
+            border-color: {c['border']} !important;
+        }}
+        
+        /* Tables */
+        table, th, td {{
+            background-color: {c['card_bg']} !important;
+            color: {c['text']} !important;
         }}
         
         /* Badge components */
@@ -65,81 +98,84 @@ def inject_ui_kit_css(theme: str = "light") -> None:
             font-size: 12px;
             font-weight: 600;
             line-height: 1.4;
+            background-image: none !important;
         }}
         
         .badge-info {{
-            background: {c['primary']}20;
-            color: {c['primary']};
+            background: {c['primary']}20 !important;
+            color: {c['primary']} !important;
             border: 1px solid {c['primary']}40;
         }}
         
         .badge-success {{
-            background: {c['success']}20;
-            color: {c['success']};
+            background: {c['success']}20 !important;
+            color: {c['success']} !important;
             border: 1px solid {c['success']}40;
         }}
         
         .badge-warning {{
-            background: {c['warning']}20;
-            color: {c['warning']};
+            background: {c['warning']}20 !important;
+            color: {c['warning']} !important;
             border: 1px solid {c['warning']}40;
         }}
         
         .badge-danger {{
-            background: {c['danger']}20;
-            color: {c['danger']};
+            background: {c['danger']}20 !important;
+            color: {c['danger']} !important;
             border: 1px solid {c['danger']}40;
         }}
         
         .badge-muted {{
-            background: {c['muted']}20;
-            color: {c['muted']};
+            background: {c['muted']}20 !important;
+            color: {c['muted']} !important;
             border: 1px solid {c['muted']}40;
         }}
         
         .badge-primary {{
-            background: {c['primary']}20;
-            color: {c['primary']};
+            background: {c['primary']}20 !important;
+            color: {c['primary']} !important;
             border: 1px solid {c['primary']}40;
         }}
         
-        /* UI Card */
+        /* UI Card - Force solid background, no transparency */
         .ui-card {{
-            background: {c['card_bg']};
+            background: {c['card_bg']} !important;
             border: 1px solid {c['border']};
             border-radius: {t['radius']['md']};
             padding: {t['spacing']['md']};
             margin-bottom: {t['spacing']['md']};
             box-shadow: {t['shadow']['sm']};
+            opacity: 1 !important;
         }}
         
         .ui-card-title {{
             font-size: 1.1rem;
             font-weight: 600;
-            color: {c['text']};
+            color: {c['text']} !important;
             margin-bottom: {t['spacing']['sm']};
         }}
         
-        /* KPI Metric */
+        /* KPI Metric - Force solid background */
         .ui-kpi {{
-            background: {c['card_bg']};
+            background: {c['card_bg']} !important;
             border: 1px solid {c['border']};
             border-radius: {t['radius']['md']};
             padding: {t['spacing']['md']};
             text-align: center;
             box-shadow: {t['shadow']['sm']};
+            opacity: 1 !important;
         }}
         
         .ui-kpi-label {{
             font-size: 0.85rem;
-            color: {c['muted']};
+            color: {c['muted']} !important;
             margin-bottom: {t['spacing']['xs']};
         }}
         
         .ui-kpi-value {{
             font-size: 1.8rem;
             font-weight: 700;
-            color: {c['text']};
+            color: {c['text']} !important;
         }}
         
         .ui-kpi-delta {{
@@ -147,34 +183,35 @@ def inject_ui_kit_css(theme: str = "light") -> None:
             margin-top: {t['spacing']['xs']};
         }}
         
-        .ui-kpi-delta.positive {{ color: {c['success']}; }}
-        .ui-kpi-delta.negative {{ color: {c['danger']}; }}
+        .ui-kpi-delta.positive {{ color: {c['success']} !important; }}
+        .ui-kpi-delta.negative {{ color: {c['danger']} !important; }}
         
         /* Legacy metric-card */
         .metric-card {{
-            background: {c['card_bg']};
+            background: {c['card_bg']} !important;
             border: 1px solid {c['border']};
             border-radius: {t['radius']['md']};
             padding: 16px;
             text-align: center;
+            opacity: 1 !important;
         }}
         
         .metric-label {{
             font-size: 13px;
-            color: {c['muted']};
+            color: {c['muted']} !important;
             margin-bottom: 4px;
         }}
         
         .metric-value {{
             font-size: 24px;
             font-weight: 700;
-            color: {c['text']};
+            color: {c['text']} !important;
             line-height: 1.2;
         }}
         
         .metric-unit {{
             font-size: 14px;
-            color: {c['muted']};
+            color: {c['muted']} !important;
             margin-left: 4px;
         }}
         
@@ -182,7 +219,7 @@ def inject_ui_kit_css(theme: str = "light") -> None:
         .section-title {{
             font-size: 18px;
             font-weight: 700;
-            color: {c['text']};
+            color: {c['text']} !important;
             margin: 24px 0 12px 0;
             padding-bottom: 8px;
             border-bottom: 2px solid {c['border']};
@@ -198,8 +235,8 @@ def inject_ui_kit_css(theme: str = "light") -> None:
         
         .pill {{
             padding: 6px 14px;
-            background: {c['card_bg']};
-            color: {c['text']};
+            background: {c['card_bg']} !important;
+            color: {c['text']} !important;
             border-radius: 16px;
             font-size: 13px;
             font-weight: 500;
@@ -212,38 +249,39 @@ def inject_ui_kit_css(theme: str = "light") -> None:
             border-radius: {t['radius']['md']};
             border-left: 4px solid;
             margin: 12px 0;
+            opacity: 1 !important;
         }}
         
         .info-card.info {{
-            background: {c['primary']}10;
+            background: {c['primary']}10 !important;
             border-color: {c['primary']};
         }}
         
         .info-card.success {{
-            background: {c['success']}10;
+            background: {c['success']}10 !important;
             border-color: {c['success']};
         }}
         
         .info-card.warning {{
-            background: {c['warning']}10;
+            background: {c['warning']}10 !important;
             border-color: {c['warning']};
         }}
         
         .info-card.danger {{
-            background: {c['danger']}10;
+            background: {c['danger']}10 !important;
             border-color: {c['danger']};
         }}
         
         .info-card-title {{
             font-size: 14px;
             font-weight: 600;
-            color: {c['text']};
+            color: {c['text']} !important;
             margin-bottom: 8px;
         }}
         
         .info-card-body {{
             font-size: 13px;
-            color: {c['text']};
+            color: {c['text']} !important;
             line-height: 1.6;
         }}
         
@@ -271,8 +309,7 @@ def inject_ui_kit_css(theme: str = "light") -> None:
     """
     
     st.markdown(css, unsafe_allow_html=True)
-    st.session_state["_css_injected"] = True
-    st.session_state["_css_theme"] = theme
+    st.session_state[guard_key] = True
 
 
 def ui_page(title: str, subtitle: Optional[str] = None, icon: str = "💬") -> None:

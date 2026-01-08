@@ -12,7 +12,7 @@ def render_bottom_navigation():
     theme = get_current_theme()
     active_page = st.session_state.get("current_page", "home")
 
-    # Modern Bottom Navigation CSS with theme colors
+    # Modern Bottom Navigation CSS with theme colors - high contrast
     css = f"""
     <style>
         /* Modern Bottom Navigation Container */
@@ -21,13 +21,14 @@ def render_bottom_navigation():
             bottom: 0;
             left: 0;
             right: 0;
-            background: {theme['card_bg']};
+            background: {theme['card_bg']} !important;
             backdrop-filter: blur(20px) saturate(180%);
             -webkit-backdrop-filter: blur(20px) saturate(180%);
             border-top: 2px solid {theme['secondary']};
             z-index: 99999;
             padding: 12px 0 16px 0;
-            box-shadow: 0 -8px 24px {theme['primary']}15;
+            box-shadow: 0 -8px 24px rgba(0,0,0,0.15);
+            opacity: 1 !important;
         }}
         
         /* Navigation Container */
@@ -71,10 +72,11 @@ def render_bottom_navigation():
             align-items: center;
             justify-content: center;
             font-size: 24px;
-            background: {theme['secondary']};
+            background: {theme['secondary']} !important;
             border: 2px solid transparent;
             transition: all 0.3s ease;
-            box-shadow: 0 4px 12px {theme['primary']}10;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            opacity: 1 !important;
         }}
         
         .nav-item:hover .nav-icon {{
@@ -84,7 +86,7 @@ def render_bottom_navigation():
         }}
         
         .nav-item.active .nav-icon {{
-            background: linear-gradient(135deg, {theme['primary']}, {theme['accent']});
+            background: linear-gradient(135deg, {theme['primary']}, {theme['accent']}) !important;
             box-shadow: 0 8px 24px {theme['primary']}40;
             transform: scale(1.05);
             border-color: {theme['primary']};
@@ -94,7 +96,7 @@ def render_bottom_navigation():
         .nav-label {{
             font-size: 11px;
             font-weight: 700;
-            color: {theme['text']};
+            color: {theme['text']} !important;
             opacity: 0.6;
             text-transform: uppercase;
             letter-spacing: 0.5px;
@@ -103,24 +105,8 @@ def render_bottom_navigation():
         
         .nav-item.active .nav-label {{
             opacity: 1;
-            color: {theme['primary']};
+            color: {theme['primary']} !important;
             font-weight: 800;
-        }}
-        
-        /* Active Indicator Dot */
-        .nav-indicator {{
-            position: absolute;
-            top: 4px;
-            width: 6px;
-            height: 6px;
-            border-radius: 50%;
-            background: {theme['primary']};
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }}
-        
-        .nav-item.active .nav-indicator {{
-            opacity: 1;
         }}
         
         /* Bottom Spacer */

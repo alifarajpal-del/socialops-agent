@@ -286,65 +286,8 @@ def _inject_modern_dashboard_css() -> None:
     
     st.divider()
     
-    # Quick Actions Card
-    st.markdown("""
-    <div class="modern-card">
-        <div class="card-header">
-    
-    # Demo Actions
-    demo_col1, demo_col2, demo_col3 = st.columns(3)
-    
-    # Initialize demo_busy lock
-    if 'demo_busy' not in st.session_state:
-        st.session_state['demo_busy'] = False
-    
-    is_busy = st.session_state.get('demo_busy', False)
-    
-    with demo_col1:
-        if st.button("🧪 Load Demo Data", use_container_width=True, disabled=is_busy):
-            st.session_state['demo_busy'] = True
-            try:
-                from services.demo_seed import seed_demo_all
-                seed_demo_all()
-                st.success("✅ Demo data loaded successfully!")
-            except Exception as e:
-                st.error(f"❌ Error: {e}")
-            finally:
-                st.session_state['demo_busy'] = False
-                st.rerun()
-    
-    with demo_col2:
-        if st.button("🔄 Regenerate", use_container_width=True, disabled=is_busy):
-            st.session_state['demo_busy'] = True
-            try:
-                from services.demo_seed import seed_demo_regenerate
-                seed_demo_regenerate()
-                st.success("✅ Demo regenerated!")
-            except Exception as e:
-                st.error(f"❌ Error: {e}")
-            finally:
-                st.session_state['demo_busy'] = False
-                st.rerun()
-    
-    with demo_col3:
-        if st.button("🗑️ Clear Demo", use_container_width=True, disabled=is_busy):
-            st.session_state['demo_busy'] = True
-            try:
-                from services.demo_seed import clear_demo_all
-                clear_demo_all()
-                st.success("✅ Demo data cleared!")
-            except Exception as e:
-                st.error(f"❌ Error: {e}")
-            finally:
-                st.session_state['demo_busy'] = False
-                st.rerun()
-    
-    st.divider()
-            <span class="card-icon">⚡</span>
-            <h3 class="card-title">Quick Actions</h3>
-        </div>
-    </div>
-    """, unsafe_allow_html=True)
+    # Quick Actions
+    st.markdown('<div class="modern-card"><div class="card-header"><span class="card-icon">⚡</span><h3 class="card-title">Quick Actions</h3></div></div>', unsafe_allow_html=True)
     
     col1, col2, col3 = st.columns(3)
     
@@ -368,32 +311,8 @@ def _inject_modern_dashboard_css() -> None:
     
     st.divider()
     
-    # Demo Management Card
-    st.markdown("""
-    <div class="modern-card">
-        <div class="card-header">
-            <span class="card-icon">🧪</span>
-            <h3 class="card-title">Demo Data Management</h3>
-        </div>
-    </div>
-    """, unsafe_allow_html=True)
-    
-    # Demo Status Section
-    from services.demo_seed import get_demo_stats, get_demo_event_summary
-    
-    col_status, col_refresh = st.columns([4, 1])
-    
-    with col_status:
-        stats = get_demo_stats()
-        if not stats['exists']:
-            st.info("📭 No demo data loaded")
-        else:
-            st.success(f"✅ Demo active: {stats['threads']} threads, {stats['leads']} leads, {stats['tasks']} tasks")
-    
-    with col_refresh:
-        if st.button("🔄 Refresh", use_container_width=True, key="refresh_demo_stats"):
-            st.rerun()
-    
+    # Demo Management
+    st.markdown('<div class="modern-card"><div class="card-header"><span class="card-icon">🧪</span><h3 class="card-title">Demo Data Management</h3></div></div>', unsafe_allow_html=True)
     
     # Demo Actions
     demo_col1, demo_col2, demo_col3 = st.columns(3)
