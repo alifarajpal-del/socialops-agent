@@ -15,6 +15,13 @@ from services.db import get_db_path
 logger = logging.getLogger(__name__)
 
 
+def _is_demo_id(value: str) -> bool:
+    """Check if a value is a demo identifier."""
+    if not value:
+        return False
+    return any(pattern in value for pattern in ['demo_salon_', 'demo_store_', 'demo_clinic_'])
+
+
 def seed_demo_all(db_path: Optional[str] = None) -> dict:
     """
     Seed database with demo data for all sectors (salon, store, clinic).
@@ -25,7 +32,16 @@ def seed_demo_all(db_path: Optional[str] = None) -> dict:
         db_path: Optional database path (uses get_db_path() if None)
     
     Returns:
-        Dict with counts: {threads, messages, leads, tasks, replies, skipped}
+        Dict with structure: {
+            "created": bool,
+            "threads": int,
+            "messages": int,
+            "leads": int,
+            "tasks": int,
+            "replies": int,
+            "skipped": bool,
+            "reason": str | None
+        }
     """
     if db_path is None:
         db_path = get_db_path()
@@ -35,12 +51,14 @@ def seed_demo_all(db_path: Optional[str] = None) -> dict:
         cursor = conn.cursor()
         
         counts = {
+            'created': False,
             'threads': 0,
             'messages': 0,
             'leads': 0,
             'tasks': 0,
             'replies': 0,
-            'skipped': False
+            'skipped': False,
+            'reason': None
         }
         
         # Check if any demo data already exists
@@ -55,8 +73,8 @@ def seed_demo_all(db_path: Optional[str] = None) -> dict:
         if existing_count > 0:
             logger.info(f"Demo data already exists ({existing_count} threads), skipping seed")
             counts['skipped'] = True
+            counts['reason'] = f"Demo data already exists ({existing_count} threads)"
             conn.close()
-            return counts
             return counts
         
         # Seed all sectors
@@ -69,12 +87,139 @@ def seed_demo_all(db_path: Optional[str] = None) -> dict:
         conn.commit()
         conn.close()
         
+        counts['created'] = True
         logger.info(f"Demo data seeded: {counts}")
         return counts
     
     except Exception as e:
         logger.error(f"Demo seed error: {e}", exc_info=True)
-        return {'error': str(e), 'skipped': False}
+        return {'error': str(e), 'created': False, 'skipped': False, 'reason': str(e)}
+
+
+def clear_demo_all(db_path: Optional[str] = None) -> dict:
+    """
+    Delete ALL demo data created by seeding across all 3 sectors.
+    
+    Removes demo threads, related messages, related leads, related tasks,
+    and demo saved replies. Safe if called when no demo exists.
+    
+    Args:
+        db_path: Optional database path (uses get_db_path() if None)
+    
+    Returns:
+        Dict with structure: {
+            "cleared": bool,
+            "threads_deleted": int,
+            "messages_deleted": int,
+            "leads_deleted": int,
+            "tasks_deleted": int,
+            "replies_deleted": int
+        }
+    """
+    if db_path is None:
+        db_path = get_db_path()
+    
+    try:
+        conn = sqlite3.connect(db_path)
+        cursor = conn.cursor()
+        
+        counts = {
+            'cleared': False,
+            'threads_deleted': 0,
+            'messages_deleted': 0,
+            'leads_deleted': 0,
+            'tasks_deleted': 0,
+            'replies_deleted': 0
+        }
+        
+        # Delete messages first (foreign key to threads)
+        cursor.execute("""
+            DELETE FROM messages 
+            WHERE thread_id LIKE 'demo_salon_%' 
+               OR thread_id LIKE 'demo_store_%' 
+               OR thread_id LIKE 'demo_clinic_%'
+        """)
+        counts['messages_deleted'] = cursor.rowcount
+        
+        # Delete leads linked to demo threads
+        cursor.execute("""
+            DELETE FROM leads 
+            WHERE thread_id LIKE 'demo_salon_%' 
+               OR thread_id LIKE 'demo_store_%' 
+               OR thread_id LIKE 'demo_clinic_%'
+        """)
+        counts['leads_deleted'] = cursor.rowcount
+        
+        # Delete tasks linked to demo threads
+        cursor.execute("""
+            DELETE FROM tasks 
+            WHERE related_thread_id LIKE 'demo_salon_%' 
+               OR related_thread_id LIKE 'demo_store_%' 
+               OR related_thread_id LIKE 'demo_clinic_%'
+        """)
+        counts['tasks_deleted'] = cursor.rowcount
+        
+        # Delete demo saved replies
+        cursor.execute("""
+            DELETE FROM replies 
+            WHERE tags LIKE '%salon%' 
+               OR tags LIKE '%store%' 
+               OR tags LIKE '%clinic%'
+        """)
+        counts['replies_deleted'] = cursor.rowcount
+        
+        # Delete demo threads last
+        cursor.execute("""
+            DELETE FROM threads 
+            WHERE thread_id LIKE 'demo_salon_%' 
+               OR thread_id LIKE 'demo_store_%' 
+               OR thread_id LIKE 'demo_clinic_%'
+        """)
+        counts['threads_deleted'] = cursor.rowcount
+        
+        conn.commit()
+        conn.close()
+        
+        counts['cleared'] = True
+        logger.info(f"Demo data cleared: {counts}")
+        return counts
+    
+    except Exception as e:
+        logger.error(f"Demo clear error: {e}", exc_info=True)
+        return {'error': str(e), 'cleared': False}
+
+
+def seed_demo_regenerate(db_path: Optional[str] = None) -> dict:
+    """
+    Regenerate demo data: clear existing demo data then seed fresh data.
+    
+    This is a convenience function that calls clear_demo_all() followed by
+    seed_demo_all() to provide a fresh demo dataset.
+    
+    Args:
+        db_path: Optional database path (uses get_db_path() if None)
+    
+    Returns:
+        Dict with structure: {
+            "cleared": {...},
+            "seeded": {...}
+        }
+    """
+    if db_path is None:
+        db_path = get_db_path()
+    
+    logger.info("Regenerating demo data (clear + seed)")
+    
+    # First clear
+    clear_result = clear_demo_all(db_path)
+    
+    # Then seed
+    seed_result = seed_demo_all(db_path)
+    
+    return {
+        'cleared': clear_result,
+        'seeded': seed_result
+    }
 
 
 def _seed_salon(conn, cursor, counts, now):

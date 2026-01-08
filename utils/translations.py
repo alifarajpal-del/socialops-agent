@@ -109,11 +109,15 @@ TRANSLATIONS = {
         "export_threads": "Export Threads",
         "export_all": "Export All (ZIP)",
         
-        # Demo Seed (Sprint 5.2)
+        # Demo Seed (Sprint 5.3)
         "load_demo": "Load Demo Inbox",
         "demo_exists": "Demo data already exists",
         "demo_loaded": "Demo loaded",
         "demo_error": "Demo seed error",
+        "demo_cleared": "Demo data cleared successfully",
+        "demo_regenerated": "Demo data regenerated successfully",
+        "regenerate_demo": "Regenerate",
+        "clear_demo": "Clear",
         "bulk_empty_hint": "No threads yet. Load demo data to get started.",
         
         "scanned_image": "Scanned Image",
@@ -235,11 +239,15 @@ TRANSLATIONS = {
         "export_threads": "تصدير المحادثات",
         "export_all": "تصدير الكل (ZIP)",
         
-        # Demo Seed (Sprint 5.2)
+        # Demo Seed (Sprint 5.3)
         "load_demo": "تحميل بيانات تجريبية",
         "demo_exists": "البيانات التجريبية موجودة بالفعل",
         "demo_loaded": "تم تحميل البيانات التجريبية",
         "demo_error": "خطأ في تحميل البيانات التجريبية",
+        "demo_cleared": "تم مسح البيانات التجريبية بنجاح",
+        "demo_regenerated": "تمت إعادة توليد البيانات التجريبية بنجاح",
+        "regenerate_demo": "إعادة توليد",
+        "clear_demo": "مسح",
         "bulk_empty_hint": "لا توجد محادثات بعد. قم بتحميل بيانات تجريبية للبدء.",
         
         # Auth
@@ -360,11 +368,15 @@ TRANSLATIONS = {
         "export_threads": "Exporter les fils",
         "export_all": "Tout exporter (ZIP)",
         
-        # Demo Seed (Sprint 5.2)
+        # Demo Seed (Sprint 5.3)
         "load_demo": "Charger des données de démonstration",
         "demo_exists": "Les données de démonstration existent déjà",
         "demo_loaded": "Démonstration chargée",
         "demo_error": "Erreur de chargement des données de démonstration",
+        "demo_cleared": "Données de démonstration effacées avec succès",
+        "demo_regenerated": "Données de démonstration régénérées avec succès",
+        "regenerate_demo": "Régénérer",
+        "clear_demo": "Effacer",
         "bulk_empty_hint": "Aucun fil pour l'instant. Chargez des données de démonstration pour commencer.",
         
         # Auth

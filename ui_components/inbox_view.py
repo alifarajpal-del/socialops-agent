@@ -432,7 +432,7 @@ def inbox_view():
             threads = store.list_threads(platform_filter=platform_filter)
             
             if not threads:
-                # Empty DB hint (Sprint 5.2)
+                # Empty DB hint (Sprint 5.3)
                 from utils.translations import get_text
                 from utils.i18n import get_lang
                 lang = get_lang()

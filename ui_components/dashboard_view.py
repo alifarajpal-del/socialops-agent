@@ -51,21 +51,53 @@ def _render_dashboard_inner() -> None:
             st.rerun()
     
     with col3:
-        # Demo seed button (Sprint 5.2)
-        if st.button(f"🧪 {t('load_demo')}", use_container_width=True):
-            from services.demo_seed import seed_demo_all
-            from ui_components.router import go_to
-            
-            result = seed_demo_all()
-            
-            if result.get('skipped'):
-                st.info(t('demo_exists'))
-            elif 'error' in result:
-                st.error(f"{t('demo_error')}: {result['error']}")
-            else:
-                st.success(f"✅ {t('demo_loaded')}: {result['threads']} threads, {result['leads']} leads, {result['tasks']} tasks, {result['replies']} replies")
-                go_to('ops')
-                st.rerun()
+        # Demo management buttons (Sprint 5.3)
+        col3a, col3b, col3c = st.columns(3)
+        
+        with col3a:
+            if st.button(f"🧪 {t('load_demo')}", use_container_width=True, key="seed_demo"):
+                from services.demo_seed import seed_demo_all
+                from ui_components.router import go_to
+                
+                result = seed_demo_all()
+                
+                if result.get('skipped'):
+                    st.info(t('demo_exists'))
+                elif 'error' in result:
+                    st.error(f"{t('demo_error')}: {result['error']}")
+                else:
+                    st.success(f"✅ {t('demo_loaded')}: {result['threads']} threads, {result['leads']} leads, {result['tasks']} tasks, {result['replies']} replies")
+                    go_to('ops')
+                    st.rerun()
+        
+        with col3b:
+            if st.button(f"🔄 {t('regenerate_demo')}", use_container_width=True, key="regen_demo"):
+                from services.demo_seed import seed_demo_regenerate
+                from ui_components.router import go_to
+                
+                result = seed_demo_regenerate()
+                
+                if 'error' in result.get('seeded', {}):
+                    st.error(f"{t('demo_error')}: {result['seeded']['error']}")
+                elif 'error' in result.get('cleared', {}):
+                    st.error(f"{t('demo_error')}: {result['cleared']['error']}")
+                else:
+                    seeded = result['seeded']
+                    st.success(f"✅ {t('demo_regenerated')}: {seeded['threads']} threads, {seeded['leads']} leads, {seeded['tasks']} tasks, {seeded['replies']} replies")
+                    go_to('ops')
+                    st.rerun()
+        
+        with col3c:
+            if st.button(f"🗑️ {t('clear_demo')}", use_container_width=True, key="clear_demo"):
+                from services.demo_seed import clear_demo_all
+                
+                result = clear_demo_all()
+                
+                if 'error' in result:
+                    st.error(f"{t('demo_error')}: {result['error']}")
+                else:
+                    st.success(f"✅ {t('demo_cleared')}: {result['threads_deleted']} threads, {result['leads_deleted']} leads, {result['tasks_deleted']} tasks")
+                    st.rerun()
     
     st.divider()
     
