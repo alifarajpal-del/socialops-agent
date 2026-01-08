@@ -32,6 +32,9 @@ st.set_page_config(
     initial_sidebar_state="collapsed",
 )
 
+# Build marker for deployment verification
+st.sidebar.caption("🔄 BUILD: SocialOps Agent v2.0 | Commit: 960b832")
+
 # Imports
 from app_config.settings import MOBILE_VIEWPORT
 from ui_components.theme_wheel import render_theme_wheel
