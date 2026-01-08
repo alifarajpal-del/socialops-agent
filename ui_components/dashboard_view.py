@@ -35,6 +35,26 @@ def _render_dashboard_inner() -> None:
     
     st.markdown(f"## 🏠 {t('dashboard_title')}")
     
+    # Quick Actions (Sprint 5)
+    col1, col2, col3 = st.columns([2, 2, 2])
+    
+    with col1:
+        if st.button("🔍 Search", use_container_width=True):
+            from ui_components.router import go_to
+            go_to('search')
+            st.rerun()
+    
+    with col2:
+        if st.button("📊 Daily Ops", use_container_width=True):
+            from ui_components.router import go_to
+            go_to('ops')
+            st.rerun()
+    
+    with col3:
+        st.write("")  # Spacing
+    
+    st.divider()
+    
     # Show skeleton while loading
     with st.spinner(""):
         _modern_stats_cards(theme)

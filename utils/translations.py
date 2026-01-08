@@ -83,6 +83,32 @@ TRANSLATIONS = {
         "max_replies": "Max Reply Templates",
         "unlimited": "Unlimited",
         
+        # Search (Sprint 5)
+        "search_title": "Search",
+        "search_caption": "Find threads, leads, and replies",
+        "search_box": "Search query",
+        "search_hint": "Enter a search term to find threads, leads, or replies",
+        "search_tab_all": "All",
+        "search_tab_inbox": "Inbox",
+        "search_tab_leads": "Leads",
+        "search_tab_replies": "Replies",
+        "search_no_results": "No results found",
+        
+        # Daily Ops (Sprint 5)
+        "ops_title": "Daily Operations",
+        "ops_caption": "SLA monitoring, tasks, and lead status",
+        "ops_sla_title": "SLA Status",
+        "ops_tasks_title": "Tasks",
+        "ops_leads_title": "Leads by Status",
+        "ops_button": "Daily Ops Dashboard",
+        
+        # Export (Sprint 5)
+        "export_title": "Export Data",
+        "export_leads": "Export Leads",
+        "export_tasks": "Export Tasks",
+        "export_threads": "Export Threads",
+        "export_all": "Export All (ZIP)",
+        
         "scanned_image": "Scanned Image",
         
         # Auth
@@ -176,6 +202,32 @@ TRANSLATIONS = {
         "max_replies": "الحد الأقصى للردود",
         "unlimited": "غير محدود",
         
+        # Search (Sprint 5)
+        "search_title": "بحث",
+        "search_caption": "ابحث عن المحادثات والعملاء والردود",
+        "search_box": "استعلام البحث",
+        "search_hint": "أدخل مصطلح بحث للعثور على المحادثات أو العملاء أو الردود",
+        "search_tab_all": "الكل",
+        "search_tab_inbox": "البريد",
+        "search_tab_leads": "العملاء",
+        "search_tab_replies": "الردود",
+        "search_no_results": "لا توجد نتائج",
+        
+        # Daily Ops (Sprint 5)
+        "ops_title": "العمليات اليومية",
+        "ops_caption": "مراقبة SLA والمهام وحالة العملاء",
+        "ops_sla_title": "حالة SLA",
+        "ops_tasks_title": "المهام",
+        "ops_leads_title": "العملاء حسب الحالة",
+        "ops_button": "لوحة العمليات اليومية",
+        
+        # Export (Sprint 5)
+        "export_title": "تصدير البيانات",
+        "export_leads": "تصدير العملاء",
+        "export_tasks": "تصدير المهام",
+        "export_threads": "تصدير المحادثات",
+        "export_all": "تصدير الكل (ZIP)",
+        
         # Auth
         "sign_in": "تسجيل الدخول",
         "sign_in_with_email": "تسجيل الدخول بالبريد الإلكتروني",
@@ -267,6 +319,32 @@ TRANSLATIONS = {
         "max_threads": "Fils max",
         "max_replies": "Réponses max",
         "unlimited": "Illimité",
+        
+        # Search (Sprint 5)
+        "search_title": "Recherche",
+        "search_caption": "Trouver des fils, des prospects et des réponses",
+        "search_box": "Requête de recherche",
+        "search_hint": "Entrez un terme de recherche pour trouver des fils, des prospects ou des réponses",
+        "search_tab_all": "Tout",
+        "search_tab_inbox": "Boîte de réception",
+        "search_tab_leads": "Prospects",
+        "search_tab_replies": "Réponses",
+        "search_no_results": "Aucun résultat trouvé",
+        
+        # Daily Ops (Sprint 5)
+        "ops_title": "Opérations quotidiennes",
+        "ops_caption": "Surveillance SLA, tâches et statut des prospects",
+        "ops_sla_title": "Statut SLA",
+        "ops_tasks_title": "Tâches",
+        "ops_leads_title": "Prospects par statut",
+        "ops_button": "Tableau de bord des opérations",
+        
+        # Export (Sprint 5)
+        "export_title": "Exporter les données",
+        "export_leads": "Exporter les prospects",
+        "export_tasks": "Exporter les tâches",
+        "export_threads": "Exporter les fils",
+        "export_all": "Tout exporter (ZIP)",
         
         # Auth
         "sign_in": "Se connecter",

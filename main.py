@@ -61,6 +61,8 @@ from ui_components.leads_view import leads_view
 from ui_components.replies_view import replies_view
 from ui_components.settings_channels_view import settings_channels_view
 from ui_components.workspace_view import workspace_view
+from ui_components.search_view import search_view
+from ui_components.ops_view import ops_view
 
 PAGE_SUBTITLES = {
     "dashboard": "Health Dashboard",
@@ -69,6 +71,8 @@ PAGE_SUBTITLES = {
     "settings": "Settings & Theme",
     "channels": "Channel Integrations",
     "workspace": "Business Profile",
+    "search": "Search",
+    "ops": "Daily Operations",
 }
 
 
@@ -238,6 +242,52 @@ def _render_settings_inner() -> None:
     else:
         st.info("💡 Tip: All features work locally without payment")
     
+    # Export Data (Sprint 5)
+    st.markdown(f"#### 📥 {t('export_title')}")
+    from services.export_service import export_leads_csv, export_tasks_csv, export_threads_csv, export_all_data_zip
+    
+    col1, col2, col3, col4 = st.columns(4)
+    
+    with col1:
+        leads_csv = export_leads_csv()
+        st.download_button(
+            t('export_leads'),
+            data=leads_csv,
+            file_name="leads.csv",
+            mime="text/csv",
+            use_container_width=True
+        )
+    
+    with col2:
+        tasks_csv = export_tasks_csv()
+        st.download_button(
+            t('export_tasks'),
+            data=tasks_csv,
+            file_name="tasks.csv",
+            mime="text/csv",
+            use_container_width=True
+        )
+    
+    with col3:
+        threads_csv = export_threads_csv()
+        st.download_button(
+            t('export_threads'),
+            data=threads_csv,
+            file_name="threads.csv",
+            mime="text/csv",
+            use_container_width=True
+        )
+    
+    with col4:
+        all_zip = export_all_data_zip()
+        st.download_button(
+            t('export_all'),
+            data=all_zip,
+            file_name="socialops_export.zip",
+            mime="application/zip",
+            use_container_width=True
+        )
+    
     st.divider()
     
     # Link to CRM/Leads (Sprint 2)
@@ -306,7 +356,7 @@ def main() -> None:
     page = get_active_page()
 
     # Don't show header/back button for inbox (has its own header)
-    if page not in ["inbox", "channels", "leads", "replies", "workspace"]:
+    if page not in ["inbox", "channels", "leads", "replies", "workspace", "search", "ops"]:
         render_brand_header(subtitle=PAGE_SUBTITLES.get(page, "BioGuard AI"))
         if page != "dashboard" and st.session_state.get("nav_stack"):
             if st.button("⬅️ رجوع", key="back_btn_top"):
@@ -328,6 +378,10 @@ def main() -> None:
         settings_channels_view()
     elif page == "workspace":
         workspace_view()
+    elif page == "search":
+        search_view()
+    elif page == "ops":
+        ops_view()
 
     render_bottom_navigation()
 

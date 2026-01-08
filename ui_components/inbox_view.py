@@ -408,7 +408,7 @@ def inbox_view():
         
         st.divider()
         
-        # Filters
+        # Filters and Bulk Actions
         col1, col2, col3 = st.columns([2, 2, 1])
         
         with col1:
@@ -425,6 +425,111 @@ def inbox_view():
         with col3:
             if st.button("🔄 Refresh", use_container_width=True):
                 st.rerun()
+        
+        # Bulk Actions Section
+        with st.expander("⚡ Bulk Actions", expanded=False):
+            store = get_inbox_store()
+            threads = store.list_threads(platform_filter=platform_filter)
+            
+            if not threads:
+                st.info("No threads available")
+            else:
+                # Multi-select for threads
+                thread_options = {f"{t['title']} ({t['platform']})": t['id'] for t in threads}
+                selected_thread_keys = st.multiselect(
+                    "Select threads:",
+                    options=list(thread_options.keys()),
+                    key="bulk_threads"
+                )
+                
+                selected_thread_ids = [thread_options[k] for k in selected_thread_keys]
+                
+                if selected_thread_ids:
+                    st.caption(f"Selected: {len(selected_thread_ids)} thread(s)")
+                    
+                    col1, col2, col3 = st.columns(3)
+                    
+                    with col1:
+                        st.markdown("**Apply Tags**")
+                        tags_input = st.text_input("Tags (comma-separated)", key="bulk_tags", placeholder="urgent,vip")
+                        create_lead_toggle = st.checkbox("Create lead if missing", value=False, key="bulk_create_lead")
+                        
+                        if st.button("🏷️ Apply Tags", key="bulk_apply_tags", use_container_width=True):
+                            crm = CRMStore()
+                            tags_list = [t.strip() for t in tags_input.split(",") if t.strip()]
+                            applied_count = 0
+                            
+                            for thread_id in selected_thread_ids:
+                                # Get or create lead
+                                lead = crm.get_lead_by_thread(thread_id)
+                                if not lead and create_lead_toggle:
+                                    thread_info = store.get_thread(thread_id)
+                                    messages = store.list_messages(thread_id)
+                                    lead_name = messages[-1]['sender_name'] if messages else "Unknown"
+                                    lead_id = crm.create_lead_from_thread(thread_id, thread_info['platform'], lead_name)
+                                    lead = crm.get_lead(lead_id)
+                                
+                                if lead:
+                                    # Merge tags
+                                    existing_tags = lead.get('tags', '').split(',') if lead.get('tags') else []
+                                    all_tags = list(set(existing_tags + tags_list))
+                                    crm.update_lead(lead['id'], {'tags': ','.join(all_tags)})
+                                    applied_count += 1
+                            
+                            st.success(f"✅ Applied tags to {applied_count} lead(s)")
+                            st.rerun()
+                    
+                    with col2:
+                        st.markdown("**Follow-up Task**")
+                        hours_input = st.number_input("Due in (hours)", min_value=1, max_value=168, value=24, key="bulk_hours")
+                        
+                        if st.button("⏰ Create Tasks", key="bulk_followup", use_container_width=True):
+                            crm = CRMStore()
+                            from datetime import datetime, timedelta
+                            due_at = (datetime.utcnow() + timedelta(hours=hours_input)).isoformat()
+                            created_count = 0
+                            
+                            for thread_id in selected_thread_ids:
+                                lead = crm.get_lead_by_thread(thread_id)
+                                if lead:
+                                    crm.create_task(
+                                        title=f"Follow up: {lead['name']}",
+                                        due_at_iso=due_at,
+                                        lead_id=lead['id'],
+                                        thread_id=thread_id,
+                                        task_type="followup"
+                                    )
+                                    created_count += 1
+                            
+                            st.success(f"✅ Created {created_count} task(s)")
+                            st.rerun()
+                    
+                    with col3:
+                        st.markdown("**Triage Label**")
+                        label = st.selectbox("Label", ["today", "later"], key="bulk_label")
+                        
+                        if st.button("🔖 Mark Label", key="bulk_triage", use_container_width=True):
+                            # Update threads table with triage_label
+                            db_path = store.db_path
+                            import sqlite3
+                            conn = sqlite3.connect(db_path)
+                            cursor = conn.cursor()
+                            
+                            # Ensure column exists
+                            try:
+                                cursor.execute("ALTER TABLE threads ADD COLUMN triage_label TEXT DEFAULT 'later'")
+                                conn.commit()
+                            except:
+                                pass  # Column already exists
+                            
+                            # Update selected threads
+                            for thread_id in selected_thread_ids:
+                                cursor.execute("UPDATE threads SET triage_label = ? WHERE id = ?", (label, thread_id))
+                            
+                            conn.commit()
+                            conn.close()
+                            st.success(f"✅ Marked {len(selected_thread_ids)} thread(s) as '{label}'")
+                            st.rerun()
         
         st.divider()
         
