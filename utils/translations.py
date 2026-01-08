@@ -12,6 +12,9 @@ TRANSLATIONS = {
         # Navigation
         "dashboard": "Dashboard",
         "inbox": "Inbox",
+        "copilot": "Copilot",
+        "leads": "Leads",
+        "ops": "Ops",
         "vault": "Vault",
         "settings": "Settings",
         
@@ -187,6 +190,9 @@ TRANSLATIONS = {
         # Navigation
         "dashboard": "الرئيسية",
         "inbox": "البريد",
+        "copilot": "المساعد",
+        "leads": "العملاء",
+        "ops": "العمليات",
         "vault": "المخزن",
         "settings": "الإعدادات",
         

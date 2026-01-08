@@ -148,6 +148,7 @@ def render_bottom_navigation():
     lang = st.session_state.get("language", "en")
     
     nav_items = [
+        ("copilot", "🤖", get_text("copilot", lang)),
         ("dashboard", "🏠", get_text("dashboard", lang)),
         ("inbox", "📬", get_text("inbox", lang)),
         ("leads", "👥", get_text("leads", lang)),
@@ -184,4 +185,4 @@ def render_bottom_navigation():
 
 def get_active_page() -> str:
     """Get the currently active page"""
-    return st.session_state.get("current_page", "dashboard")
+    return st.session_state.get("current_page", "copilot")

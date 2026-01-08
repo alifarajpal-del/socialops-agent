@@ -2,13 +2,13 @@
 
 import streamlit as st
 
-PAGES = ["dashboard", "inbox", "leads", "vault", "settings", "channels", "replies"]
+PAGES = ["copilot", "dashboard", "inbox", "leads", "ops", "settings"]
 
 
 def ensure_nav_state() -> None:
     """Initialize navigation-related session state keys."""
     if "current_page" not in st.session_state or st.session_state.get("current_page") not in PAGES:
-        st.session_state.current_page = "dashboard"
+        st.session_state.current_page = "copilot"  # Copilot is default home
     if "nav_stack" not in st.session_state:
         st.session_state.nav_stack = []
     if "swipe_next" not in st.session_state:
@@ -37,7 +37,7 @@ def go_back() -> None:
     if st.session_state.nav_stack:
         st.session_state.current_page = st.session_state.nav_stack.pop()
     else:
-        st.session_state.current_page = "dashboard"
+        st.session_state.current_page = "copilot"  # Default to Copilot
     st.session_state.swipe_next = False
     st.session_state.swipe_prev = False
     st.rerun()

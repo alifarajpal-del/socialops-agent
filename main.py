@@ -101,8 +101,10 @@ from ui_components.settings_channels_view import settings_channels_view
 from ui_components.workspace_view import workspace_view
 from ui_components.search_view import search_view
 from ui_components.ops_view import ops_view
+from ui_components.copilot_chat_view import copilot_chat_view
 
 PAGE_SUBTITLES = {
+    "copilot": "Social Copilot",
     "dashboard": "Health Dashboard",
     "inbox": "Unified Inbox",
     "vault": "Medical Vault",
@@ -395,14 +397,16 @@ def main() -> None:
 
     page = get_active_page()
 
-    # Don't show header/back button for inbox (has its own header)
-    if page not in ["inbox", "channels", "leads", "replies", "workspace", "search", "ops"]:
+    # Don't show header/back button for pages with their own headers
+    if page not in ["copilot", "inbox", "channels", "leads", "replies", "workspace", "search", "ops"]:
         render_brand_header(subtitle=PAGE_SUBTITLES.get(page, "BioGuard AI"))
-        if page != "dashboard" and st.session_state.get("nav_stack"):
+        if page != "copilot" and page != "dashboard" and st.session_state.get("nav_stack"):
             if st.button("⬅️ رجوع", key="back_btn_top"):
                 go_back()
 
-    if page == "dashboard":
+    if page == "copilot":
+        copilot_chat_view()
+    elif page == "dashboard":
         render_dashboard()
     elif page == "inbox":
         inbox_view()
