@@ -66,7 +66,7 @@ JWT_ALGORITHM = "HS256"
 JWT_EXPIRATION_HOURS = 24
 
 # ============== Database Configuration ==============
-DATABASE_PATH = os.getenv("DATABASE_PATH", "./data/bioguard.db")
+DATABASE_PATH = os.getenv("DATABASE_PATH", "./data/socialops.db")
 VECTOR_DB_PATH = os.getenv("VECTOR_DB_PATH", "./data/chroma_db")
 GRAPH_DB_PATH = os.getenv("GRAPH_DB_PATH", "./data/graph_db")
 
@@ -75,18 +75,18 @@ os.makedirs(os.path.dirname(DATABASE_PATH) or "./data", exist_ok=True)
 
 # ============== Streamlit UI Configuration ==============
 STREAMLIT_PAGE_CONFIG = {
-    "page_title": "BioGuard AI - Health Ecosystem",
-    "page_icon": "🧬",
+    "page_title": "SocialOps Agent - Social Media Operations",
+    "page_icon": "💬",
     "layout": "wide",
     "initial_sidebar_state": "expanded",
     "menu_items": {
-        'Get Help': 'https://github.com/alifarajpal-del/bioguard-ai-2',
-        'Report a bug': 'https://github.com/alifarajpal-del/bioguard-ai-2/issues',
+        'Get Help': 'https://github.com/alifarajpal-del/socialops-agent',
+        'Report a bug': 'https://github.com/alifarajpal-del/socialops-agent/issues',
         'About': """
-        ### BioGuard AI 🧬
-        **Privacy-First Health Ecosystem**
+        ### SocialOps Agent 💬
+        **Social Media Operations Platform**
         
-        Realtime AR food analysis with federated learning.
+        AI-powered conversation management and lead generation.
         """
     }
 }

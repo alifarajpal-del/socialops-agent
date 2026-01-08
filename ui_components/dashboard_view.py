@@ -24,73 +24,233 @@ def render_dashboard() -> None:
 
 
 def _render_dashboard_inner() -> None:
-    # Inject CSS
+    # Modern CSS injection
     inject_skeleton_css()
     inject_ui_kit_css()
-    
-    theme = get_current_theme()
-    _inject_dashboard_css(theme)
+    _inject_modern_dashboard_css()
     
     log_user_action(logger, 'dashboard_view', {})
     
-    # Hero Header (Rebranding)
-    st.markdown(f"""
-    <div style="padding: 1.5rem 0; margin-bottom: 1.5rem; border-bottom: 1px solid {theme.get('background_secondary', '#e0e0e0')};">
-        <h1 style="font-size: 2rem; font-weight: 700; color: {theme.get('text_primary', '#000')}; margin: 0 0 0.5rem 0; display: flex; align-items: center; gap: 0.5rem;">
-            💬 {t('app_title')}
-        </h1>
-        <p style="font-size: 1rem; color: {theme.get('text_secondary', '#666')}; margin: 0;">
-            {t('app_subtitle')}
-        </p>
+    # Modern Hero Header
+    st.markdown("""
+    <div class="hero-header">
+        <div class="hero-content">
+            <h1 class="hero-title">
+                💬 SocialOps Agent
+            </h1>
+            <p class="hero-subtitle">
+                Social Media Operations Platform - Manage conversations, leads & tasks
+            </p>
+        </div>
     </div>
     """, unsafe_allow_html=True)
     
-    # Quick KPI Cards
-    from database.db_manager import get_db_path
-    import sqlite3
-    
+    # KPI Dashboard Cards
+    st.markdown('<div class="kpi-section">', unsafe_allow_html=True)
     col_k1, col_k2, col_k3 = st.columns(3)
     
     try:
+        from database.db_manager import get_db_path
+        import sqlite3
         conn = sqlite3.connect(get_db_path())
         cursor = conn.cursor()
         
         with col_k1:
             cursor.execute("SELECT COUNT(*) FROM threads")
             thread_count = cursor.fetchone()[0]
-            st.metric(t('app_hero_threads'), thread_count, delta=None)
+            _render_kpi_card("💬", "Active Threads", thread_count, "primary")
         
         with col_k2:
             cursor.execute("SELECT COUNT(*) FROM leads")
             lead_count = cursor.fetchone()[0]
-            st.metric(t('app_hero_leads'), lead_count, delta=None)
+            _render_kpi_card("👥", "Total Leads", lead_count, "success")
         
         with col_k3:
             cursor.execute("SELECT COUNT(*) FROM tasks WHERE status != 'completed'")
             task_count = cursor.fetchone()[0]
-            st.metric(t('app_hero_tasks'), task_count, delta=None)
+            _render_kpi_card("📋", "Open Tasks", task_count, "warning")
         
         conn.close()
     except Exception as e:
         logger.error(f"Failed to fetch KPI metrics: {e}")
     
-    st.divider()
+    st.markdown('</div>', unsafe_allow_html=True)
     
-    st.markdown(f"## 🏠 {t('dashboard_title')}")
+def _render_kpi_card(icon: str, title: str, value: int, variant: str = "primary") -> None:
+    """Render modern KPI card with icon and styling."""
+    color_map = {
+        "primary": "#3B82F6",
+        "success": "#10B981", 
+        "warning": "#F59E0B",
+        "danger": "#EF4444"
+    }
+    color = color_map.get(variant, "#3B82F6")
     
-    # Demo Status Section (Sprint 5.4 & 5.6)
+    st.markdown(f"""
+    <div class="kpi-card">
+        <div class="kpi-icon" style="color: {color};">{icon}</div>
+        <div class="kpi-content">
+            <div class="kpi-value">{value:,}</div>
+            <div class="kpi-title">{title}</div>
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+
+
+def _inject_modern_dashboard_css() -> None:
+    """Inject modern blue-based theme CSS for dashboard."""
+    st.markdown("""
+    <style>
+    .hero-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        padding: 2rem;
+        border-radius: 12px;
+        margin-bottom: 2rem;
+        color: white;
+        text-align: center;
+    }
+    
+    .hero-title {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin: 0 0 0.5rem 0;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    
+    .hero-subtitle {
+        font-size: 1.1rem;
+        margin: 0;
+        opacity: 0.9;
+    }
+    
+    .kpi-section {
+        margin-bottom: 2rem;
+    }
+    
+    .kpi-card {
+        background: white;
+        border-radius: 12px;
+        padding: 1.5rem;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        border: 1px solid #E5E7EB;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        transition: transform 0.2s, box-shadow 0.2s;
+        margin-bottom: 1rem;
+    }
+    
+    .kpi-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    }
+    
+    .kpi-icon {
+        font-size: 2rem;
+        width: 3rem;
+        height: 3rem;
+        border-radius: 50%;
+        background: rgba(59, 130, 246, 0.1);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .kpi-value {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #1F2937;
+        line-height: 1;
+    }
+    
+    .kpi-title {
+        font-size: 0.875rem;
+        color: #6B7280;
+        font-weight: 500;
+        margin-top: 0.25rem;
+    }
+    
+    .modern-card {
+        background: white;
+        border-radius: 12px;
+        padding: 1.5rem;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        border: 1px solid #E5E7EB;
+        margin-bottom: 1.5rem;
+    }
+    
+    .card-header {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        margin-bottom: 1rem;
+        padding-bottom: 0.75rem;
+        border-bottom: 1px solid #F3F4F6;
+    }
+    
+    .card-icon {
+        font-size: 1.25rem;
+        color: #3B82F6;
+    }
+    
+    .card-title {
+        font-size: 1.125rem;
+        font-weight: 600;
+        color: #1F2937;
+        margin: 0;
+    }
+    
+    .action-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+        margin: 1.5rem 0;
+    }
+    
+    .action-btn {
+        background: #3B82F6;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        padding: 0.75rem 1rem;
+        font-weight: 500;
+        transition: background 0.2s;
+        cursor: pointer;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        justify-content: center;
+    }
+    
+    .action-btn:hover {
+        background: #2563EB;
+    }
+    </style>
+    """, unsafe_allow_html=True)
+    
+    
+    # Demo Management Card
+    st.markdown("""
+    <div class="modern-card">
+        <div class="card-header">
+            <span class="card-icon">🧪</span>
+            <h3 class="card-title">Demo Data Management</h3>
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    # Demo Status Section
     from services.demo_seed import get_demo_stats, get_demo_event_summary
-    
-    st.markdown(f"### 📊 {t('demo_status_title')}")
     
     col_status, col_refresh = st.columns([4, 1])
     
     with col_status:
         stats = get_demo_stats()
         if not stats['exists']:
-            st.info(t('demo_status_empty'))
+            st.info("📭 No demo data loaded")
         else:
-            st.success(f"{t('demo_status_present')} {stats['threads']} threads, {stats['leads']} leads, {stats['tasks']} tasks, {stats['replies']} replies")
+            st.success(f"✅ Demo active: {stats['threads']} threads, {stats['leads']} leads, {stats['tasks']} tasks")
         
         # Show last action (Sprint 5.6)
         event_summary = get_demo_event_summary(limit=1)
@@ -134,33 +294,85 @@ def _render_dashboard_inner() -> None:
     
     st.divider()
     
-    # Quick Actions (Sprint 5)
-    col1, col2, col3 = st.columns([2, 2, 2])
+    # Quick Actions Card
+    st.markdown("""
+    <div class="modern-card">
+        <div class="card-header">
+    
+    # Demo Actions
+    demo_col1, demo_col2, demo_col3 = st.columns(3)
+    
+    # Initialize demo_busy lock
+    if 'demo_busy' not in st.session_state:
+        st.session_state['demo_busy'] = False
+    
+    is_busy = st.session_state.get('demo_busy', False)
+    
+    with demo_col1:
+        if st.button("🧪 Load Demo Data", use_container_width=True, disabled=is_busy):
+            st.session_state['demo_busy'] = True
+            try:
+                from services.demo_seed import seed_demo_all
+                seed_demo_all()
+                st.success("✅ Demo data loaded successfully!")
+            except Exception as e:
+                st.error(f"❌ Error: {e}")
+            finally:
+                st.session_state['demo_busy'] = False
+                st.rerun()
+    
+    with demo_col2:
+        if st.button("🔄 Regenerate", use_container_width=True, disabled=is_busy):
+            st.session_state['demo_busy'] = True
+            try:
+                from services.demo_seed import seed_demo_regenerate
+                seed_demo_regenerate()
+                st.success("✅ Demo regenerated!")
+            except Exception as e:
+                st.error(f"❌ Error: {e}")
+            finally:
+                st.session_state['demo_busy'] = False
+                st.rerun()
+    
+    with demo_col3:
+        if st.button("🗑️ Clear Demo", use_container_width=True, disabled=is_busy):
+            st.session_state['demo_busy'] = True
+            try:
+                from services.demo_seed import clear_demo_all
+                clear_demo_all()
+                st.success("✅ Demo data cleared!")
+            except Exception as e:
+                st.error(f"❌ Error: {e}")
+            finally:
+                st.session_state['demo_busy'] = False
+                st.rerun()
+    
+    st.divider()
+            <span class="card-icon">⚡</span>
+            <h3 class="card-title">Quick Actions</h3>
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    col1, col2, col3 = st.columns(3)
     
     with col1:
-        if st.button("🔍 Search", use_container_width=True):
+        if st.button("🔍 Search Conversations", use_container_width=True, type="primary"):
             from ui_components.router import go_to
             go_to('search')
             st.rerun()
     
     with col2:
-        if st.button("📊 Daily Ops", use_container_width=True):
+        if st.button("📊 Daily Operations", use_container_width=True):
             from ui_components.router import go_to
             go_to('ops')
             st.rerun()
     
     with col3:
-        # Demo management buttons (Sprint 5.3/5.4)
-        # Initialize demo_busy lock
-        if 'demo_busy' not in st.session_state:
-            st.session_state['demo_busy'] = False
-        
-        is_busy = st.session_state.get('demo_busy', False)
-        
-        col3a, col3b, col3c = st.columns(3)
-        
-        with col3a:
-            if st.button(f"🧪 {t('load_demo')}", use_container_width=True, key="seed_demo", disabled=is_busy):
+        if st.button("💬 Inbox", use_container_width=True):
+            from ui_components.router import go_to
+            go_to('inbox')
+            st.rerun()
                 from services.demo_seed import seed_demo_all
                 from ui_components.router import go_to
                 
