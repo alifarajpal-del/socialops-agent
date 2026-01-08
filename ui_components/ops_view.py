@@ -11,7 +11,7 @@ from typing import Dict
 
 from services.crm_store import CRMStore
 from services.inbox_store import get_inbox_store
-from services.replies_store import compute_sla_status
+from services.inbox_engine import compute_sla_status
 from ui_components import ui_kit
 from utils.i18n import get_lang
 from utils.translations import get_text
