@@ -102,6 +102,12 @@ def ops_view():
         # Leads Section
         st.markdown(f"### 👥 {get_text('ops_leads_title', lang)}")
         _render_leads_metrics(search_query, sector_filter, status_filter, sort_option)
+        
+        st.divider()
+        
+        # Demo Activity Section (Sprint 5.6)
+        st.markdown(f"### 📊 {get_text('demo_activity_title', lang)}")
+        _render_demo_activity(lang)
     
     except Exception as e:
         logger.error(f"Ops view error: {e}", exc_info=True)
@@ -345,3 +351,80 @@ def _render_leads_metrics(search_query="", sector_filter="all", status_filter="a
     except Exception as e:
         logger.error(f"Leads metrics error: {e}", exc_info=True)
         st.error("Error loading leads metrics")
+
+
+def _render_demo_activity(lang: str):
+    """Render demo activity panel with recent events and export buttons (Sprint 5.6)."""
+    try:
+        from services.demo_seed import get_demo_event_summary, get_demo_stats
+        
+        summary = get_demo_event_summary(limit=20)
+        
+        if not summary['exists']:
+            st.info(get_text('demo_last_action_none', lang))
+            return
+        
+        # Show recent events in expander
+        with st.expander(f"📋 Recent Events ({len(summary['events'])})", expanded=False):
+            if summary['events']:
+                # Create simple table
+                for event in summary['events'][:10]:  # Show top 10
+                    ts = event.get('ts', '')
+                    event_type = event.get('event_type', '')
+                    payload = event.get('payload', {})
+                    
+                    # Format timestamp
+                    try:
+                        dt = datetime.fromisoformat(ts.replace('Z', '+00:00'))
+                        time_str = dt.strftime('%Y-%m-%d %H:%M')
+                    except:
+                        time_str = ts[:16] if len(ts) >= 16 else ts
+                    
+                    # Format summary
+                    if event_type == 'seed':
+                        summary_text = f"Seeded {payload.get('threads', 0)} threads"
+                    elif event_type == 'clear':
+                        summary_text = f"Cleared {payload.get('threads_deleted', 0)} threads"
+                    elif event_type == 'regenerate':
+                        seeded = payload.get('seeded', {})
+                        summary_text = f"Regenerated {seeded.get('threads', 0)} threads"
+                    elif event_type == 'integrity_check':
+                        summary_text = f"Found {payload.get('orphans_found', 0)} orphans"
+                    else:
+                        summary_text = event_type
+                    
+                    st.text(f"{time_str} | {event_type:15} | {summary_text}")
+        
+        # Export buttons
+        col_exp1, col_exp2 = st.columns(2)
+        
+        with col_exp1:
+            # Export demo stats
+            stats = get_demo_stats()
+            stats_json = json.dumps(stats, indent=2)
+            st.download_button(
+                label=f"📥 {get_text('export_demo_stats', lang)}",
+                data=stats_json.encode('utf-8'),
+                file_name="demo_stats.json",
+                mime="application/json",
+                use_container_width=True
+            )
+        
+        with col_exp2:
+            # Export demo events
+            events_json = json.dumps(summary['events'], indent=2)
+            st.download_button(
+                label=f"📥 {get_text('export_demo_events', lang)}",
+                data=events_json.encode('utf-8'),
+                file_name="demo_events.json",
+                mime="application/json",
+                use_container_width=True
+            )
+        
+        # Show totals
+        totals = summary['totals']
+        st.caption(f"Total: {totals['seed_count']} seeds, {totals['clear_count']} clears, {totals['regen_count']} regens, {totals['integrity_count']} integrity checks")
+    
+    except Exception as e:
+        logger.error(f"Demo activity error: {e}", exc_info=True)
+        st.error("Error loading demo activity")

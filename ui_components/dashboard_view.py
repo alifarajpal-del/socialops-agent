@@ -35,8 +35,8 @@ def _render_dashboard_inner() -> None:
     
     st.markdown(f"## 🏠 {t('dashboard_title')}")
     
-    # Demo Status Section (Sprint 5.4)
-    from services.demo_seed import get_demo_stats
+    # Demo Status Section (Sprint 5.4 & 5.6)
+    from services.demo_seed import get_demo_stats, get_demo_event_summary
     
     st.markdown(f"### 📊 {t('demo_status_title')}")
     
@@ -48,6 +48,42 @@ def _render_dashboard_inner() -> None:
             st.info(t('demo_status_empty'))
         else:
             st.success(f"{t('demo_status_present')} {stats['threads']} threads, {stats['leads']} leads, {stats['tasks']} tasks, {stats['replies']} replies")
+        
+        # Show last action (Sprint 5.6)
+        event_summary = get_demo_event_summary(limit=1)
+        if event_summary['exists'] and event_summary['events']:
+            last_event = event_summary['events'][0]
+            event_type = last_event.get('event_type', '')
+            ts = last_event.get('ts', '')
+            
+            # Format timestamp
+            try:
+                from datetime import datetime
+                dt = datetime.fromisoformat(ts.replace('Z', '+00:00'))
+                time_ago = (datetime.utcnow() - dt.replace(tzinfo=None)).total_seconds()
+                if time_ago < 60:
+                    time_str = "just now"
+                elif time_ago < 3600:
+                    time_str = f"{int(time_ago / 60)}m ago"
+                elif time_ago < 86400:
+                    time_str = f"{int(time_ago / 3600)}h ago"
+                else:
+                    time_str = f"{int(time_ago / 86400)}d ago"
+            except:
+                time_str = ""
+            
+            # Get event type label
+            event_labels = {
+                'seed': t('demo_action_seed'),
+                'clear': t('demo_action_clear'),
+                'regenerate': t('demo_action_regenerate'),
+                'integrity_check': t('demo_action_integrity')
+            }
+            event_label = event_labels.get(event_type, event_type)
+            
+            st.caption(f"{t('demo_last_action')}: {event_label} ({time_str})")
+        else:
+            st.caption(t('demo_last_action_none'))
     
     with col_refresh:
         if st.button(f"🔄 {t('refresh_demo_status')}", use_container_width=True, key="refresh_demo_stats"):

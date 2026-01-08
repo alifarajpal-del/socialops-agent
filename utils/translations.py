@@ -146,6 +146,17 @@ TRANSLATIONS = {
         "ops_sort_oldest": "Oldest",
         "ops_sort_urgent": "Most Urgent",
         
+        # Demo Activity (Sprint 5.6)
+        "demo_activity_title": "Demo Activity",
+        "demo_last_action": "Last Action",
+        "demo_last_action_none": "No demo actions recorded yet",
+        "demo_action_seed": "Seeded",
+        "demo_action_clear": "Cleared",
+        "demo_action_regenerate": "Regenerated",
+        "demo_action_integrity": "Integrity Check",
+        "export_demo_stats": "Export Stats",
+        "export_demo_events": "Export Events",
+        
         "scanned_image": "Scanned Image",
         
         # Auth
@@ -302,6 +313,17 @@ TRANSLATIONS = {
         "ops_sort_oldest": "الأقدم",
         "ops_sort_urgent": "الأكثر إلحاحًا",
         
+        # Demo Activity (Sprint 5.6)
+        "demo_activity_title": "نشاط الديمو",
+        "demo_last_action": "آخر عملية",
+        "demo_last_action_none": "لم يتم تسجيل أي عمليات ديمو بعد",
+        "demo_action_seed": "تحميل",
+        "demo_action_clear": "مسح",
+        "demo_action_regenerate": "إعادة توليد",
+        "demo_action_integrity": "فحص السلامة",
+        "export_demo_stats": "تصدير الإحصائيات",
+        "export_demo_events": "تصدير الأحداث",
+        
         # Auth
         "sign_in": "تسجيل الدخول",
         "sign_in_with_email": "تسجيل الدخول بالبريد الإلكتروني",
@@ -456,6 +478,17 @@ TRANSLATIONS = {
         "ops_sort_newest": "Plus récent",
         "ops_sort_oldest": "Plus ancien",
         "ops_sort_urgent": "Plus urgent",
+        
+        # Demo Activity (Sprint 5.6)
+        "demo_activity_title": "Activité Démo",
+        "demo_last_action": "Dernière Action",
+        "demo_last_action_none": "Aucune action de démo enregistrée",
+        "demo_action_seed": "Chargé",
+        "demo_action_clear": "Effacé",
+        "demo_action_regenerate": "Régénéré",
+        "demo_action_integrity": "Vérification d'intégrité",
+        "export_demo_stats": "Exporter Stats",
+        "export_demo_events": "Exporter Événements",
         
         # Auth
         "sign_in": "Se connecter",

@@ -7,12 +7,122 @@ Seeds 9 threads across 3 sectors: salon, store, clinic.
 
 import sqlite3
 import logging
+import json
+import os
 from datetime import datetime, timedelta
 from typing import Optional
 
 from services.db import get_db_path
 
 logger = logging.getLogger(__name__)
+
+# Demo event log path (Sprint 5.6)
+DEMO_EVENT_LOG_PATH = os.path.join("logs", "demo_events.jsonl")
+
+
+def _log_demo_event(event_type: str, payload: dict) -> None:
+    """
+    Log a demo operation event to JSONL file.
+    
+    Safe logging - never crashes main operation if logging fails.
+    
+    Args:
+        event_type: Type of event ("seed", "clear", "regenerate", "integrity_check")
+        payload: Dict with operation results/counts
+    """
+    try:
+        # Ensure logs directory exists
+        log_dir = os.path.dirname(DEMO_EVENT_LOG_PATH)
+        if log_dir and not os.path.exists(log_dir):
+            os.makedirs(log_dir, exist_ok=True)
+        
+        # Create event record
+        event = {
+            "ts": datetime.utcnow().isoformat() + "Z",
+            "event_type": event_type,
+            "payload": payload
+        }
+        
+        # Append to JSONL file
+        with open(DEMO_EVENT_LOG_PATH, 'a', encoding='utf-8') as f:
+            f.write(json.dumps(event) + '\n')
+        
+    except Exception as e:
+        # Never crash main operation due to logging failure
+        logger.warning(f"Failed to log demo event: {e}")
+
+
+def get_demo_event_summary(limit: int = 20) -> dict:
+    """
+    Get summary of recent demo events from log file.
+    
+    Args:
+        limit: Maximum number of recent events to return (default 20)
+    
+    Returns:
+        Dict with structure: {
+            "exists": bool,
+            "events": [{"ts": str, "event_type": str, "payload": dict}],
+            "totals": {
+                "seed_count": int,
+                "clear_count": int,
+                "regen_count": int,
+                "integrity_count": int
+            }
+        }
+    """
+    result = {
+        'exists': False,
+        'events': [],
+        'totals': {
+            'seed_count': 0,
+            'clear_count': 0,
+            'regen_count': 0,
+            'integrity_count': 0
+        }
+    }
+    
+    try:
+        if not os.path.exists(DEMO_EVENT_LOG_PATH):
+            return result
+        
+        # Read all events (simple approach for reasonable file sizes)
+        events = []
+        with open(DEMO_EVENT_LOG_PATH, 'r', encoding='utf-8') as f:
+            for line in f:
+                line = line.strip()
+                if line:
+                    try:
+                        event = json.loads(line)
+                        events.append(event)
+                    except json.JSONDecodeError:
+                        continue
+        
+        if not events:
+            return result
+        
+        result['exists'] = True
+        
+        # Return newest first, limited to 'limit'
+        result['events'] = list(reversed(events[-limit:]))
+        
+        # Compute totals
+        for event in events:
+            event_type = event.get('event_type', '')
+            if event_type == 'seed':
+                result['totals']['seed_count'] += 1
+            elif event_type == 'clear':
+                result['totals']['clear_count'] += 1
+            elif event_type == 'regenerate':
+                result['totals']['regen_count'] += 1
+            elif event_type == 'integrity_check':
+                result['totals']['integrity_count'] += 1
+        
+        return result
+        
+    except Exception as e:
+        logger.error(f"Error reading demo event log: {e}", exc_info=True)
+        return result
 
 
 def _is_demo_id(value: str) -> bool:
@@ -225,6 +335,10 @@ def seed_demo_all(db_path: Optional[str] = None) -> dict:
         
         counts['created'] = True
         logger.info(f"Demo data seeded: {counts}")
+        
+        # Log event (Sprint 5.6)
+        _log_demo_event('seed', counts)
+        
         return counts
     
     except Exception as e:
@@ -318,6 +432,10 @@ def clear_demo_all(db_path: Optional[str] = None) -> dict:
         
         counts['cleared'] = True
         logger.info(f"Demo data cleared: {counts}")
+        
+        # Log event (Sprint 5.6)
+        _log_demo_event('clear', counts)
+        
         return counts
     
     except Exception as e:
@@ -352,10 +470,15 @@ def seed_demo_regenerate(db_path: Optional[str] = None) -> dict:
     # Then seed
     seed_result = seed_demo_all(db_path)
     
-    return {
+    result = {
         'cleared': clear_result,
         'seeded': seed_result
     }
+    
+    # Log event (Sprint 5.6)
+    _log_demo_event('regenerate', result)
+    
+    return result
 
 
 def demo_integrity_check(db_path: Optional[str] = None) -> dict:
@@ -485,6 +608,10 @@ def demo_integrity_check(db_path: Optional[str] = None) -> dict:
         conn.close()
         
         logger.info(f"Integrity check complete: {result}")
+        
+        # Log event (Sprint 5.6)
+        _log_demo_event('integrity_check', result)
+        
         return result
         
     except Exception as e:
