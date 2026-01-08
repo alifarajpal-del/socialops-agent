@@ -281,19 +281,29 @@ def render_thread_detail(store, thread_id):
         available_replies = replies_store.list_replies(lang=lang)
         
         if available_replies:
-            reply_options = {f"{r['title']} ({r['id']})": r for r in available_replies}
-            selected_key = st.selectbox(
-                "Choose a saved reply:",
-                options=["-- None --"] + list(reply_options.keys()),
-                key=f"saved_reply_{thread_id}"
-            )
+            col1, col2 = st.columns([3, 1])
+            
+            with col1:
+                reply_options = {f"{r['title']} ({r['id']})": r for r in available_replies}
+                selected_key = st.selectbox(
+                    "Choose a saved reply:",
+                    options=["-- None --"] + list(reply_options.keys()),
+                    key=f"saved_reply_{thread_id}"
+                )
+            
+            with col2:
+                insert_mode = st.radio(
+                    "Mode:",
+                    options=["Append", "Replace"],
+                    index=0,
+                    key=f"insert_mode_{thread_id}",
+                    horizontal=True
+                )
             
             if selected_key != "-- None --":
                 selected_reply = reply_options[selected_key]
                 if st.button("➕ Insert Reply", key=f"insert_{thread_id}"):
-                    # Append or replace based on user preference
-                    insert_mode = st.session_state.get('reply_insert_mode', 'replace')
-                    if insert_mode == 'append':
+                    if insert_mode == "Append":
                         suggested_reply = f"{suggested_reply}\n\n{selected_reply['body']}"
                     else:
                         suggested_reply = selected_reply['body']
