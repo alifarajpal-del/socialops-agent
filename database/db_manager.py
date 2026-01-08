@@ -143,6 +143,52 @@ class DBManager:
             )
         """)
         
+        # SocialOps: Conversation Threads
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS threads (
+                id TEXT PRIMARY KEY,
+                channel TEXT NOT NULL,
+                status TEXT DEFAULT 'new',
+                contact_id TEXT NOT NULL,
+                contact_name TEXT,
+                assigned_plugin TEXT,
+                last_message_at TIMESTAMP,
+                metadata TEXT,
+                created_at TIMESTAMP,
+                updated_at TIMESTAMP
+            )
+        """)
+        
+        # SocialOps: Messages
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS messages (
+                id TEXT PRIMARY KEY,
+                thread_id TEXT NOT NULL,
+                channel TEXT NOT NULL,
+                direction TEXT NOT NULL,
+                text TEXT,
+                sender_id TEXT,
+                sender_name TEXT,
+                timestamp TIMESTAMP,
+                metadata TEXT,
+                FOREIGN KEY (thread_id) REFERENCES threads(id)
+            )
+        """)
+        
+        # Index for performance
+        cursor.execute("""
+            CREATE INDEX IF NOT EXISTS idx_messages_thread_id 
+            ON messages(thread_id)
+        """)
+        cursor.execute("""
+            CREATE INDEX IF NOT EXISTS idx_messages_timestamp 
+            ON messages(timestamp DESC)
+        """)
+        cursor.execute("""
+            CREATE INDEX IF NOT EXISTS idx_threads_last_message 
+            ON threads(last_message_at DESC)
+        """)
+        
         conn.commit()
         conn.close()
 

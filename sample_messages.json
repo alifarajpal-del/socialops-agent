@@ -1,0 +1,37 @@
+[
+  {
+    "platform": "instagram",
+    "sender": "Sarah Ahmed",
+    "sender_id": "sarah_ig_123",
+    "text": "مرحبا، أريد حجز موعد لصبغ الشعر يوم الخميس",
+    "timestamp": "2024-01-08T10:30:00"
+  },
+  {
+    "platform": "whatsapp",
+    "sender": "Layla Hassan",
+    "sender_id": "971507654321",
+    "text": "What are your prices for hair treatment?",
+    "timestamp": "2024-01-08T08:15:00"
+  },
+  {
+    "platform": "facebook",
+    "sender": "Nour Khalil",
+    "sender_id": "nour_fb_789",
+    "text": "Do you offer makeup services for events?",
+    "timestamp": "2024-01-08T06:45:00"
+  },
+  {
+    "platform": "instagram",
+    "sender": "Fatima Al-Rashid",
+    "sender_id": "fatima_ig_456",
+    "text": "هل لديكم خدمة العناية بالأظافر؟",
+    "timestamp": "2024-01-08T14:20:00"
+  },
+  {
+    "platform": "whatsapp",
+    "sender": "John Smith",
+    "sender_id": "971501234567",
+    "text": "Hi, are you open on weekends?",
+    "timestamp": "2024-01-08T12:00:00"
+  }
+]

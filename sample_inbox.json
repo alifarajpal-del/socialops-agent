@@ -1,0 +1,20 @@
+[
+  {
+    "platform": "instagram",
+    "sender_name": "Lina",
+    "text": "مرحبا، بدي أحجز ميك أب",
+    "timestamp": "2026-01-08T10:05:00Z"
+  },
+  {
+    "platform": "whatsapp",
+    "sender_name": "Sarah",
+    "text": "What are your prices for hair treatment?",
+    "timestamp": "2026-01-08T09:30:00Z"
+  },
+  {
+    "platform": "facebook",
+    "sender_name": "Nour",
+    "text": "هل لديكم خدمة الأظافر؟",
+    "timestamp": "2026-01-08T08:15:00Z"
+  }
+]

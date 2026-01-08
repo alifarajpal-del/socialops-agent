@@ -4,9 +4,12 @@ Modular UI with bottom navigation, theme wheel, and AR camera.
 """
 
 import os
+import logging
 
 import streamlit as st
 from PIL import Image
+
+logger = logging.getLogger(__name__)
 
 # Configure Streamlit early
 
@@ -53,12 +56,15 @@ except ImportError:
     render_camera_new = None
 
 from ui_components.camera_view import render_camera_view as render_camera_legacy
+from ui_components.inbox_view import inbox_view
+from ui_components.settings_channels_view import settings_channels_view
 
 PAGE_SUBTITLES = {
     "dashboard": "Health Dashboard",
-    "scan": "Smart Camera",
+    "inbox": "Unified Inbox",
     "vault": "Medical Vault",
-    "settings": "Settings & Theme & Sync",
+    "settings": "Settings & Theme",
+    "channels": "Channel Integrations",
 }
 
 
@@ -85,6 +91,25 @@ def init_session_state() -> None:
     ensure_nav_state()
     if "onboarding_done" not in st.session_state:
         st.session_state.onboarding_done = False
+    
+    # Register plugins (Sprint A)
+    if "plugins_registered" not in st.session_state:
+        _register_plugins()
+        st.session_state.plugins_registered = True
+
+
+def _register_plugins() -> None:
+    """Register available plugins with the plugin registry."""
+    try:
+        from services.plugins_registry import register_plugin
+        from plugins.salons.plugin import SalonsPlugin
+        
+        # Register salons plugin
+        salons = SalonsPlugin()
+        register_plugin(salons)
+        logger.info("Plugins registered successfully")
+    except Exception as e:
+        logger.error(f"Failed to register plugins: {e}")
 
 
 # ============== Authentication UI ==============
@@ -166,6 +191,13 @@ def _render_settings_inner() -> None:
 
     st.divider()
     
+    # Link to channel settings
+    st.markdown("### 🔌 Channel Integrations")
+    if st.button("⚙️ Configure Instagram, Facebook, WhatsApp", use_container_width=True):
+        go_to("channels")
+    
+    st.divider()
+    
     st.markdown("### 🩺 Diagnostics")
     with st.expander("System Info", expanded=False):
         st.write({
@@ -215,7 +247,8 @@ def main() -> None:
 
     page = get_active_page()
 
-    if page != "scan":
+    # Don't show header/back button for inbox (has its own header)
+    if page not in ["inbox", "channels"]:
         render_brand_header(subtitle=PAGE_SUBTITLES.get(page, "BioGuard AI"))
         if page != "dashboard" and st.session_state.get("nav_stack"):
             if st.button("⬅️ رجوع", key="back_btn_top"):
@@ -223,16 +256,14 @@ def main() -> None:
 
     if page == "dashboard":
         render_dashboard()
-    elif page == "scan":
-        # Choose camera version based on settings
-        if st.session_state.use_refactored_camera and REFACTORED_CAMERA_AVAILABLE:
-            render_camera_new()
-        else:
-            render_camera_legacy()
+    elif page == "inbox":
+        inbox_view()
     elif page == "vault":
         render_vault()
     elif page == "settings":
         render_settings_page()
+    elif page == "channels":
+        settings_channels_view()
 
     render_bottom_navigation()
 

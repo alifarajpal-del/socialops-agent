@@ -1,0 +1,18 @@
+[
+  {
+    "platform": "instagram",
+    "thread_id": "ig_001",
+    "sender_id": "user_123",
+    "sender_name": "Lina",
+    "text": "مرحبا، بدي أحجز ميك أب",
+    "timestamp": "2026-01-08T10:05:00Z"
+  },
+  {
+    "platform": "instagram",
+    "thread_id": "ig_001",
+    "sender_id": "user_123",
+    "sender_name": "Lina",
+    "text": "كم السعر؟",
+    "timestamp": "2026-01-08T10:06:00Z"
+  }
+]

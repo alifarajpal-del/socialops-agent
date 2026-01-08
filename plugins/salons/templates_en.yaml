@@ -1,0 +1,52 @@
+# Salons Plugin - English Reply Templates
+# 10 high-quality templates for common scenarios
+
+booking:
+  - "Thank you for your interest! I'd be happy to help you book an appointment. Could you please let me know your preferred date and time?"
+  - "Great! We have availability for {service}. When would you like to come in? Please share your preferred date and time."
+  - "Perfect! To book your appointment, I'll need: 1) Service type, 2) Preferred date, 3) Preferred time. What works best for you?"
+
+prices:
+  - "Thank you for asking about our pricing! Our services range from $30 to $150 depending on the treatment. Which specific service are you interested in?"
+  - "We'd be happy to provide pricing details. Our main services: Hair styling ($50-100), Makeup ($80-150), Nails ($30-60). What would you like to know more about?"
+  - "Our prices vary by service. Could you let me know which treatment you're interested in? I'll provide you with specific pricing and available packages."
+
+location:
+  - "We're located at {location}. You can find us easily using Google Maps or Waze. Looking forward to seeing you!"
+  - "Our salon is at {location}. We're conveniently accessible with parking available. Would you like directions?"
+  - "You can find us at {location}. For detailed directions, please call us at {phone} or check the map link in our profile."
+
+hours:
+  - "We're open Sunday to Thursday: 9 AM - 8 PM, Friday: 2 PM - 9 PM, Closed on Saturday. What day works best for you?"
+  - "Our working hours are 9 AM to 8 PM on weekdays, and 2 PM to 9 PM on Fridays. We're closed Saturdays. When would you like to visit?"
+  - "Thank you for asking! We operate: Sun-Thu (9 AM - 8 PM), Fri (2 PM - 9 PM), Closed Sat. Does any particular time work for you?"
+
+services:
+  - "We offer a full range of beauty services including: Hair styling & coloring, Professional makeup, Manicure & pedicure, Bridal packages, and Special occasion styling. What interests you?"
+  - "Our services include: Hair care (cuts, color, treatments), Makeup artistry, Nail services, Bridal & event packages. Which service would you like to learn more about?"
+  - "We specialize in: Hair services, Makeup (everyday & bridal), Nails (manicure/pedicure), and Special packages for events. How can we help you look your best?"
+
+reschedule:
+  - "No problem! I can help you reschedule. Could you provide: 1) Your current appointment date/time, 2) Your new preferred date/time?"
+  - "Of course, we can reschedule your appointment. Please share your booking details and when you'd like to reschedule to."
+  - "I'd be happy to help reschedule. What's your current appointment, and what new date/time would work better for you?"
+
+cancellation:
+  - "We understand plans change. You can cancel up to 24 hours before your appointment for a full refund. For cancellations within 24 hours, a 50% fee applies. Would you like to cancel or reschedule instead?"
+  - "Our cancellation policy: Free cancellation 24+ hours before appointment. Cancellations within 24 hours are subject to a 50% charge. May I help you with rescheduling?"
+  - "Cancellation is possible with: 100% refund if 24+ hours notice, 50% charge if within 24 hours. You can also reschedule at no charge. What would you prefer?"
+
+complaint:
+  - "I sincerely apologize for your experience. This is not the standard of service we aim for. Could you please share more details so I can escalate this to our manager? Your satisfaction is our priority."
+  - "I'm truly sorry you had a negative experience. We take all feedback seriously. I'd like to escalate this immediately to our management team. May I have more details to help resolve this?"
+  - "My sincere apologies for the inconvenience. This doesn't reflect our values. I'm escalating your concern to our manager who will contact you directly at {phone}. Thank you for bringing this to our attention."
+
+confirmation:
+  - "Perfect! Your appointment is confirmed for {date} at {time} for {service}. We'll send you a reminder 24 hours before. Looking forward to seeing you!"
+  - "Great! Booking confirmed: {service} on {date} at {time}. Please arrive 5 minutes early. See you soon!"
+  - "All set! Your {service} appointment is booked for {date} at {time}. You'll receive a confirmation SMS shortly. Can't wait to serve you!"
+
+upsell:
+  - "Would you like to enhance your experience? We're currently offering: Premium hair treatment (+$20), Express makeup touch-up (+$15). Interested?"
+  - "Since you're booking {service}, many clients also add: Deep conditioning treatment, French manicure, or Makeup application. Would you like to add any?"
+  - "Special offer: Add any additional service to your {service} appointment and get 20% off the second service! Popular add-ons: Nails, Makeup, Hair treatment. Interested?"
