@@ -4,7 +4,7 @@ TRANSLATIONS = {
     "en": {
         # Navigation
         "dashboard": "Dashboard",
-        "scan": "Scan",
+        "inbox": "Inbox",
         "vault": "Vault",
         "settings": "Settings",
         
@@ -61,7 +61,7 @@ TRANSLATIONS = {
     "ar": {
         # Navigation
         "dashboard": "الرئيسية",
-        "scan": "المسح",
+        "inbox": "البريد",
         "vault": "المخزن",
         "settings": "الإعدادات",
         

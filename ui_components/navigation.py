@@ -163,7 +163,7 @@ def render_bottom_navigation():
     
     nav_items = [
         ("dashboard", "🏠", get_text("dashboard", lang)),
-        ("inbox", "📬", "Inbox" if lang == "en" else "البريد"),
+        ("inbox", "📬", get_text("inbox", lang)),
         ("vault", "🗄️", get_text("vault", lang)),
         ("settings", "⚙️", get_text("settings", lang)),
     ]
