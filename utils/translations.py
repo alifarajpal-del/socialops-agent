@@ -109,6 +109,12 @@ TRANSLATIONS = {
         "export_threads": "Export Threads",
         "export_all": "Export All (ZIP)",
         
+        # Demo Seed (Sprint 5.1)
+        "load_demo": "Load Demo Inbox",
+        "demo_exists": "Demo data already exists",
+        "demo_loaded": "Demo loaded",
+        "bulk_empty_hint": "No threads yet. Load demo data to get started.",
+        
         "scanned_image": "Scanned Image",
         
         # Auth
@@ -228,6 +234,12 @@ TRANSLATIONS = {
         "export_threads": "تصدير المحادثات",
         "export_all": "تصدير الكل (ZIP)",
         
+        # Demo Seed (Sprint 5.1)
+        "load_demo": "تحميل بيانات تجريبية",
+        "demo_exists": "البيانات التجريبية موجودة بالفعل",
+        "demo_loaded": "تم تحميل البيانات التجريبية",
+        "bulk_empty_hint": "لا توجد محادثات بعد. قم بتحميل بيانات تجريبية للبدء.",
+        
         # Auth
         "sign_in": "تسجيل الدخول",
         "sign_in_with_email": "تسجيل الدخول بالبريد الإلكتروني",
@@ -345,6 +357,12 @@ TRANSLATIONS = {
         "export_tasks": "Exporter les tâches",
         "export_threads": "Exporter les fils",
         "export_all": "Tout exporter (ZIP)",
+        
+        # Demo Seed (Sprint 5.1)
+        "load_demo": "Charger des données de démonstration",
+        "demo_exists": "Les données de démonstration existent déjà",
+        "demo_loaded": "Démonstration chargée",
+        "bulk_empty_hint": "Aucun fil pour l'instant. Chargez des données de démonstration pour commencer.",
         
         # Auth
         "sign_in": "Se connecter",

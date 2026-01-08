@@ -432,7 +432,20 @@ def inbox_view():
             threads = store.list_threads(platform_filter=platform_filter)
             
             if not threads:
-                st.info("No threads available")
+                # Empty DB hint (Sprint 5.1)
+                from utils.translations import get_text
+                from utils.i18n import get_lang
+                lang = get_lang()
+                
+                st.info(f"💡 {get_text('bulk_empty_hint', lang)}")
+                
+                if st.button(f"🧪 {get_text('load_demo', lang)}", key="bulk_load_demo", use_container_width=True):
+                    from services.demo_seed import seed_demo_data
+                    result = seed_demo_data()
+                    
+                    if not result.get('skipped') and 'error' not in result:
+                        st.success(f"✅ Demo data loaded!")
+                        st.rerun()
             else:
                 # Multi-select for threads
                 thread_options = {f"{t['title']} ({t['platform']})": t['id'] for t in threads}
@@ -535,6 +548,11 @@ def inbox_view():
         
         # Get store
         store = get_inbox_store()
+        
+        # Auto-select thread from search (Sprint 5.1)
+        if 'selected_thread_id' in st.session_state and st.session_state.selected_thread_id:
+            # Thread already selected from search, will be displayed in right column
+            pass
         
         # Two-column layout
         col_left, col_right = st.columns([1, 2])
