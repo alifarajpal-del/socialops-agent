@@ -65,6 +65,8 @@ def render_login_register():
                         st.session_state.user_id = result["user_id"]
                         st.session_state.is_admin = result["is_admin"]
                         st.session_state.authenticated = True
+                        st.session_state.user = email  # Store username
+                        st.session_state.role = "admin" if result["is_admin"] else "user"  # Store role
                         st.success(t("login_success") if "login_success" in dir() else "Login successful!")
                         st.rerun()
                     else:
@@ -72,6 +74,8 @@ def render_login_register():
                 else:
                     st.warning("Please enter email and password")
             
+            # DEV ONLY: Show dev shortcut hint
+            st.caption("💡 Dev shortcut: **admin** / **admin**")
             st.caption(t("no_account"))
         
         with tab2:
