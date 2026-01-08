@@ -272,10 +272,40 @@ def render_thread_detail(store, thread_id):
             suggested_reply = "Thank you for your message! How can I assist you?"
             st.caption("No plugin matched (using default reply)")
         
+        # Insert saved reply section
+        st.markdown("**📚 Insert Saved Reply**")
+        from services.replies_store import RepliesStore
+        replies_store = RepliesStore()
+        
+        # Filter replies by current language
+        available_replies = replies_store.list_replies(lang=lang)
+        
+        if available_replies:
+            reply_options = {f"{r['title']} ({r['id']})": r for r in available_replies}
+            selected_key = st.selectbox(
+                "Choose a saved reply:",
+                options=["-- None --"] + list(reply_options.keys()),
+                key=f"saved_reply_{thread_id}"
+            )
+            
+            if selected_key != "-- None --":
+                selected_reply = reply_options[selected_key]
+                if st.button("➕ Insert Reply", key=f"insert_{thread_id}"):
+                    # Append or replace based on user preference
+                    insert_mode = st.session_state.get('reply_insert_mode', 'replace')
+                    if insert_mode == 'append':
+                        suggested_reply = f"{suggested_reply}\n\n{selected_reply['body']}"
+                    else:
+                        suggested_reply = selected_reply['body']
+                    st.session_state[f"reply_text_{thread_id}"] = suggested_reply
+                    st.rerun()
+        else:
+            st.caption("No saved replies available. Create some in Replies Library.")
+        
         # Editable reply
         reply_text = st.text_area(
             "Edit reply before sending:",
-            value=suggested_reply,
+            value=st.session_state.get(f"reply_text_{thread_id}", suggested_reply),
             height=100,
             key="reply_text"
         )

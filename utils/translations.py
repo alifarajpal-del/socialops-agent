@@ -48,6 +48,16 @@ TRANSLATIONS = {
         "nutrition_details": "Nutrition Details",
         "warnings": "Warnings",
         "alternatives": "Healthier Alternatives",
+        
+        # CRM & Leads
+        "crm_leads_title": "CRM & Leads",
+        "crm_leads_button": "Manage Leads Pipeline",
+        "crm_leads_caption": "View and manage leads, tasks, and follow-ups",
+        
+        # Replies Library
+        "replies_title": "Replies Library",
+        "replies_button": "Manage Reply Templates",
+        "replies_caption": "Create and manage saved replies for quick responses",
         "scanned_image": "Scanned Image",
         
         # Auth
@@ -107,6 +117,16 @@ TRANSLATIONS = {
         "alternatives": "بدائل أكثر صحة",
         "scanned_image": "الصورة الممسوحة",
         
+        # CRM & Leads
+        "crm_leads_title": "إدارة العملاء والعملاء المحتملين",
+        "crm_leads_button": "إدارة مسار العملاء",
+        "crm_leads_caption": "عرض وإدارة العملاء والمهام والمتابعات",
+        
+        # Replies Library
+        "replies_title": "مكتبة الردود",
+        "replies_button": "إدارة قوالب الردود",
+        "replies_caption": "إنشاء وإدارة الردود المحفوظة للاستجابات السريعة",
+        
         # Auth
         "sign_in": "تسجيل الدخول",
         "sign_in_with_email": "تسجيل الدخول بالبريد الإلكتروني",
@@ -164,6 +184,16 @@ TRANSLATIONS = {
         "warnings": "Avertissements",
         "alternatives": "Alternatives plus saines",
         "scanned_image": "Image scannée",
+        
+        # CRM & Leads
+        "crm_leads_title": "CRM et Prospects",
+        "crm_leads_button": "Gérer le pipeline de prospects",
+        "crm_leads_caption": "Afficher et gérer les prospects, tâches et suivis",
+        
+        # Replies Library
+        "replies_title": "Bibliothèque de réponses",
+        "replies_button": "Gérer les modèles de réponse",
+        "replies_caption": "Créer et gérer les réponses enregistrées pour des réponses rapides",
         
         # Auth
         "sign_in": "Se connecter",

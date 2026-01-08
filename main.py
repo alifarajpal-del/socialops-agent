@@ -58,6 +58,7 @@ except ImportError:
 from ui_components.camera_view import render_camera_view as render_camera_legacy
 from ui_components.inbox_view import inbox_view
 from ui_components.leads_view import leads_view
+from ui_components.replies_view import replies_view
 from ui_components.settings_channels_view import settings_channels_view
 
 PAGE_SUBTITLES = {
@@ -200,10 +201,18 @@ def _render_settings_inner() -> None:
     st.divider()
     
     # Link to CRM/Leads (Sprint 2)
-    st.markdown("### 📊 CRM & Leads")
-    if st.button("👥 Manage Leads Pipeline", use_container_width=True):
+    st.markdown(f"### 📊 {t('crm_leads_title')}")
+    if st.button(f"👥 {t('crm_leads_button')}", use_container_width=True):
         go_to("leads")
-    st.caption("View and manage leads, tasks, and follow-ups")
+    st.caption(t('crm_leads_caption'))
+    
+    st.divider()
+    
+    # Link to Replies Library (Sprint 3)
+    st.markdown(f"### 💬 {t('replies_title')}")
+    if st.button(f"📝 {t('replies_button')}", use_container_width=True):
+        go_to("replies")
+    st.caption(t('replies_caption'))
     
     st.divider()
     
@@ -257,7 +266,7 @@ def main() -> None:
     page = get_active_page()
 
     # Don't show header/back button for inbox (has its own header)
-    if page not in ["inbox", "channels", "leads"]:
+    if page not in ["inbox", "channels", "leads", "replies"]:
         render_brand_header(subtitle=PAGE_SUBTITLES.get(page, "BioGuard AI"))
         if page != "dashboard" and st.session_state.get("nav_stack"):
             if st.button("⬅️ رجوع", key="back_btn_top"):
@@ -269,6 +278,8 @@ def main() -> None:
         inbox_view()
     elif page == "leads":
         leads_view()
+    elif page == "replies":
+        replies_view()
     elif page == "vault":
         render_vault()
     elif page == "settings":
