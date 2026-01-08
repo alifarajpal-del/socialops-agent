@@ -89,15 +89,16 @@ def _render_kpi_card(icon: str, title: str, value: int, variant: str = "primary"
 
 
 def _inject_modern_dashboard_css() -> None:
-    """Inject modern blue-based theme CSS for dashboard."""
+    """Inject modern SocialOps theme CSS for dashboard."""
     st.markdown("""
     <style>
     .hero-header {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
         padding: 2rem;
-        border-radius: 12px;
+        border-radius: 16px;
         margin-bottom: 2rem;
         color: white;
+        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
         text-align: center;
     }
     

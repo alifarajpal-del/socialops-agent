@@ -17,16 +17,16 @@ tokens = {
     "shadow": {"sm": "0 1px 3px rgba(0,0,0,0.12)", "md": "0 4px 6px rgba(0,0,0,0.16)"}
 }
 
-# Theme Colors
+# Theme Colors - SocialOps Agent Branding
 colors = {
     "light": {
-        "bg": "#ffffff", "card_bg": "#f8f9fa", "text": "#1f2937", "muted": "#6b7280",
-        "border": "#e5e7eb", "primary": "#3b82f6", "success": "#10b981",
+        "bg": "#f8fafc", "card_bg": "#ffffff", "text": "#0f172a", "muted": "#64748b",
+        "border": "#cbd5e1", "primary": "#2563eb", "success": "#10b981",
         "warning": "#f59e0b", "danger": "#ef4444"
     },
     "dark": {
         "bg": "#0f172a", "card_bg": "#1e293b", "text": "#f1f5f9", "muted": "#94a3b8",
-        "border": "#334155", "primary": "#60a5fa", "success": "#34d399",
+        "border": "#334155", "primary": "#3b82f6", "success": "#34d399",
         "warning": "#fbbf24", "danger": "#f87171"
     }
 }
