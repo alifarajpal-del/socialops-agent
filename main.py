@@ -199,6 +199,14 @@ def _render_settings_inner() -> None:
     
     st.divider()
     
+    # Link to CRM/Leads (Sprint 2)
+    st.markdown("### 📊 CRM & Leads")
+    if st.button("👥 Manage Leads Pipeline", use_container_width=True):
+        go_to("leads")
+    st.caption("View and manage leads, tasks, and follow-ups")
+    
+    st.divider()
+    
     st.markdown("### 🩺 Diagnostics")
     with st.expander("System Info", expanded=False):
         st.write({
