@@ -70,13 +70,13 @@ def inject_global_css():
         }}
         
         /* Dark theme adjustments */
-        @media (prefers-color-scheme: dark) {
-            :root {
+        @media (prefers-color-scheme: dark) {{
+            :root {{
                 --surface: #141414;
                 --text-muted: #A1A1A1;
                 --border: #2A2A2A;
-            }
-        }
+            }}
+        }}
         
         /* Body styling - minimal changes */
         body, .stApp {{
