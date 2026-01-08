@@ -40,23 +40,31 @@ st.sidebar.divider()
 from utils.translations import get_text
 from utils.i18n import get_lang
 
-lang = get_lang()
-current_theme = st.session_state.get("theme", "light")
+# Initialize theme in session state if not present
+if "theme" not in st.session_state:
+    st.session_state["theme"] = "light"
 
-theme_choice = st.sidebar.radio(
+lang = get_lang()
+
+def on_theme_change():
+    """Callback to handle theme change"""
+    new_theme = st.session_state.theme_toggle
+    if new_theme != st.session_state["theme"]:
+        st.session_state["theme"] = new_theme
+        # Reset CSS injection flag to reapply styles
+        if "_css_injected" in st.session_state:
+            del st.session_state["_css_injected"]
+        if "_css_theme" in st.session_state:
+            del st.session_state["_css_theme"]
+
+st.sidebar.radio(
     get_text("theme", lang),
     options=["light", "dark"],
-    index=0 if current_theme == "light" else 1,
+    index=0 if st.session_state["theme"] == "light" else 1,
     format_func=lambda x: get_text(f"theme_{x}", lang),
-    key="theme_toggle"
+    key="theme_toggle",
+    on_change=on_theme_change
 )
-
-if theme_choice != current_theme:
-    st.session_state["theme"] = theme_choice
-    # Reset CSS injection to apply new theme
-    if "_css_injected" in st.session_state:
-        del st.session_state["_css_injected"]
-    st.rerun()
 
 # Imports
 from app_config.settings import MOBILE_VIEWPORT
