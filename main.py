@@ -80,6 +80,10 @@ from ui_components.router import ensure_nav_state, go_to, go_back, next_page, pr
 from ui_components.error_ui import safe_render
 from services.auth import create_or_login_user, logout
 from utils.i18n import get_lang, set_lang, t
+from ui_components import micro_ux
+
+# Inject micro-animations once at startup
+micro_ux.inject_micro_ux(theme=st.session_state.get("theme", "dark"))
 
 # Camera view - choose version
 try:

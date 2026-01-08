@@ -28,18 +28,18 @@ def _render_dashboard_inner() -> None:
     theme = st.session_state.get("theme", "light")
     inject_skeleton_css()
     ui_kit.inject_ui_kit_css(theme)
-    _inject_modern_dashboard_css()
     
     log_user_action(logger, 'dashboard_view', {})
+    lang = get_lang()
     
-    # Page header with UI Kit
+    # 1) Hero Header with UI Kit
     ui_kit.ui_page(
         title="SocialOps Agent",
         subtitle="Social Media Operations Platform - Manage conversations, leads & tasks",
         icon="💬"
     )
     
-    # KPI Dashboard with UI Kit
+    # 2) KPI Row
     col_k1, col_k2, col_k3 = st.columns(3)
     
     try:
@@ -66,6 +66,106 @@ def _render_dashboard_inner() -> None:
         conn.close()
     except Exception as e:
         logger.error(f"Failed to fetch KPI metrics: {e}")
+    
+    st.divider()
+    
+    # 3) Primary Action Row (Demo Management)
+    with ui_kit.ui_card(title="Demo Data Management", icon="🧪"):
+        demo_col1, demo_col2, demo_col3 = st.columns(3)
+        
+        if 'demo_busy' not in st.session_state:
+            st.session_state['demo_busy'] = False
+        
+        is_busy = st.session_state.get('demo_busy', False)
+        
+        with demo_col1:
+            if st.button("🧪 Load Demo Data", use_container_width=True, disabled=is_busy, type="primary"):
+                st.session_state['demo_busy'] = True
+                try:
+                    from services.demo_seed import seed_demo_all
+                    seed_demo_all()
+                    st.success("✅ Demo data loaded!")
+                except Exception as e:
+                    st.error(f"❌ Error: {e}")
+                finally:
+                    st.session_state['demo_busy'] = False
+                    st.rerun()
+        
+        with demo_col2:
+            if st.button("🔄 Regenerate", use_container_width=True, disabled=is_busy):
+                st.session_state['demo_busy'] = True
+                try:
+                    from services.demo_seed import seed_demo_regenerate
+                    seed_demo_regenerate()
+                    st.success("✅ Regenerated!")
+                except Exception as e:
+                    st.error(f"❌ Error: {e}")
+                finally:
+                    st.session_state['demo_busy'] = False
+                    st.rerun()
+        
+        with demo_col3:
+            if st.button("🗑️ Clear Demo", use_container_width=True, disabled=is_busy):
+                st.session_state['demo_busy'] = True
+                try:
+                    from services.demo_seed import clear_demo_all
+                    clear_demo_all()
+                    st.success("✅ Cleared!")
+                except Exception as e:
+                    st.error(f"❌ Error: {e}")
+                finally:
+                    st.session_state['demo_busy'] = False
+                    st.rerun()
+    
+    st.divider()
+    
+    # 4) Status Area
+    with ui_kit.ui_card(title="Demo Status", icon="📊"):
+        from services.demo_seed import get_demo_stats
+        
+        col_status, col_refresh = st.columns([4, 1])
+        
+        with col_status:
+            stats = get_demo_stats()
+            if not stats['exists']:
+                st.info("📭 No demo data loaded")
+            else:
+                st.success(f"✅ Demo active: {stats['threads']} threads, {stats['leads']} leads, {stats['tasks']} tasks")
+        
+        with col_refresh:
+            if st.button("🔄", use_container_width=True, key="refresh_demo_status"):
+                st.rerun()
+    
+    st.divider()
+    
+    # 5) Quick Navigation Cards
+    st.markdown("### Quick Actions")
+    
+    col1, col2, col3 = st.columns(3)
+    
+    with col1:
+        with ui_kit.ui_card(title="Inbox", icon="📬"):
+            st.markdown("Manage conversations from all platforms")
+            if st.button("Open Inbox →", use_container_width=True, key="nav_inbox"):
+                from ui_components.router import go_to
+                go_to('inbox')
+                st.rerun()
+    
+    with col2:
+        with ui_kit.ui_card(title="Daily Operations", icon="🛠️"):
+            st.markdown("SLA monitoring, tasks & lead pipeline")
+            if st.button("Open Ops →", use_container_width=True, key="nav_ops"):
+                from ui_components.router import go_to
+                go_to('ops')
+                st.rerun()
+    
+    with col3:
+        with ui_kit.ui_card(title="Leads", icon="👥"):
+            st.markdown("CRM pipeline & customer management")
+            if st.button("Open Leads →", use_container_width=True, key="nav_leads"):
+                from ui_components.router import go_to
+                go_to('leads')
+                st.rerun()
     
 def _render_kpi_card(icon: str, title: str, value: int, variant: str = "primary") -> None:
     """Render modern KPI card with icon and styling."""

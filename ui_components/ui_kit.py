@@ -17,17 +17,17 @@ tokens = {
     "shadow": {"sm": "0 1px 3px rgba(0,0,0,0.12)", "md": "0 4px 6px rgba(0,0,0,0.16)"}
 }
 
-# Theme Colors - SocialOps Agent Branding
+# Theme Colors - Black & Gold palette
 colors = {
     "light": {
-        "bg": "#f8fafc", "card_bg": "#ffffff", "text": "#0f172a", "muted": "#64748b",
-        "border": "#cbd5e1", "primary": "#2563eb", "success": "#10b981",
+        "bg": "#0B0B0B", "card_bg": "#141414", "text": "#F5F5F5", "muted": "#A1A1A1",
+        "border": "#2A2A2A", "primary": "#C9A24D", "success": "#10b981",
         "warning": "#f59e0b", "danger": "#ef4444"
     },
     "dark": {
-        "bg": "#0a0f1e", "card_bg": "#1a1f2e", "text": "#f1f5f9", "muted": "#94a3b8",
-        "border": "#2a2f3e", "primary": "#3b82f6", "success": "#34d399",
-        "warning": "#fbbf24", "danger": "#f87171"
+        "bg": "#0B0B0B", "card_bg": "#141414", "text": "#F5F5F5", "muted": "#A1A1A1",
+        "border": "#2A2A2A", "primary": "#C9A24D", "success": "#10b981",
+        "warning": "#f59e0b", "danger": "#ef4444"
     }
 }
 
@@ -285,24 +285,75 @@ def inject_ui_kit_css(theme: str = "light") -> None:
             line-height: 1.6;
         }}
         
-        /* Responsive */
+        /* Responsive - Mobile Full Support */
         @media only screen and (max-width: 768px) {{
+            /* Force container padding smaller */
+            .block-container {{
+                padding: 1rem 0.5rem !important;
+            }}
+            
+            /* Cards full width, reduced padding */
             .ui-card {{
                 padding: {t['spacing']['sm']};
                 margin-bottom: {t['spacing']['sm']};
+                width: 100% !important;
             }}
             
+            /* KPI stacked */
             .ui-kpi {{
                 padding: {t['spacing']['sm']};
                 margin-bottom: {t['spacing']['sm']};
+                width: 100% !important;
             }}
             
             .ui-kpi-value {{
                 font-size: 1.4rem;
             }}
             
+            /* Buttons full width */
             .stButton button {{
                 width: 100% !important;
+            }}
+            
+            /* Inputs full width */
+            input, textarea, select {{
+                width: 100% !important;
+            }}
+            
+            /* Tables scrollable */
+            table {{
+                display: block;
+                overflow-x: auto;
+                white-space: nowrap;
+            }}
+            
+            /* Reduce font sizes slightly */
+            .ui-kpi-label, .metric-label {{
+                font-size: 0.75rem;
+            }}
+            
+            .section-title {{
+                font-size: 16px;
+            }}
+        }}
+        
+        @media only screen and (max-width: 480px) {{
+            /* Extra small screens */
+            .block-container {{
+                padding: 0.5rem 0.25rem !important;
+            }}
+            
+            .ui-card, .ui-kpi {{
+                padding: 0.5rem;
+                margin-bottom: 0.5rem;
+            }}
+            
+            .ui-kpi-value {{
+                font-size: 1.2rem;
+            }}
+            
+            .section-title {{
+                font-size: 14px;
             }}
         }}
     </style>

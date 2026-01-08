@@ -55,6 +55,19 @@ def render_camera_view() -> None:
     # Inject minimal CSS
     _inject_minimal_css()
 
+    # Privacy notice
+    st.markdown(
+        """
+        ### Privacy & Data Control
+        SocialOps Agent uses AI to help you manage conversations, leads, and operations across social platforms.
+
+        • We only process data you explicitly connect
+        • Messages are used to generate replies and insights
+        • No data is shared with third parties
+        • You remain in full control at all times
+        """
+    )
+
     # Main layout
     st.title(messages["title"])
 
@@ -559,7 +572,7 @@ def _get_messages(language: str = "en") -> Dict[str, str]:
     """Get UI messages in specified language."""
 
     messages_en = {
-        "title": "📸 Smart Camera",
+        "title": "🔐 Privacy & Data Control",
         "webrtc_unavailable": "Camera module not available. Please use upload option below.",
         "enable_scanning": "Enable Auto-Scan",
         "capture": "📸 Capture & Analyze",
@@ -595,7 +608,7 @@ def _get_messages(language: str = "en") -> Dict[str, str]:
     }
 
     messages_ar = {
-        "title": "📸 كاميرا ذكية",
+        "title": "🔐 الخصوصية والتحكم بالبيانات",
         "webrtc_unavailable": "وحدة الكاميرا غير متوفرة. يرجى استخدام خيار الرفع أدناه.",
         "enable_scanning": "تفعيل المسح التلقائي",
         "capture": "📸 التقاط وتحليل",

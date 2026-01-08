@@ -7,32 +7,25 @@ from ui_components.ui_kit import inject_ui_kit_css
 
 def get_screens(lang: str) -> list:
     """Get onboarding screens in the specified language (2 screens only)."""
+    privacy_title = "Privacy & Data Control"
+    privacy_body = """
+            SocialOps Agent uses AI to help you manage conversations, leads, and operations across social platforms.
+
+            • We only process data you explicitly connect
+            • Messages are used to generate replies and insights
+            • No data is shared with third parties
+            • You remain in full control at all times
+            """
     return [
         {
-            "title": "حماية صحتك تبدأ من هنا",
-            "body": """
-            **SocialOps Agent** يساعدك على:
-            - 📊 تحليل المنتجات الغذائية فوراً
-            - ⚠️ اكتشاف المخاطر الصحية والحساسية
-            - 🎯 الحصول على توصيات مخصصة
-            - 📱 مسح الباركود أو التقاط الصور
-            """,
-            "icon": "🛡️",
+            "title": privacy_title,
+            "body": privacy_body,
+            "icon": "🔐",
         },
         {
-            "title": "خصوصيتك أولويتنا",
-            "body": """
-            **نحن نلتزم بـ:**
-            - 🔒 بياناتك محمية ومشفرة بالكامل
-            - 🚫 لا نبيع معلوماتك الشخصية أبداً
-            - ⚡ تحليل سريع وفوري بدون انتظار
-            
-            **كيف تبدأ:**
-            1️⃣ وجّه الكاميرا نحو الباركود أو المنتج
-            2️⃣ انتظر التحليل التلقائي
-            3️⃣ راجع النتائج والتوصيات
-            """,
-            "icon": "🔐",
+            "title": privacy_title,
+            "body": privacy_body,
+            "icon": "🛡️",
         },
     ]
 
@@ -57,12 +50,13 @@ def render_onboarding() -> None:
             padding: 20px;
         }
         .onboarding-screen {
-            background: linear-gradient(135deg, rgba(99, 102, 241, 0.05) 0%, rgba(16, 185, 129, 0.05) 100%);
-            border: 2px solid rgba(99, 102, 241, 0.2);
+            background: #141414;
+            border: 1px solid #2A2A2A;
             border-radius: 16px;
             padding: 32px 24px;
             margin: 16px 0;
             text-align: center;
+            color: #F5F5F5;
         }
         .onboarding-icon {
             font-size: 64px;
@@ -71,27 +65,25 @@ def render_onboarding() -> None:
         .onboarding-title {
             font-size: 24px;
             font-weight: 700;
-            color: #1f2937;
+            color: #F5F5F5;
             margin-bottom: 16px;
         }
         .onboarding-body {
             font-size: 15px;
             line-height: 1.8;
-            color: #4b5563;
-            text-align: right;
-            direction: rtl;
+            color: #A1A1A1;
+            text-align: left;
+            direction: ltr;
         }
         .onboarding-body strong {
-            color: #1f2937;
+            color: #F5F5F5;
             font-weight: 600;
         }
         .welcome-title {
             text-align: center;
             font-size: 32px;
             font-weight: 800;
-            background: linear-gradient(135deg, #6366f1 0%, #10b981 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            color: #C9A24D;
             margin-bottom: 32px;
         }
     </style>

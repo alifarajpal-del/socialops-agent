@@ -696,6 +696,18 @@ def _render_camera_inner() -> None:
 
         render_brand_watermark("SocialOps Agent")
 
+        st.markdown(
+            """
+            ### Privacy & Data Control
+            SocialOps Agent uses AI to help you manage conversations, leads, and operations across social platforms.
+
+            • We only process data you explicitly connect
+            • Messages are used to generate replies and insights
+            • No data is shared with third parties
+            • You remain in full control at all times
+            """
+        )
+
         _inject_camera_css()
 
         # Initialize session state

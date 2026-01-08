@@ -150,12 +150,13 @@ def render_bottom_navigation():
     nav_items = [
         ("dashboard", "🏠", get_text("dashboard", lang)),
         ("inbox", "📬", get_text("inbox", lang)),
-        ("vault", "🗄️", get_text("vault", lang)),
+        ("leads", "👥", get_text("leads", lang)),
+        ("ops", "🛠️", get_text("ops", lang)),
         ("settings", "⚙️", get_text("settings", lang)),
     ]
     
     # Create navigation buttons with Streamlit native components
-    cols = st.columns(4)
+    cols = st.columns(len(nav_items))
     for col, (page, icon, label) in zip(cols, nav_items):
         with col:
             # Wrap in div with active class if this is the active page

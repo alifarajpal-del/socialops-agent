@@ -1,10 +1,72 @@
-"""Micro-UX components: skeletons, progress indicators, loading states.
+"""Micro-UX components: skeletons, progress indicators, loading states, micro-animations.
 Focused on immediate user feedback and perceived performance.
 """
 
 import streamlit as st
 from typing import List, Optional
 from contextlib import contextmanager
+
+
+def inject_micro_ux(theme: str = "dark") -> None:
+    """Inject tasteful micro-animations compatible with Black & Gold theme.
+    
+    Args:
+        theme: Theme name (currently using unified Black & Gold)
+    """
+    css = """
+    <style>
+        /* Micro-animations: Buttons */
+        .stButton > button {
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        }
+        
+        .stButton > button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(201, 162, 77, 0.3) !important;
+        }
+        
+        .stButton > button:active {
+            transform: translateY(0px);
+            box-shadow: 0 2px 6px rgba(201, 162, 77, 0.2) !important;
+        }
+        
+        /* Card hover lift */
+        .ui-card, .ui-kpi, .metric-card {
+            transition: transform 0.2s ease, box-shadow 0.2s ease !important;
+        }
+        
+        .ui-card:hover, .ui-kpi:hover, .metric-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2) !important;
+        }
+        
+        /* Fade-in animation on section load */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.4s ease-out;
+        }
+        
+        /* KPI count-up effect (CSS only, uses transition) */
+        .ui-kpi-value, .metric-value {
+            transition: all 0.3s ease !important;
+        }
+        
+        /* Input focus animation */
+        input:focus, textarea:focus, select:focus {
+            transition: all 0.2s ease !important;
+        }
+        
+        /* Link hover */
+        a {
+            transition: color 0.2s ease !important;
+        }
+    </style>
+    """
+    st.markdown(css, unsafe_allow_html=True)
 
 
 def inject_skeleton_css() -> None:

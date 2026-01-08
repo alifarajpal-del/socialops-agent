@@ -9,6 +9,17 @@ from ui_components.theme_wheel import get_current_theme
 def inject_global_css():
     """Inject global CSS with theme support and utility classes."""
     theme = get_current_theme()
+    # Override to Black & Gold palette regardless of active theme
+    palette = {
+        "background": "#0B0B0B",
+        "card_bg": "#141414",
+        "primary": "#C9A24D",
+        "secondary": "#2A2A2A",
+        "accent": "#E6C87A",
+        "text": "#F5F5F5",
+        "text_secondary": "#A1A1A1",
+    }
+    theme = {**theme, **palette}
     st.markdown(f"""
     <style>
         /* ============== CSS Tokens (Variables) ============== */
@@ -22,14 +33,14 @@ def inject_global_css():
             --text: {theme['text']};
             
             /* Extended palette - WCAG 2.2 AA compliant */
-            --surface: #f9fafb;
-            --text-muted: #6b7280;
-            --border: #e5e7eb;
-            --primary-hover: #2563eb;
+            --surface: #141414;
+            --text-muted: #A1A1A1;
+            --border: #2A2A2A;
+            --primary-hover: #E6C87A;
             --success: #10b981;
             --warning: #f59e0b;
             --danger: #ef4444;
-            --info: #3b82f6;
+            --info: #C9A24D;
             
             /* Spacing */
             --spacing-xs: 4px;
@@ -59,13 +70,13 @@ def inject_global_css():
         }}
         
         /* Dark theme adjustments */
-        @media (prefers-color-scheme: dark) {{
-            :root {{
-                --surface: #1f2937;
-                --text-muted: #9ca3af;
-                --border: #374151;
-            }}
-        }}
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --surface: #141414;
+                --text-muted: #A1A1A1;
+                --border: #2A2A2A;
+            }
+        }
         
         /* Body styling - minimal changes */
         body, .stApp {{

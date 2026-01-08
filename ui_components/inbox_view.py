@@ -56,6 +56,55 @@ def _format_timestamp(timestamp_str: str) -> str:
         return timestamp_str
 
 
+def inbox_view():
+    """Main inbox view entry point."""
+    try:
+        # Inject UI Kit CSS with theme
+        theme = st.session_state.get("theme", "light")
+        ui_kit.inject_ui_kit_css(theme)
+        
+        # Page header
+        ui_kit.ui_page(
+            title="Inbox",
+            subtitle="Manage conversations from all platforms",
+            icon="📬"
+        )
+        
+        # JSON import section in card
+        with ui_kit.ui_card(title="Manual Import (Testing)", icon="📥"):
+            render_json_import()
+        
+        st.divider()
+        
+        # Layout: filters + thread list + detail
+        with ui_kit.ui_card(title="Filters", icon="🔍"):
+            platform_filter = st.selectbox(
+                "Platform",
+                options=['all', 'instagram', 'facebook', 'whatsapp'],
+                index=0,
+                format_func=lambda x: x.capitalize()
+            )
+        
+        col_list, col_detail = st.columns([1, 2])
+        
+        with col_list:
+            with ui_kit.ui_card(title="Threads", icon="💬"):
+                store = get_inbox_store()
+                render_thread_list(store, platform_filter)
+        
+        with col_detail:
+            selected_thread_id = st.session_state.get('selected_thread_id')
+            
+            if selected_thread_id:
+                render_thread_detail(store, selected_thread_id)
+            else:
+                st.info("Select a thread to view messages")
+    
+    except Exception as e:
+        logger.error(f"Inbox view error: {e}", exc_info=True)
+        st.error(f"Error loading inbox: {str(e)}")
+
+
 def render_json_import():
     """Render manual JSON import section."""
     with st.expander("📥 Manual Import (Testing)", expanded=False):
@@ -394,8 +443,8 @@ def render_thread_detail(store, thread_id):
             st.caption("⚠️ Sending disabled by default (ENABLE_SEND=false). Human-in-the-loop only.")
 
 
-def inbox_view():
-    """Main inbox view entry point."""
+def _old_inbox_view():
+    """Old inbox view - kept for reference."""
     try:
         ui_kit.inject_ui_kit_css()
         

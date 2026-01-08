@@ -125,21 +125,33 @@ def render_tasks_section(crm: CRMStore):
 def leads_view():
     """Main leads view entry point."""
     try:
-        ui_kit.inject_ui_kit_css()
+        # Inject UI Kit CSS with theme
+        theme = st.session_state.get("theme", "light")
+        ui_kit.inject_ui_kit_css(theme)
         
-        # Header
-        st.title("📊 Leads Pipeline")
-        st.caption("Manage your leads through the sales pipeline")
-        
-        st.divider()
+        # Page header with UI Kit
+        ui_kit.ui_page(
+            title="Leads Pipeline",
+            subtitle="Manage your leads through the sales pipeline",
+            icon="📊"
+        )
         
         # Initialize CRM
         crm = CRMStore()
         
-        # Tasks section at top
-        render_tasks_section(crm)
+        # Tasks section at top in card
+        with ui_kit.ui_card(title="Upcoming Tasks", icon="✅"):
+            render_tasks_section(crm)
         
         st.divider()
+        
+        # Filters in card
+        with ui_kit.ui_card(title="Filters", icon="🔍"):
+            status_filter = st.selectbox(
+                "Status",
+                options=['all', 'new', 'qualified', 'followup', 'won', 'lost'],
+                format_func=lambda x: x.capitalize()
+            )
         
         # Pipeline tabs
         tab_new, tab_qual, tab_follow, tab_won, tab_lost = st.tabs([

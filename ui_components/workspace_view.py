@@ -18,25 +18,29 @@ logger = logging.getLogger(__name__)
 def workspace_view():
     """Main workspace profile view."""
     try:
-        ui_kit.inject_ui_kit_css()
+        # Inject UI Kit CSS with theme
+        theme = st.session_state.get("theme", "light")
+        ui_kit.inject_ui_kit_css(theme)
         
         lang = get_lang()
         
-        # Header
-        st.title(f"🏢 {get_text('workspace_title', lang)}")
-        st.caption(get_text('workspace_caption', lang))
-        
-        st.divider()
+        # Page header with UI Kit
+        ui_kit.ui_page(
+            title=get_text('workspace_title', lang),
+            subtitle=get_text('workspace_caption', lang),
+            icon="🏢"
+        )
         
         # Get workspace store
         workspace_store = WorkspaceStore()
         profile = workspace_store.get_profile() or {}
         
-        # Edit form
-        with st.form(key="workspace_profile_form"):
-            st.markdown(f"### {get_text('workspace_title', lang)}")
-            
-            col1, col2 = st.columns(2)
+        # Edit form in card
+        with ui_kit.ui_card(title=get_text('workspace_title', lang), icon="✏️"):
+            with st.form(key="workspace_profile_form"):
+                st.markdown(f"### {get_text('workspace_title', lang)}")
+                
+                col1, col2 = st.columns(2)
             
             with col1:
                 business_name = st.text_input(
@@ -93,31 +97,31 @@ def workspace_view():
                     ),
                     format_func=lambda x: x.capitalize()
                 )
-            
-            lang_default = st.selectbox(
-                get_text('lang_default', lang),
-                options=["en", "ar", "fr"],
-                index=["en", "ar", "fr"].index(profile.get('lang_default', 'en')),
-                format_func=lambda x: {"en": "English", "ar": "العربية", "fr": "Français"}[x]
-            )
-            
-            submitted = st.form_submit_button("💾 Save Profile", use_container_width=True, type="primary")
-            
-            if submitted:
-                # Save profile
-                workspace_store.save_profile({
-                    'business_name': business_name,
-                    'business_type': business_type,
-                    'city': city,
-                    'phone': phone,
-                    'hours': hours,
-                    'booking_link': booking_link,
-                    'location_link': location_link,
-                    'brand_tone': brand_tone,
-                    'lang_default': lang_default
-                })
-                st.success("✅ Profile saved!")
-                st.rerun()
+                
+                lang_default = st.selectbox(
+                    get_text('lang_default', lang),
+                    options=["en", "ar", "fr"],
+                    index=["en", "ar", "fr"].index(profile.get('lang_default', 'en')),
+                    format_func=lambda x: {"en": "English", "ar": "العربية", "fr": "Français"}[x]
+                )
+                
+                submitted = st.form_submit_button("💾 Save Profile", use_container_width=True, type="primary")
+                
+                if submitted:
+                    # Save profile
+                    workspace_store.save_profile({
+                        'business_name': business_name,
+                        'business_type': business_type,
+                        'city': city,
+                        'phone': phone,
+                        'hours': hours,
+                        'booking_link': booking_link,
+                        'location_link': location_link,
+                        'brand_tone': brand_tone,
+                        'lang_default': lang_default
+                    })
+                    st.success("✅ Profile saved!")
+                    st.rerun()
         
         # Show preview
         if profile:
