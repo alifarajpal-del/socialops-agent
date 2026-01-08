@@ -130,6 +130,22 @@ TRANSLATIONS = {
         "confirm": "Confirm",
         "cancel": "Cancel",
         
+        # Ops Filters (Sprint 5.5)
+        "ops_search": "Search",
+        "ops_filter_sector": "Sector",
+        "ops_filter_status": "Status",
+        "ops_sort": "Sort",
+        "ops_all": "All",
+        "ops_salon": "Salon",
+        "ops_store": "Store",
+        "ops_clinic": "Clinic",
+        "ops_status_overdue": "Overdue",
+        "ops_status_today": "Today",
+        "ops_status_tomorrow": "Tomorrow",
+        "ops_sort_newest": "Newest",
+        "ops_sort_oldest": "Oldest",
+        "ops_sort_urgent": "Most Urgent",
+        
         "scanned_image": "Scanned Image",
         
         # Auth
@@ -270,6 +286,22 @@ TRANSLATIONS = {
         "confirm": "تأكيد",
         "cancel": "إلغاء",
         
+        # Ops Filters (Sprint 5.5)
+        "ops_search": "بحث",
+        "ops_filter_sector": "القطاع",
+        "ops_filter_status": "الحالة",
+        "ops_sort": "ترتيب",
+        "ops_all": "الكل",
+        "ops_salon": "صالون",
+        "ops_store": "متجر",
+        "ops_clinic": "عيادة",
+        "ops_status_overdue": "متأخر",
+        "ops_status_today": "اليوم",
+        "ops_status_tomorrow": "غدًا",
+        "ops_sort_newest": "الأحدث",
+        "ops_sort_oldest": "الأقدم",
+        "ops_sort_urgent": "الأكثر إلحاحًا",
+        
         # Auth
         "sign_in": "تسجيل الدخول",
         "sign_in_with_email": "تسجيل الدخول بالبريد الإلكتروني",
@@ -408,6 +440,22 @@ TRANSLATIONS = {
         "confirm_regenerate_demo": "Cela effacera et régénérera la démo. Continuer ?",
         "confirm": "Confirmer",
         "cancel": "Annuler",
+        
+        # Ops Filters (Sprint 5.5)
+        "ops_search": "Recherche",
+        "ops_filter_sector": "Secteur",
+        "ops_filter_status": "Statut",
+        "ops_sort": "Tri",
+        "ops_all": "Tous",
+        "ops_salon": "Salon",
+        "ops_store": "Magasin",
+        "ops_clinic": "Clinique",
+        "ops_status_overdue": "En retard",
+        "ops_status_today": "Aujourd'hui",
+        "ops_status_tomorrow": "Demain",
+        "ops_sort_newest": "Plus récent",
+        "ops_sort_oldest": "Plus ancien",
+        "ops_sort_urgent": "Plus urgent",
         
         # Auth
         "sign_in": "Se connecter",

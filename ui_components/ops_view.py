@@ -48,32 +48,95 @@ def ops_view():
         
         st.divider()
         
+        # Search & Filter Controls (Sprint 5.5)
+        st.markdown(f"### 🔍 {get_text('ops_search', lang)}")
+        
+        col_search, col_sector, col_status, col_sort = st.columns([3, 2, 2, 2])
+        
+        with col_search:
+            search_query = st.text_input(
+                get_text('ops_search', lang),
+                placeholder="Search threads/leads/messages",
+                key="ops_search_input",
+                label_visibility="collapsed"
+            )
+        
+        with col_sector:
+            sector_filter = st.selectbox(
+                get_text('ops_filter_sector', lang),
+                options=['all', 'salon', 'store', 'clinic'],
+                format_func=lambda x: get_text(f'ops_{x}', lang),
+                key="ops_sector_filter"
+            )
+        
+        with col_status:
+            status_filter = st.selectbox(
+                get_text('ops_filter_status', lang),
+                options=['all', 'overdue', 'today', 'tomorrow'],
+                format_func=lambda x: get_text(f'ops_status_{x}' if x != 'all' else 'ops_all', lang),
+                key="ops_status_filter"
+            )
+        
+        with col_sort:
+            sort_option = st.selectbox(
+                get_text('ops_sort', lang),
+                options=['newest', 'oldest', 'urgent'],
+                format_func=lambda x: get_text(f'ops_sort_{x}', lang),
+                key="ops_sort_option"
+            )
+        
+        st.divider()
+        
         # SLA Status Section
         st.markdown(f"### ⏱️ {get_text('ops_sla_title', lang)}")
-        _render_sla_metrics()
+        _render_sla_metrics(search_query, sector_filter, status_filter, sort_option)
         
         st.divider()
         
         # Tasks Section
         st.markdown(f"### ✅ {get_text('ops_tasks_title', lang)}")
-        _render_tasks_metrics()
+        _render_tasks_metrics(search_query, sector_filter, status_filter, sort_option)
         
         st.divider()
         
         # Leads Section
         st.markdown(f"### 👥 {get_text('ops_leads_title', lang)}")
-        _render_leads_metrics()
+        _render_leads_metrics(search_query, sector_filter, status_filter, sort_option)
     
     except Exception as e:
         logger.error(f"Ops view error: {e}", exc_info=True)
         st.error(f"Error: {str(e)}")
 
 
-def _render_sla_metrics():
-    """Render SLA status metrics."""
+def _render_sla_metrics(search_query="", sector_filter="all", status_filter="all", sort_option="newest"):
+    """Render SLA status metrics with optional filtering."""
     try:
+        from services.demo_seed import infer_sector_from_thread_id
+        
         store = get_inbox_store()
         threads = store.list_threads()
+        
+        # Apply filters
+        filtered_threads = []
+        for thread in threads:
+            # Sector filter
+            if sector_filter != 'all':
+                thread_sector = infer_sector_from_thread_id(thread.get('id', ''))
+                if thread_sector != sector_filter:
+                    continue
+            
+            # Search filter
+            if search_query:
+                search_lower = search_query.lower()
+                thread_subject = thread.get('subject', '').lower()
+                if search_lower not in thread_subject:
+                    # Also check messages
+                    messages = store.list_messages(thread['id'])
+                    message_match = any(search_lower in msg.get('text', '').lower() for msg in messages)
+                    if not message_match:
+                        continue
+            
+            filtered_threads.append(thread)
         
         sla_counts = {
             'urgent': 0,
@@ -81,7 +144,7 @@ def _render_sla_metrics():
             'ok': 0
         }
         
-        for thread in threads:
+        for thread in filtered_threads:
             messages = store.list_messages(thread['id'])
             if messages:
                 last_msg = messages[-1]
@@ -122,23 +185,55 @@ def _render_sla_metrics():
         st.error("Error loading SLA metrics")
 
 
-def _render_tasks_metrics():
-    """Render tasks due today and overdue."""
+def _render_tasks_metrics(search_query="", sector_filter="all", status_filter="all", sort_option="newest"):
+    """Render tasks due today and overdue with optional filtering."""
     try:
+        from services.demo_seed import infer_sector_from_thread_id
+        
         crm = CRMStore()
         tasks = crm.list_tasks()
         
         now = datetime.utcnow()
         today_end = (now + timedelta(days=1)).replace(hour=0, minute=0, second=0, microsecond=0)
+        tomorrow_end = (now + timedelta(days=2)).replace(hour=0, minute=0, second=0, microsecond=0)
+        
+        # Apply filters
+        filtered_tasks = []
+        for task in tasks:
+            if task['completed']:
+                continue
+            
+            # Sector filter
+            if sector_filter != 'all':
+                thread_id = task.get('related_thread_id', '')
+                task_sector = infer_sector_from_thread_id(thread_id)
+                if task_sector != sector_filter:
+                    continue
+            
+            # Search filter
+            if search_query:
+                search_lower = search_query.lower()
+                task_title = task.get('title', '').lower()
+                task_desc = task.get('description', '').lower()
+                if search_lower not in task_title and search_lower not in task_desc:
+                    continue
+            
+            # Status filter
+            due_at = datetime.fromisoformat(task['due_at'].replace('Z', '+00:00'))
+            if status_filter == 'overdue' and due_at >= now:
+                continue
+            elif status_filter == 'today' and (due_at < now or due_at >= today_end):
+                continue
+            elif status_filter == 'tomorrow' and (due_at < today_end or due_at >= tomorrow_end):
+                continue
+            
+            filtered_tasks.append(task)
         
         overdue_count = 0
         today_count = 0
         upcoming_count = 0
         
-        for task in tasks:
-            if task['completed']:
-                continue
-            
+        for task in filtered_tasks:
             due_at = datetime.fromisoformat(task['due_at'].replace('Z', '+00:00'))
             
             if due_at < now:
@@ -189,11 +284,33 @@ def _render_tasks_metrics():
         st.error("Error loading tasks metrics")
 
 
-def _render_leads_metrics():
-    """Render leads by status."""
+def _render_leads_metrics(search_query="", sector_filter="all", status_filter="all", sort_option="newest"):
+    """Render leads by status with optional filtering."""
     try:
+        from services.demo_seed import infer_sector_from_thread_id
+        
         crm = CRMStore()
         leads = crm.list_leads()
+        
+        # Apply filters
+        filtered_leads = []
+        for lead in leads:
+            # Sector filter
+            if sector_filter != 'all':
+                thread_id = lead.get('thread_id', '')
+                lead_sector = infer_sector_from_thread_id(thread_id)
+                if lead_sector != sector_filter:
+                    continue
+            
+            # Search filter
+            if search_query:
+                search_lower = search_query.lower()
+                lead_name = lead.get('name', '').lower()
+                lead_phone = lead.get('phone', '').lower()
+                if search_lower not in lead_name and search_lower not in lead_phone:
+                    continue
+            
+            filtered_leads.append(lead)
         
         status_counts = {
             'new': 0,
@@ -203,7 +320,7 @@ def _render_leads_metrics():
             'lost': 0
         }
         
-        for lead in leads:
+        for lead in filtered_leads:
             status = lead.get('status', 'new')
             if status in status_counts:
                 status_counts[status] += 1

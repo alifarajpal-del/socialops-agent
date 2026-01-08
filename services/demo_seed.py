@@ -22,6 +22,31 @@ def _is_demo_id(value: str) -> bool:
     return any(pattern in value for pattern in ['demo_salon_', 'demo_store_', 'demo_clinic_'])
 
 
+def infer_sector_from_thread_id(thread_id: str) -> str:
+    """
+    Infer sector from thread_id prefix.
+    
+    Args:
+        thread_id: Thread identifier string
+    
+    Returns:
+        "salon", "store", "clinic", or "unknown"
+    """
+    if not thread_id:
+        return "unknown"
+    
+    thread_id_lower = thread_id.lower()
+    
+    if 'salon' in thread_id_lower:
+        return "salon"
+    elif 'store' in thread_id_lower:
+        return "store"
+    elif 'clinic' in thread_id_lower:
+        return "clinic"
+    else:
+        return "unknown"
+
+
 def demo_exists(db_path: Optional[str] = None) -> bool:
     """
     Check if any demo data exists in the database.
@@ -331,6 +356,145 @@ def seed_demo_regenerate(db_path: Optional[str] = None) -> dict:
         'cleared': clear_result,
         'seeded': seed_result
     }
+
+
+def demo_integrity_check(db_path: Optional[str] = None) -> dict:
+    """
+    Check for orphaned demo data (records referencing missing demo threads).
+    
+    Scans for demo messages, leads, tasks, and replies that reference
+    non-existent demo threads and optionally removes them.
+    
+    Args:
+        db_path: Optional database path (uses get_db_path() if None)
+    
+    Returns:
+        Dict with structure: {
+            "orphans_found": int,
+            "orphans_deleted": int,
+            "details": {
+                "orphan_messages": int,
+                "orphan_leads": int,
+                "orphan_tasks": int,
+                "orphan_replies": int (estimate)
+            }
+        }
+    """
+    if db_path is None:
+        db_path = get_db_path()
+    
+    result = {
+        'orphans_found': 0,
+        'orphans_deleted': 0,
+        'details': {
+            'orphan_messages': 0,
+            'orphan_leads': 0,
+            'orphan_tasks': 0,
+            'orphan_replies': 0
+        }
+    }
+    
+    try:
+        conn = sqlite3.connect(db_path)
+        cursor = conn.cursor()
+        
+        # Get all valid demo thread IDs
+        cursor.execute("""
+            SELECT thread_id FROM threads 
+            WHERE thread_id LIKE 'demo_salon_%' 
+               OR thread_id LIKE 'demo_store_%' 
+               OR thread_id LIKE 'demo_clinic_%'
+        """)
+        valid_threads = set(row[0] for row in cursor.fetchall())
+        
+        if not valid_threads:
+            # No demo threads exist, so we can clean all demo-related records
+            logger.info("No demo threads found, cleaning all demo records")
+            
+            # Count and delete orphan messages
+            cursor.execute("""
+                SELECT COUNT(*) FROM messages 
+                WHERE thread_id LIKE 'demo_%'
+            """)
+            orphan_messages = cursor.fetchone()[0]
+            
+            if orphan_messages > 0:
+                cursor.execute("DELETE FROM messages WHERE thread_id LIKE 'demo_%'")
+                result['details']['orphan_messages'] = orphan_messages
+                result['orphans_deleted'] += orphan_messages
+            
+            # Count and delete orphan leads
+            cursor.execute("""
+                SELECT COUNT(*) FROM leads 
+                WHERE thread_id LIKE 'demo_%'
+            """)
+            orphan_leads = cursor.fetchone()[0]
+            
+            if orphan_leads > 0:
+                cursor.execute("DELETE FROM leads WHERE thread_id LIKE 'demo_%'")
+                result['details']['orphan_leads'] = orphan_leads
+                result['orphans_deleted'] += orphan_leads
+            
+            # Count and delete orphan tasks
+            cursor.execute("""
+                SELECT COUNT(*) FROM tasks 
+                WHERE related_thread_id LIKE 'demo_%'
+            """)
+            orphan_tasks = cursor.fetchone()[0]
+            
+            if orphan_tasks > 0:
+                cursor.execute("DELETE FROM tasks WHERE related_thread_id LIKE 'demo_%'")
+                result['details']['orphan_tasks'] = orphan_tasks
+                result['orphans_deleted'] += orphan_tasks
+            
+            result['orphans_found'] = orphan_messages + orphan_leads + orphan_tasks
+            
+        else:
+            # Check for orphans (demo records referencing non-existent threads)
+            for table, id_column in [
+                ('messages', 'thread_id'),
+                ('leads', 'thread_id'),
+                ('tasks', 'related_thread_id')
+            ]:
+                cursor.execute(f"""
+                    SELECT {id_column} FROM {table}
+                    WHERE {id_column} LIKE 'demo_%'
+                """)
+                
+                orphan_count = 0
+                for row in cursor.fetchall():
+                    ref_id = row[0]
+                    if ref_id not in valid_threads and _is_demo_id(ref_id):
+                        orphan_count += 1
+                
+                if orphan_count > 0:
+                    # Delete orphans
+                    placeholders = ','.join(['?' for _ in valid_threads])
+                    cursor.execute(f"""
+                        DELETE FROM {table}
+                        WHERE {id_column} LIKE 'demo_%'
+                        AND {id_column} NOT IN ({placeholders})
+                    """, list(valid_threads))
+                    
+                    table_key = f'orphan_{table}'
+                    result['details'][table_key] = orphan_count
+                    result['orphans_deleted'] += orphan_count
+                    result['orphans_found'] += orphan_count
+        
+        conn.commit()
+        conn.close()
+        
+        logger.info(f"Integrity check complete: {result}")
+        return result
+        
+    except Exception as e:
+        logger.error(f"Integrity check error: {e}", exc_info=True)
+        return {
+            'error': str(e),
+            'orphans_found': 0,
+            'orphans_deleted': 0,
+            'details': {}
+        }
 
 
 def _seed_salon(conn, cursor, counts, now):
