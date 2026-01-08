@@ -119,6 +119,7 @@ TRANSLATIONS = {
         # Navigation
         "dashboard": "Tableau de bord",
         "scan": "Scanner",
+        "inbox": "Boîte de réception",
         "vault": "Coffre",
         "settings": "Paramètres",
         
