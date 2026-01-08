@@ -214,7 +214,7 @@ def check_env_file():
                 print_success(".env file created from template")
                 print("\n⚠️  IMPORTANT: Edit .env file and add your API keys:")
                 print("   - JWT_SECRET_KEY (required for production)")
-                print("   - OPENAI_API_KEY (for GPT-4 Vision)")
+                print("   - OPENAI_API_KEY (for GPT-5.1 Codex Vision)")
                 print("   - GOOGLE_API_KEY (for Gemini)")
                 print("   - TRANSLATION_API_KEY (optional, for translations)")
                 return True

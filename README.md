@@ -29,7 +29,7 @@
 - **Auto-Translation**: AI-powered result translation
 
 ### 📸 AI-Powered Food Scanner | ماسح الطعام الذكي
-- Instant product analysis using GPT-4o Vision and Gemini
+- Instant product analysis using GPT-5.1 Codex Vision and Gemini
 - Health score calculation (0-100)
 - NOVA food classification
 - Personalized warnings based on medical profile
@@ -185,7 +185,7 @@ bioguard-ai/
 | Technology | Purpose |
 |------------|---------|
 | **Streamlit** | Web UI Framework |
-| **OpenAI GPT-4o** | AI Vision & Chat |
+| **OpenAI GPT-5.1 Codex** | AI Vision & Chat |
 | **Google Gemini 1.5** | Alternative AI Vision Provider |
 | **SQLite** | Local Relational Database |
 | **ChromaDB** | Vector Database for Semantic Search |

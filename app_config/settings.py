@@ -13,6 +13,7 @@ DEBUG = ENVIRONMENT == "development"
 # ============== API Keys & Secrets ==============
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "")
+OPENAI_VISION_MODEL = os.getenv("OPENAI_VISION_MODEL", "gpt-5.1-codex")
 
 # Nutrition APIs
 USDA_API_KEY = os.getenv("USDA_API_KEY", "")

@@ -538,13 +538,13 @@ async def _analyze_with_openai(image_bytes: bytes) -> Dict[str, Any]:
     ]
     resp = await asyncio.to_thread(
         client.chat.completions.create,
-        model="gpt-4o-mini",
+        model=OPENAI_VISION_MODEL,
         messages=messages,
         max_tokens=200,
     )
     content = resp.choices[0].message.content
     return {
-        "product": "OpenAI Vision",
+        "product": "OpenAI GPT-5.1 Codex",
         "health_score": 78,
         "verdict": "SAFE",
         "warnings": [content[:180]],

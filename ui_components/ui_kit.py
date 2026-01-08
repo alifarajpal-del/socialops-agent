@@ -1,5 +1,5 @@
 """UI Kit: Consistent cards, badges, metrics, and component system.
-Enterprise-grade design system for SocialOps Agent.
+Enterprise-grade design system for SocialOps Agent with dark mode support.
 """
 
 import streamlit as st
@@ -10,159 +10,353 @@ from contextlib import contextmanager
 BadgeKind = Literal["info", "success", "warning", "danger", "muted", "primary"]
 
 
-def inject_ui_kit_css() -> None:
-    """Inject UI Kit CSS (scoped to component classes only)."""
-    css = """
+# Design Tokens
+tokens = {
+    "spacing": {"xs": "0.25rem", "sm": "0.5rem", "md": "1rem", "lg": "1.5rem", "xl": "2rem"},
+    "radius": {"sm": "4px", "md": "8px", "lg": "12px"},
+    "shadow": {"sm": "0 1px 3px rgba(0,0,0,0.12)", "md": "0 4px 6px rgba(0,0,0,0.16)"}
+}
+
+# Theme Colors
+colors = {
+    "light": {
+        "bg": "#ffffff", "card_bg": "#f8f9fa", "text": "#1f2937", "muted": "#6b7280",
+        "border": "#e5e7eb", "primary": "#3b82f6", "success": "#10b981",
+        "warning": "#f59e0b", "danger": "#ef4444"
+    },
+    "dark": {
+        "bg": "#0f172a", "card_bg": "#1e293b", "text": "#f1f5f9", "muted": "#94a3b8",
+        "border": "#334155", "primary": "#60a5fa", "success": "#34d399",
+        "warning": "#fbbf24", "danger": "#f87171"
+    }
+}
+
+
+def inject_ui_kit_css(theme: str = "light") -> None:
+    """Inject UI Kit CSS with theme support (once per session).
+    
+    Args:
+        theme: "light" or "dark" (default: "light")
+    """
+    # Guard: inject only once per theme change
+    current_theme = st.session_state.get("_css_theme", None)
+    if st.session_state.get("_css_injected") and current_theme == theme:
+        return
+    
+    theme = theme if theme in ["light", "dark"] else "light"
+    c = colors[theme]
+    t = tokens
+    
+    css = f"""
     <style>
+        /* Global Theme */
+        .stApp {{
+            background-color: {c['bg']};
+            color: {c['text']};
+        }}
+        
         /* Badge components */
-        .badge {
+        .badge {{
             display: inline-flex;
             align-items: center;
             gap: 4px;
             padding: 4px 12px;
-            border-radius: 12px;
+            border-radius: {t['radius']['md']};
             font-size: 12px;
             font-weight: 600;
             line-height: 1.4;
-        }
+        }}
         
-        .badge-info {
-            background: rgba(59, 130, 246, 0.1);
-            color: #3b82f6;
-            border: 1px solid rgba(59, 130, 246, 0.2);
-        }
+        .badge-info {{
+            background: {c['primary']}20;
+            color: {c['primary']};
+            border: 1px solid {c['primary']}40;
+        }}
         
-        .badge-success {
-            background: rgba(16, 185, 129, 0.1);
-            color: #10b981;
-            border: 1px solid rgba(16, 185, 129, 0.2);
-        }
+        .badge-success {{
+            background: {c['success']}20;
+            color: {c['success']};
+            border: 1px solid {c['success']}40;
+        }}
         
-        .badge-warning {
-            background: rgba(245, 158, 11, 0.1);
-            color: #f59e0b;
-            border: 1px solid rgba(245, 158, 11, 0.2);
-        }
+        .badge-warning {{
+            background: {c['warning']}20;
+            color: {c['warning']};
+            border: 1px solid {c['warning']}40;
+        }}
         
-        .badge-danger {
-            background: rgba(239, 68, 68, 0.1);
-            color: #ef4444;
-            border: 1px solid rgba(239, 68, 68, 0.2);
-        }
+        .badge-danger {{
+            background: {c['danger']}20;
+            color: {c['danger']};
+            border: 1px solid {c['danger']}40;
+        }}
         
-        .badge-muted {
-            background: rgba(107, 114, 128, 0.1);
-            color: #6b7280;
-            border: 1px solid rgba(107, 114, 128, 0.2);
-        }
+        .badge-muted {{
+            background: {c['muted']}20;
+            color: {c['muted']};
+            border: 1px solid {c['muted']}40;
+        }}
         
-        .badge-primary {
-            background: rgba(99, 102, 241, 0.1);
-            color: #6366f1;
-            border: 1px solid rgba(99, 102, 241, 0.2);
-        }
+        .badge-primary {{
+            background: {c['primary']}20;
+            color: {c['primary']};
+            border: 1px solid {c['primary']}40;
+        }}
         
-        /* Metric card */
-        .metric-card {
+        /* UI Card */
+        .ui-card {{
+            background: {c['card_bg']};
+            border: 1px solid {c['border']};
+            border-radius: {t['radius']['md']};
+            padding: {t['spacing']['md']};
+            margin-bottom: {t['spacing']['md']};
+            box-shadow: {t['shadow']['sm']};
+        }}
+        
+        .ui-card-title {{
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: {c['text']};
+            margin-bottom: {t['spacing']['sm']};
+        }}
+        
+        /* KPI Metric */
+        .ui-kpi {{
+            background: {c['card_bg']};
+            border: 1px solid {c['border']};
+            border-radius: {t['radius']['md']};
+            padding: {t['spacing']['md']};
             text-align: center;
+            box-shadow: {t['shadow']['sm']};
+        }}
+        
+        .ui-kpi-label {{
+            font-size: 0.85rem;
+            color: {c['muted']};
+            margin-bottom: {t['spacing']['xs']};
+        }}
+        
+        .ui-kpi-value {{
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: {c['text']};
+        }}
+        
+        .ui-kpi-delta {{
+            font-size: 0.8rem;
+            margin-top: {t['spacing']['xs']};
+        }}
+        
+        .ui-kpi-delta.positive {{ color: {c['success']}; }}
+        .ui-kpi-delta.negative {{ color: {c['danger']}; }}
+        
+        /* Legacy metric-card */
+        .metric-card {{
+            background: {c['card_bg']};
+            border: 1px solid {c['border']};
+            border-radius: {t['radius']['md']};
             padding: 16px;
-            border-radius: 12px;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
+            text-align: center;
+        }}
         
-        .metric-label {
+        .metric-label {{
             font-size: 13px;
-            color: #9ca3af;
+            color: {c['muted']};
             margin-bottom: 4px;
-        }
+        }}
         
-        .metric-value {
+        .metric-value {{
             font-size: 24px;
             font-weight: 700;
-            color: #1f2937;
+            color: {c['text']};
             line-height: 1.2;
-        }
+        }}
         
-        .metric-unit {
+        .metric-unit {{
             font-size: 14px;
-            color: #6b7280;
+            color: {c['muted']};
             margin-left: 4px;
-        }
+        }}
         
         /* Section title */
-        .section-title {
+        .section-title {{
             font-size: 18px;
             font-weight: 700;
-            color: #1f2937;
+            color: {c['text']};
             margin: 24px 0 12px 0;
             padding-bottom: 8px;
-            border-bottom: 2px solid #e5e7eb;
-        }
+            border-bottom: 2px solid {c['border']};
+        }}
         
         /* Pills row */
-        .pills-row {
+        .pills-row {{
             display: flex;
             flex-wrap: wrap;
             gap: 8px;
             margin: 12px 0;
-        }
+        }}
         
-        .pill {
+        .pill {{
             padding: 6px 14px;
-            background: rgba(229, 231, 235, 0.5);
-            color: #4b5563;
+            background: {c['card_bg']};
+            color: {c['text']};
             border-radius: 16px;
             font-size: 13px;
             font-weight: 500;
-            border: 1px solid rgba(209, 213, 219, 0.5);
-        }
+            border: 1px solid {c['border']};
+        }}
         
         /* Info card */
-        .info-card {
+        .info-card {{
             padding: 16px;
-            border-radius: 12px;
+            border-radius: {t['radius']['md']};
             border-left: 4px solid;
             margin: 12px 0;
-        }
+        }}
         
-        .info-card.info {
-            background: rgba(59, 130, 246, 0.05);
-            border-color: #3b82f6;
-        }
+        .info-card.info {{
+            background: {c['primary']}10;
+            border-color: {c['primary']};
+        }}
         
-        .info-card.success {
-            background: rgba(16, 185, 129, 0.05);
-            border-color: #10b981;
-        }
+        .info-card.success {{
+            background: {c['success']}10;
+            border-color: {c['success']};
+        }}
         
-        .info-card.warning {
-            background: rgba(245, 158, 11, 0.05);
-            border-color: #f59e0b;
-        }
+        .info-card.warning {{
+            background: {c['warning']}10;
+            border-color: {c['warning']};
+        }}
         
-        .info-card.danger {
-            background: rgba(239, 68, 68, 0.05);
-            border-color: #ef4444;
-        }
+        .info-card.danger {{
+            background: {c['danger']}10;
+            border-color: {c['danger']};
+        }}
         
-        .info-card-title {
+        .info-card-title {{
             font-size: 14px;
             font-weight: 600;
+            color: {c['text']};
             margin-bottom: 8px;
-        }
+        }}
         
-        .info-card-body {
+        .info-card-body {{
             font-size: 13px;
+            color: {c['text']};
             line-height: 1.6;
-        }
+        }}
+        
+        /* Responsive */
+        @media only screen and (max-width: 768px) {{
+            .ui-card {{
+                padding: {t['spacing']['sm']};
+                margin-bottom: {t['spacing']['sm']};
+            }}
+            
+            .ui-kpi {{
+                padding: {t['spacing']['sm']};
+                margin-bottom: {t['spacing']['sm']};
+            }}
+            
+            .ui-kpi-value {{
+                font-size: 1.4rem;
+            }}
+            
+            .stButton button {{
+                width: 100% !important;
+            }}
+        }}
     </style>
     """
+    
     st.markdown(css, unsafe_allow_html=True)
+    st.session_state["_css_injected"] = True
+    st.session_state["_css_theme"] = theme
+
+
+def ui_page(title: str, subtitle: Optional[str] = None, icon: str = "💬") -> None:
+    """Render page header with title, subtitle, and icon.
+    
+    Args:
+        title: Page title
+        subtitle: Optional subtitle/description
+        icon: Emoji icon (default: 💬)
+    """
+    st.title(f"{icon} {title}")
+    if subtitle:
+        st.caption(subtitle)
+    st.divider()
+
+
+@contextmanager
+def ui_card(title: Optional[str] = None, icon: Optional[str] = None):
+    """Context manager for card container.
+    
+    Args:
+        title: Optional card title
+        icon: Optional emoji icon
+        
+    Usage:
+        with ui_card(title="My Card", icon="📊"):
+            st.write("Content here")
+    """
+    if title:
+        title_text = f"{icon} {title}" if icon else title
+        st.markdown(f'<div class="ui-card"><div class="ui-card-title">{title_text}</div>', unsafe_allow_html=True)
+    else:
+        st.markdown('<div class="ui-card">', unsafe_allow_html=True)
+    
+    container = st.container()
+    yield container
+    
+    st.markdown('</div>', unsafe_allow_html=True)
+
+
+def ui_kpi(label: str, value: str, delta: Optional[str] = None) -> None:
+    """Render KPI metric card.
+    
+    Args:
+        label: Metric label
+        value: Metric value (formatted string)
+        delta: Optional delta/change indicator (e.g., "+12%", "-5")
+    """
+    delta_class = ""
+    if delta:
+        if delta.startswith("+") or (delta[0].isdigit() and float(delta.rstrip("%")) > 0):
+            delta_class = "positive"
+        elif delta.startswith("-"):
+            delta_class = "negative"
+    
+    delta_html = f'<div class="ui-kpi-delta {delta_class}">{delta}</div>' if delta else ""
+    
+    html = f"""
+    <div class="ui-kpi">
+        <div class="ui-kpi-label">{label}</div>
+        <div class="ui-kpi-value">{value}</div>
+        {delta_html}
+    </div>
+    """
+    
+    st.markdown(html, unsafe_allow_html=True)
+
+
+def ui_badge(text: str, kind: str = "info") -> str:
+    """Generate badge HTML.
+    
+    Args:
+        text: Badge text
+        kind: Badge type (info|success|warning|danger)
+        
+    Returns:
+        HTML string for badge
+    """
+    kind = kind if kind in ["info", "success", "warning", "danger", "muted", "primary"] else "info"
+    return f'<span class="badge badge-{kind}">{text}</span>'
 
 
 def badge(text: str, kind: BadgeKind = "info", icon: Optional[str] = None) -> str:
-    """Generate a badge HTML.
+    """Generate a badge HTML (legacy compatibility).
     
     Args:
         text: Badge text
@@ -172,7 +366,6 @@ def badge(text: str, kind: BadgeKind = "info", icon: Optional[str] = None) -> st
     Returns:
         HTML string for the badge
     """
-    inject_ui_kit_css()
     icon_html = f'<span>{icon}</span>' if icon else ''
     return f'<span class="badge badge-{kind}">{icon_html}{text}</span>'
 
@@ -186,8 +379,6 @@ def metric(label: str, value: str, unit: str = "", delta: Optional[str] = None) 
         unit: Optional unit (e.g., "g", "%", "kcal")
         delta: Optional delta/change indicator
     """
-    inject_ui_kit_css()
-    
     unit_html = f'<span class="metric-unit">{unit}</span>' if unit else ''
     delta_html = f'<div style="font-size: 12px; color: #10b981; margin-top: 4px;">{delta}</div>' if delta else ''
     
@@ -207,7 +398,6 @@ def section_title(text: str, icon: Optional[str] = None) -> None:
         text: Section title text
         icon: Optional emoji/icon
     """
-    inject_ui_kit_css()
     icon_html = f'{icon} ' if icon else ''
     st.markdown(f'<div class="section-title">{icon_html}{text}</div>', unsafe_allow_html=True)
 
@@ -219,8 +409,6 @@ def pills_row(items: list[str], interactive: bool = False) -> None:
         items: List of pill text items
         interactive: Whether pills should appear clickable (visual only)
     """
-    inject_ui_kit_css()
-    
     style_extra = 'cursor: pointer;' if interactive else ''
     pills_html = ''.join([
         f'<span class="pill" style="{style_extra}">{item}</span>'
@@ -232,7 +420,7 @@ def pills_row(items: list[str], interactive: bool = False) -> None:
 
 @contextmanager
 def card(title: Optional[str] = None, icon: Optional[str] = None):
-    """Context manager for a consistent card layout.
+    """Context manager for a consistent card layout (legacy compatibility).
     
     Args:
         title: Optional card title
@@ -242,14 +430,8 @@ def card(title: Optional[str] = None, icon: Optional[str] = None):
         with card(title="نتائج التحليل", icon="🔬"):
             st.write("Card content here")
     """
-    inject_ui_kit_css()
-    
-    container = st.container()
-    with container:
-        if title:
-            title_html = f'{icon} {title}' if icon else title
-            st.markdown(f'<div style="font-size: 16px; font-weight: 600; margin-bottom: 12px; color: #1f2937;">{title_html}</div>', unsafe_allow_html=True)
-        
+    # Delegate to ui_card
+    with ui_card(title=title, icon=icon) as container:
         yield container
 
 
@@ -267,8 +449,6 @@ def info_card(
         kind: Card style variant
         icon: Optional icon/emoji
     """
-    inject_ui_kit_css()
-    
     icon_html = f'{icon} ' if icon else ''
     
     st.markdown(f"""

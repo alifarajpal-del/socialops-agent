@@ -6,6 +6,7 @@ Shows SLA status, tasks due today/overdue, and lead status breakdown.
 
 import streamlit as st
 import logging
+import json
 from datetime import datetime, timedelta
 from typing import Dict
 
@@ -22,13 +23,18 @@ logger = logging.getLogger(__name__)
 def ops_view():
     """Main daily operations dashboard."""
     try:
-        ui_kit.inject_ui_kit_css()
+        # Inject UI Kit CSS with theme support
+        theme = st.session_state.get("theme", "light")
+        ui_kit.inject_ui_kit_css(theme)
         
         lang = get_lang()
         
-        # Header
-        st.title(f"📊 {get_text('ops_title', lang)}")
-        st.caption(get_text('ops_caption', lang))
+        # Page header with ui_kit
+        ui_kit.ui_page(
+            title=get_text('ops_title', lang),
+            subtitle=get_text('ops_caption', lang),
+            icon="📊"
+        )
         
         # Demo Status Banner (Sprint 5.4)
         from services.demo_seed import get_demo_stats
@@ -48,66 +54,65 @@ def ops_view():
         
         st.divider()
         
-        # Search & Filter Controls (Sprint 5.5)
-        st.markdown(f"### 🔍 {get_text('ops_search', lang)}")
-        
-        col_search, col_sector, col_status, col_sort = st.columns([3, 2, 2, 2])
-        
-        with col_search:
-            search_query = st.text_input(
-                get_text('ops_search', lang),
-                placeholder="Search threads/leads/messages",
-                key="ops_search_input",
-                label_visibility="collapsed"
-            )
-        
-        with col_sector:
-            sector_filter = st.selectbox(
-                get_text('ops_filter_sector', lang),
-                options=['all', 'salon', 'store', 'clinic'],
-                format_func=lambda x: get_text(f'ops_{x}', lang),
-                key="ops_sector_filter"
-            )
-        
-        with col_status:
-            status_filter = st.selectbox(
-                get_text('ops_filter_status', lang),
-                options=['all', 'overdue', 'today', 'tomorrow'],
-                format_func=lambda x: get_text(f'ops_status_{x}' if x != 'all' else 'ops_all', lang),
-                key="ops_status_filter"
-            )
-        
-        with col_sort:
-            sort_option = st.selectbox(
-                get_text('ops_sort', lang),
-                options=['newest', 'oldest', 'urgent'],
-                format_func=lambda x: get_text(f'ops_sort_{x}', lang),
-                key="ops_sort_option"
-            )
-        
-        st.divider()
-        
-        # SLA Status Section
-        st.markdown(f"### ⏱️ {get_text('ops_sla_title', lang)}")
-        _render_sla_metrics(search_query, sector_filter, status_filter, sort_option)
+        # Search & Filter Controls (Sprint 5.5) - wrapped in card
+        with ui_kit.ui_card(title=get_text('ops_search', lang), icon="🧰"):
+            col_search, col_sector, col_status, col_sort = st.columns([3, 2, 2, 2])
+            
+            with col_search:
+                search_query = st.text_input(
+                    get_text('ops_search', lang),
+                    placeholder="Search threads/leads/messages",
+                    key="ops_search_input",
+                    label_visibility="collapsed"
+                )
+            
+            with col_sector:
+                sector_filter = st.selectbox(
+                    get_text('ops_filter_sector', lang),
+                    options=['all', 'salon', 'store', 'clinic'],
+                    format_func=lambda x: get_text(f'ops_{x}', lang),
+                    key="ops_sector_filter"
+                )
+            
+            with col_status:
+                status_filter = st.selectbox(
+                    get_text('ops_filter_status', lang),
+                    options=['all', 'overdue', 'today', 'tomorrow'],
+                    format_func=lambda x: get_text(f'ops_status_{x}' if x != 'all' else 'ops_all', lang),
+                    key="ops_status_filter"
+                )
+            
+            with col_sort:
+                sort_option = st.selectbox(
+                    get_text('ops_sort', lang),
+                    options=['newest', 'oldest', 'urgent'],
+                    format_func=lambda x: get_text(f'ops_sort_{x}', lang),
+                    key="ops_sort_option"
+                )
         
         st.divider()
         
-        # Tasks Section
-        st.markdown(f"### ✅ {get_text('ops_tasks_title', lang)}")
-        _render_tasks_metrics(search_query, sector_filter, status_filter, sort_option)
+        # SLA Status Section - wrapped in card
+        with ui_kit.ui_card(title=get_text('ops_sla_title', lang), icon="⏱️"):
+            _render_sla_metrics(search_query, sector_filter, status_filter, sort_option)
         
         st.divider()
         
-        # Leads Section
-        st.markdown(f"### 👥 {get_text('ops_leads_title', lang)}")
-        _render_leads_metrics(search_query, sector_filter, status_filter, sort_option)
+        # Tasks Section - wrapped in card
+        with ui_kit.ui_card(title=get_text('ops_tasks_title', lang), icon="✅"):
+            _render_tasks_metrics(search_query, sector_filter, status_filter, sort_option)
         
         st.divider()
         
-        # Demo Activity Section (Sprint 5.6)
-        st.markdown(f"### 📊 {get_text('demo_activity_title', lang)}")
-        _render_demo_activity(lang)
+        # Leads Section - wrapped in card
+        with ui_kit.ui_card(title=get_text('ops_leads_title', lang), icon="👤"):
+            _render_leads_metrics(search_query, sector_filter, status_filter, sort_option)
+        
+        st.divider()
+        
+        # Demo Activity Section (Sprint 5.6) - wrapped in card
+        with ui_kit.ui_card(title=get_text('demo_activity_title', lang), icon="🧪"):
+            _render_demo_activity(lang)
     
     except Exception as e:
         logger.error(f"Ops view error: {e}", exc_info=True)
@@ -166,25 +171,13 @@ def _render_sla_metrics(search_query="", sector_filter="all", status_filter="all
         col1, col2, col3 = st.columns(3)
         
         with col1:
-            st.metric(
-                "🔴 Urgent",
-                sla_counts['urgent'],
-                help="Messages requiring immediate response"
-            )
+            ui_kit.ui_kpi("🔴 Urgent", str(sla_counts['urgent']))
         
         with col2:
-            st.metric(
-                "🟡 Warning",
-                sla_counts['warning'],
-                help="Messages nearing SLA deadline"
-            )
+            ui_kit.ui_kpi("🟡 Warning", str(sla_counts['warning']))
         
         with col3:
-            st.metric(
-                "🟢 OK",
-                sla_counts['ok'],
-                help="Messages within SLA"
-            )
+            ui_kit.ui_kpi("🟢 OK", str(sla_counts['ok']))
     
     except Exception as e:
         logger.error(f"SLA metrics error: {e}", exc_info=True)
@@ -252,26 +245,14 @@ def _render_tasks_metrics(search_query="", sector_filter="all", status_filter="a
         col1, col2, col3 = st.columns(3)
         
         with col1:
-            st.metric(
-                "⚠️ Overdue",
-                overdue_count,
-                delta=f"-{overdue_count}" if overdue_count > 0 else None,
-                delta_color="inverse"
-            )
+            delta_str = f"-{overdue_count}" if overdue_count > 0 else None
+            ui_kit.ui_kpi("⚠️ Overdue", str(overdue_count), delta=delta_str)
         
         with col2:
-            st.metric(
-                "📅 Due Today",
-                today_count,
-                help="Tasks due by end of today"
-            )
+            ui_kit.ui_kpi("📅 Due Today", str(today_count))
         
         with col3:
-            st.metric(
-                "📆 Upcoming",
-                upcoming_count,
-                help="Tasks due after today"
-            )
+            ui_kit.ui_kpi("📆 Upcoming", str(upcoming_count))
         
         # Show overdue tasks list
         if overdue_count > 0:
@@ -334,19 +315,19 @@ def _render_leads_metrics(search_query="", sector_filter="all", status_filter="a
         col1, col2, col3, col4, col5 = st.columns(5)
         
         with col1:
-            st.metric("🆕 New", status_counts['new'])
+            ui_kit.ui_kpi("🆕 New", str(status_counts['new']))
         
         with col2:
-            st.metric("💬 Contacted", status_counts['contacted'])
+            ui_kit.ui_kpi("💬 Contacted", str(status_counts['contacted']))
         
         with col3:
-            st.metric("⭐ Qualified", status_counts['qualified'])
+            ui_kit.ui_kpi("⭐ Qualified", str(status_counts['qualified']))
         
         with col4:
-            st.metric("✅ Converted", status_counts['converted'])
+            ui_kit.ui_kpi("✅ Converted", str(status_counts['converted']))
         
         with col5:
-            st.metric("❌ Lost", status_counts['lost'])
+            ui_kit.ui_kpi("❌ Lost", str(status_counts['lost']))
     
     except Exception as e:
         logger.error(f"Leads metrics error: {e}", exc_info=True)

@@ -35,6 +35,8 @@ TRANSLATIONS = {
         "language": "Language",
         "select_language": "Select Language",
         "theme": "Theme",
+        "theme_light": "Light",
+        "theme_dark": "Dark",
         "dark_mode": "Dark Mode",
         "light_mode": "Light Mode",
         
@@ -208,6 +210,8 @@ TRANSLATIONS = {
         "language": "اللغة",
         "select_language": "اختر اللغة",
         "theme": "المظهر",
+        "theme_light": "فاتح",
+        "theme_dark": "داكن",
         "dark_mode": "الوضع الليلي",
         "light_mode": "الوضع النهاري",
         
@@ -381,6 +385,8 @@ TRANSLATIONS = {
         "language": "Langue",
         "select_language": "Sélectionner la langue",
         "theme": "Thème",
+        "theme_light": "Clair",
+        "theme_dark": "Sombre",
         "dark_mode": "Mode sombre",
         "light_mode": "Mode clair",
         

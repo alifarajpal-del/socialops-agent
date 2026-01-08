@@ -11,7 +11,7 @@ from datetime import datetime, timedelta
 from ui_components.theme_wheel import get_current_theme
 from ui_components.error_ui import safe_render
 from ui_components.micro_ux import skeleton_card, inject_skeleton_css
-from ui_components.ui_kit import card, metric, badge, inject_ui_kit_css
+from ui_components import ui_kit
 from utils.logging_setup import get_logger, log_user_action
 from utils.i18n import t, get_lang
 
@@ -24,29 +24,22 @@ def render_dashboard() -> None:
 
 
 def _render_dashboard_inner() -> None:
-    # Modern CSS injection
+    # Inject CSS with theme support
+    theme = st.session_state.get("theme", "light")
     inject_skeleton_css()
-    inject_ui_kit_css()
+    ui_kit.inject_ui_kit_css(theme)
     _inject_modern_dashboard_css()
     
     log_user_action(logger, 'dashboard_view', {})
     
-    # Modern Hero Header
-    st.markdown("""
-    <div class="hero-header">
-        <div class="hero-content">
-            <h1 class="hero-title">
-                💬 SocialOps Agent
-            </h1>
-            <p class="hero-subtitle">
-                Social Media Operations Platform - Manage conversations, leads & tasks
-            </p>
-        </div>
-    </div>
-    """, unsafe_allow_html=True)
+    # Page header with UI Kit
+    ui_kit.ui_page(
+        title="SocialOps Agent",
+        subtitle="Social Media Operations Platform - Manage conversations, leads & tasks",
+        icon="💬"
+    )
     
-    # KPI Dashboard Cards
-    st.markdown('<div class="kpi-section">', unsafe_allow_html=True)
+    # KPI Dashboard with UI Kit
     col_k1, col_k2, col_k3 = st.columns(3)
     
     try:
@@ -58,23 +51,21 @@ def _render_dashboard_inner() -> None:
         with col_k1:
             cursor.execute("SELECT COUNT(*) FROM threads")
             thread_count = cursor.fetchone()[0]
-            _render_kpi_card("💬", "Active Threads", thread_count, "primary")
+            ui_kit.ui_kpi("💬 Active Threads", str(thread_count))
         
         with col_k2:
             cursor.execute("SELECT COUNT(*) FROM leads")
             lead_count = cursor.fetchone()[0]
-            _render_kpi_card("👥", "Total Leads", lead_count, "success")
+            ui_kit.ui_kpi("👥 Total Leads", str(lead_count))
         
         with col_k3:
             cursor.execute("SELECT COUNT(*) FROM tasks WHERE status != 'completed'")
             task_count = cursor.fetchone()[0]
-            _render_kpi_card("📋", "Open Tasks", task_count, "warning")
+            ui_kit.ui_kpi("📋 Open Tasks", str(task_count))
         
         conn.close()
     except Exception as e:
         logger.error(f"Failed to fetch KPI metrics: {e}")
-    
-    st.markdown('</div>', unsafe_allow_html=True)
     
 def _render_kpi_card(icon: str, title: str, value: int, variant: str = "primary") -> None:
     """Render modern KPI card with icon and styling."""

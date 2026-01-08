@@ -35,6 +35,29 @@ st.set_page_config(
 # Build marker for deployment verification
 st.sidebar.caption("🔄 BUILD: SocialOps Agent v2.0 | Commit: 960b832")
 
+# Theme toggle in sidebar
+st.sidebar.divider()
+from utils.translations import get_text
+from utils.i18n import get_lang
+
+lang = get_lang()
+current_theme = st.session_state.get("theme", "light")
+
+theme_choice = st.sidebar.radio(
+    get_text("theme", lang),
+    options=["light", "dark"],
+    index=0 if current_theme == "light" else 1,
+    format_func=lambda x: get_text(f"theme_{x}", lang),
+    key="theme_toggle"
+)
+
+if theme_choice != current_theme:
+    st.session_state["theme"] = theme_choice
+    # Reset CSS injection to apply new theme
+    if "_css_injected" in st.session_state:
+        del st.session_state["_css_injected"]
+    st.rerun()
+
 # Imports
 from app_config.settings import MOBILE_VIEWPORT
 from ui_components.theme_wheel import render_theme_wheel

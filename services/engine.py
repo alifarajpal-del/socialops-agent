@@ -9,7 +9,11 @@ import asyncio
 import base64
 import os
 
-from app_config.settings import GEMINI_API_KEY, OPENAI_API_KEY
+from app_config.settings import (
+    GEMINI_API_KEY,
+    OPENAI_API_KEY,
+    OPENAI_VISION_MODEL,
+)
 
 # Configure logging
 logger = logging.getLogger(__name__)
@@ -85,7 +89,7 @@ async def _analyze_with_gemini(image_bytes: bytes) -> Dict[str, Any]:
 
 async def _analyze_with_openai(image_bytes: bytes) -> Dict[str, Any]:
     """
-    Analyze food image using OpenAI GPT-4 Vision API.
+    Analyze food image using OpenAI GPT-5.1 Codex Vision API.
     
     Args:
         image_bytes: Raw image data as bytes
@@ -103,7 +107,7 @@ async def _analyze_with_openai(image_bytes: bytes) -> Dict[str, Any]:
     except ImportError as exc:  # pragma: no cover
         raise RuntimeError("openai is not installed") from exc
 
-    logger.info("Starting OpenAI analysis")
+    logger.info("Starting OpenAI analysis with %s", OPENAI_VISION_MODEL)
     client = openai.OpenAI(api_key=OPENAI_API_KEY)
     b64_image = base64.b64encode(image_bytes).decode("utf-8")
     messages = [
@@ -117,14 +121,14 @@ async def _analyze_with_openai(image_bytes: bytes) -> Dict[str, Any]:
     ]
     resp = await asyncio.to_thread(
         client.chat.completions.create,
-        model="gpt-4o-mini",
+        model=OPENAI_VISION_MODEL,
         messages=messages,
         max_tokens=200,
     )
     content = resp.choices[0].message.content
     logger.info(f"OpenAI analysis completed: {len(content)} chars")
     return {
-        "product": "OpenAI Vision",
+        "product": "OpenAI GPT-5.1 Codex",
         "health_score": 78,
         "verdict": "SAFE",
         "warnings": [content[:180]],
