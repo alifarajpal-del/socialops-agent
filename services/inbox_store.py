@@ -12,7 +12,7 @@ from typing import List, Dict, Any, Optional
 from datetime import datetime
 from pathlib import Path
 
-from app_config.settings import DATABASE_PATH
+from services.db import get_db_path
 
 logger = logging.getLogger(__name__)
 
@@ -31,9 +31,9 @@ class InboxStore:
         Initialize inbox store.
         
         Args:
-            db_path: Path to SQLite database file (uses config default if None)
+            db_path: Path to SQLite database file (uses shared default if None)
         """
-        self.db_path = db_path or DATABASE_PATH
+        self.db_path = db_path or get_db_path()
         # Ensure data directory exists
         Path(self.db_path).parent.mkdir(parents=True, exist_ok=True)
         self.init_db()
