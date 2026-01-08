@@ -373,119 +373,83 @@ def _inject_modern_dashboard_css() -> None:
             from ui_components.router import go_to
             go_to('inbox')
             st.rerun()
+    
+    st.divider()
+    
+    # Demo Management Card
+    st.markdown("""
+    <div class="modern-card">
+        <div class="card-header">
+            <span class="card-icon">🧪</span>
+            <h3 class="card-title">Demo Data Management</h3>
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    # Demo Status Section
+    from services.demo_seed import get_demo_stats, get_demo_event_summary
+    
+    col_status, col_refresh = st.columns([4, 1])
+    
+    with col_status:
+        stats = get_demo_stats()
+        if not stats['exists']:
+            st.info("📭 No demo data loaded")
+        else:
+            st.success(f"✅ Demo active: {stats['threads']} threads, {stats['leads']} leads, {stats['tasks']} tasks")
+    
+    with col_refresh:
+        if st.button("🔄 Refresh", use_container_width=True, key="refresh_demo_stats"):
+            st.rerun()
+    
+    
+    # Demo Actions
+    demo_col1, demo_col2, demo_col3 = st.columns(3)
+    
+    # Initialize demo_busy lock
+    if 'demo_busy' not in st.session_state:
+        st.session_state['demo_busy'] = False
+    
+    is_busy = st.session_state.get('demo_busy', False)
+    
+    with demo_col1:
+        if st.button("🧪 Load Demo Data", use_container_width=True, disabled=is_busy):
+            st.session_state['demo_busy'] = True
+            try:
                 from services.demo_seed import seed_demo_all
-                from ui_components.router import go_to
-                
-                try:
-                    st.session_state['demo_busy'] = True
-                    result = seed_demo_all()
-                    
-                    if result.get('skipped'):
-                        st.info(t('demo_exists'))
-                    elif 'error' in result:
-                        st.error(f"{t('demo_error')}: {result['error']}")
-                    else:
-                        st.success(f"✅ {t('demo_loaded')}: {result['threads']} threads, {result['leads']} leads, {result['tasks']} tasks, {result['replies']} replies")
-                        go_to('ops')
-                        st.rerun()
-                finally:
-                    st.session_state['demo_busy'] = False
-        
-        with col3b:
-            # Regenerate with confirmation (Sprint 5.4)
-            if 'confirm_regen_demo' not in st.session_state:
-                st.session_state['confirm_regen_demo'] = False
-            
-            if not st.session_state['confirm_regen_demo']:
-                if st.button(f"🔄 {t('regenerate_demo')}", use_container_width=True, key="regen_demo", disabled=is_busy):
-                    st.session_state['confirm_regen_demo'] = True
-                    st.rerun()
-            else:
-                # Show confirmation
-                st.warning(t('confirm_regenerate_demo'))
-                col_confirm, col_cancel = st.columns(2)
-                
-                with col_confirm:
-                    if st.button(t('confirm'), use_container_width=True, key="confirm_regen"):
-                        from services.demo_seed import seed_demo_regenerate
-                        from ui_components.router import go_to
-                        
-                        try:
-                            st.session_state['demo_busy'] = True
-                            st.session_state['confirm_regen_demo'] = False
-                            
-                            result = seed_demo_regenerate()
-                            
-                            if 'error' in result.get('seeded', {}):
-                                st.error(f"{t('demo_error')}: {result['seeded']['error']}")
-                            elif 'error' in result.get('cleared', {}):
-                                st.error(f"{t('demo_error')}: {result['cleared']['error']}")
-                            else:
-                                seeded = result['seeded']
-                                st.success(f"✅ {t('demo_regenerated')}: {seeded['threads']} threads, {seeded['leads']} leads, {seeded['tasks']} tasks, {seeded['replies']} replies")
-                                go_to('ops')
-                                st.rerun()
-                        finally:
-                            st.session_state['demo_busy'] = False
-                
-                with col_cancel:
-                    if st.button(t('cancel'), use_container_width=True, key="cancel_regen"):
-                        st.session_state['confirm_regen_demo'] = False
-                        st.rerun()
-        
-        with col3c:
-            # Clear with confirmation (Sprint 5.4)
-            if 'confirm_clear_demo' not in st.session_state:
-                st.session_state['confirm_clear_demo'] = False
-            
-            if not st.session_state['confirm_clear_demo']:
-                if st.button(f"🗑️ {t('clear_demo')}", use_container_width=True, key="clear_demo", disabled=is_busy):
-                    st.session_state['confirm_clear_demo'] = True
-                    st.rerun()
-            else:
-                # Show confirmation
-                st.warning(t('confirm_clear_demo'))
-                col_confirm, col_cancel = st.columns(2)
-                
-                with col_confirm:
-                    if st.button(t('confirm'), use_container_width=True, key="confirm_clear"):
-                        from services.demo_seed import clear_demo_all
-                        
-                        try:
-                            st.session_state['demo_busy'] = True
-                            st.session_state['confirm_clear_demo'] = False
-                            
-                            result = clear_demo_all()
-                            
-                            if 'error' in result:
-                                st.error(f"{t('demo_error')}: {result['error']}")
-                            else:
-                                st.success(f"✅ {t('demo_cleared')}: {result['threads_deleted']} threads, {result['leads_deleted']} leads, {result['tasks_deleted']} tasks")
-                                st.rerun()
-                        finally:
-                            st.session_state['demo_busy'] = False
-                
-                with col_cancel:
-                    if st.button(t('cancel'), use_container_width=True, key="cancel_clear"):
-                        st.session_state['confirm_clear_demo'] = False
-                        st.rerun()
+                seed_demo_all()
+                st.success("✅ Demo data loaded successfully!")
+            except Exception as e:
+                st.error(f"❌ Error: {e}")
+            finally:
+                st.session_state['demo_busy'] = False
+                st.rerun()
     
-    st.divider()
+    with demo_col2:
+        if st.button("🔄 Regenerate", use_container_width=True, disabled=is_busy):
+            st.session_state['demo_busy'] = True
+            try:
+                from services.demo_seed import seed_demo_regenerate
+                seed_demo_regenerate()
+                st.success("✅ Demo regenerated!")
+            except Exception as e:
+                st.error(f"❌ Error: {e}")
+            finally:
+                st.session_state['demo_busy'] = False
+                st.rerun()
     
-    # Show skeleton while loading
-    with st.spinner(""):
-        _modern_stats_cards(theme)
-    
-    st.divider()
-
-    col1, col2 = st.columns(2, gap="large")
-    with col1:
-        _health_score_trend(theme)
-    with col2:
-        _safety_breakdown(theme)
-
-    st.divider()
-    _activity_feed(theme)
+    with demo_col3:
+        if st.button("🗑️ Clear Demo", use_container_width=True, disabled=is_busy):
+            st.session_state['demo_busy'] = True
+            try:
+                from services.demo_seed import clear_demo_all
+                clear_demo_all()
+                st.success("✅ Demo data cleared!")
+            except Exception as e:
+                st.error(f"❌ Error: {e}")
+            finally:
+                st.session_state['demo_busy'] = False
+                st.rerun()
 
 
 def _inject_dashboard_css(theme: dict) -> None:
