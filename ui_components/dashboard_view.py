@@ -51,17 +51,20 @@ def _render_dashboard_inner() -> None:
             st.rerun()
     
     with col3:
-        # Demo seed button (Sprint 5.1)
+        # Demo seed button (Sprint 5.2)
         if st.button(f"🧪 {t('load_demo')}", use_container_width=True):
-            from services.demo_seed import seed_demo_data
-            result = seed_demo_data()
+            from services.demo_seed import seed_demo_all
+            from ui_components.router import go_to
+            
+            result = seed_demo_all()
             
             if result.get('skipped'):
                 st.info(t('demo_exists'))
             elif 'error' in result:
-                st.error(f"Error: {result['error']}")
+                st.error(f"{t('demo_error')}: {result['error']}")
             else:
-                st.success(f"✅ {t('demo_loaded')}: {result['threads']} threads, {result['leads']} leads, {result['tasks']} tasks")
+                st.success(f"✅ {t('demo_loaded')}: {result['threads']} threads, {result['leads']} leads, {result['tasks']} tasks, {result['replies']} replies")
+                go_to('ops')
                 st.rerun()
     
     st.divider()

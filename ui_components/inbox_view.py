@@ -432,7 +432,7 @@ def inbox_view():
             threads = store.list_threads(platform_filter=platform_filter)
             
             if not threads:
-                # Empty DB hint (Sprint 5.1)
+                # Empty DB hint (Sprint 5.2)
                 from utils.translations import get_text
                 from utils.i18n import get_lang
                 lang = get_lang()
@@ -440,8 +440,8 @@ def inbox_view():
                 st.info(f"💡 {get_text('bulk_empty_hint', lang)}")
                 
                 if st.button(f"🧪 {get_text('load_demo', lang)}", key="bulk_load_demo", use_container_width=True):
-                    from services.demo_seed import seed_demo_data
-                    result = seed_demo_data()
+                    from services.demo_seed import seed_demo_all
+                    result = seed_demo_all()
                     
                     if not result.get('skipped') and 'error' not in result:
                         st.success(f"✅ Demo data loaded!")
