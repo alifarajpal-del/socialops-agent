@@ -20,6 +20,8 @@ from services.crm_store import CRMStore
 from services.inbox_engine import get_lang
 from services.plugins_registry import route_to_plugin
 from services.settings_flags import enable_send
+from services.workspace_store import WorkspaceStore
+from services.template_fill import fill_placeholders
 from ui_components import ui_kit
 
 logger = logging.getLogger(__name__)
@@ -239,11 +241,50 @@ def render_thread_detail(store, thread_id):
         else:
             st.info("No lead created for this conversation yet")
             
-            if st.button("➕ Create Lead", key=f"create_lead_{thread_id}", type="primary", use_container_width=True):
-                lead_name = last_msg.get('sender_name', 'Unknown')
-                lead_id = crm.create_lead_from_thread(thread_id, thread_info['platform'], lead_name)
-                st.success(f"✅ Lead #{lead_id} created!")
-                st.rerun()
+            # Extract lead info button
+            col1, col2 = st.columns(2)
+            
+            with col1:
+                if st.button("🔍 Extract Lead Info", key=f"extract_lead_{thread_id}", use_container_width=True):
+                    # Try plugin extraction first
+                    last_msg = messages[-1]
+                    lang = get_lang()
+                    plugin = route_to_plugin(thread_info['platform'], last_msg['text'], lang)
+                    
+                    extracted_info = {}
+                    if plugin:
+                        extracted_info = plugin.extract(last_msg['text'], lang)
+                    
+                    # Fallback: regex for phone
+                    import re
+                    if not extracted_info.get('phone'):
+                        phone_match = re.search(r'\+?\d[\d\s\-\(\)]{7,}\d', last_msg['text'])
+                        if phone_match:
+                            extracted_info['phone'] = phone_match.group().strip()
+                    
+                    if extracted_info:
+                        st.session_state[f'extracted_lead_{thread_id}'] = extracted_info
+                        st.success(f"✅ Extracted: {', '.join(f'{k}: {v}' for k, v in extracted_info.items())}")
+                    else:
+                        st.warning("No contact info found in message")
+            
+            with col2:
+                if st.button("➕ Create Lead", key=f"create_lead_{thread_id}", type="primary", use_container_width=True):
+                    lead_name = last_msg.get('sender_name', 'Unknown')
+                    
+                    # Use extracted info if available
+                    extracted = st.session_state.get(f'extracted_lead_{thread_id}', {})
+                    if extracted.get('name'):
+                        lead_name = extracted['name']
+                    
+                    lead_id = crm.create_lead_from_thread(thread_id, thread_info['platform'], lead_name)
+                    
+                    # Add phone as note if extracted
+                    if extracted.get('phone'):
+                        crm.add_lead_note(lead_id, f"Phone: {extracted['phone']}")
+                    
+                    st.success(f"✅ Lead #{lead_id} created!")
+                    st.rerun()
     
     st.divider()
     
@@ -303,10 +344,17 @@ def render_thread_detail(store, thread_id):
             if selected_key != "-- None --":
                 selected_reply = reply_options[selected_key]
                 if st.button("➕ Insert Reply", key=f"insert_{thread_id}"):
+                    # Get workspace profile for template filling
+                    workspace_store = WorkspaceStore()
+                    profile = workspace_store.get_profile()
+                    
+                    # Fill placeholders in saved reply
+                    filled_reply = fill_placeholders(selected_reply['body'], profile)
+                    
                     if insert_mode == "Append":
-                        suggested_reply = f"{suggested_reply}\n\n{selected_reply['body']}"
+                        suggested_reply = f"{suggested_reply}\n\n{filled_reply}"
                     else:
-                        suggested_reply = selected_reply['body']
+                        suggested_reply = filled_reply
                     st.session_state[f"reply_text_{thread_id}"] = suggested_reply
                     st.rerun()
         else:

@@ -58,6 +58,31 @@ TRANSLATIONS = {
         "replies_title": "Replies Library",
         "replies_button": "Manage Reply Templates",
         "replies_caption": "Create and manage saved replies for quick responses",
+        
+        # Workspace Profile
+        "workspace_title": "Workspace Profile",
+        "workspace_button": "Edit Business Profile",
+        "workspace_caption": "Configure your business identity for personalized replies",
+        "business_name": "Business Name",
+        "business_type": "Business Type",
+        "city": "City",
+        "phone": "Phone",
+        "hours": "Business Hours",
+        "booking_link": "Booking Link",
+        "location_link": "Location Link",
+        "brand_tone": "Brand Tone",
+        "lang_default": "Default Language",
+        
+        # Plan & Limits
+        "plan_title": "Plan & Limits",
+        "plan_button": "View Plan Details",
+        "plan_caption": "Current plan and usage limits",
+        "current_plan": "Current Plan",
+        "plan_free": "Free (Local)",
+        "max_threads": "Max Threads",
+        "max_replies": "Max Reply Templates",
+        "unlimited": "Unlimited",
+        
         "scanned_image": "Scanned Image",
         
         # Auth
@@ -127,6 +152,30 @@ TRANSLATIONS = {
         "replies_button": "إدارة قوالب الردود",
         "replies_caption": "إنشاء وإدارة الردود المحفوظة للاستجابات السريعة",
         
+        # Workspace Profile
+        "workspace_title": "ملف مساحة العمل",
+        "workspace_button": "تحرير ملف العمل",
+        "workspace_caption": "قم بتكوين هوية عملك للردود الشخصية",
+        "business_name": "اسم العمل",
+        "business_type": "نوع العمل",
+        "city": "المدينة",
+        "phone": "الهاتف",
+        "hours": "ساعات العمل",
+        "booking_link": "رابط الحجز",
+        "location_link": "رابط الموقع",
+        "brand_tone": "نبرة العلامة التجارية",
+        "lang_default": "اللغة الافتراضية",
+        
+        # Plan & Limits
+        "plan_title": "الخطة والحدود",
+        "plan_button": "عرض تفاصيل الخطة",
+        "plan_caption": "الخطة الحالية وحدود الاستخدام",
+        "current_plan": "الخطة الحالية",
+        "plan_free": "مجاني (محلي)",
+        "max_threads": "الحد الأقصى للمحادثات",
+        "max_replies": "الحد الأقصى للردود",
+        "unlimited": "غير محدود",
+        
         # Auth
         "sign_in": "تسجيل الدخول",
         "sign_in_with_email": "تسجيل الدخول بالبريد الإلكتروني",
@@ -194,6 +243,30 @@ TRANSLATIONS = {
         "replies_title": "Bibliothèque de réponses",
         "replies_button": "Gérer les modèles de réponse",
         "replies_caption": "Créer et gérer les réponses enregistrées pour des réponses rapides",
+        
+        # Workspace Profile
+        "workspace_title": "Profil de l'espace de travail",
+        "workspace_button": "Éditer le profil d'entreprise",
+        "workspace_caption": "Configurez l'identité de votre entreprise pour des réponses personnalisées",
+        "business_name": "Nom de l'entreprise",
+        "business_type": "Type d'entreprise",
+        "city": "Ville",
+        "phone": "Téléphone",
+        "hours": "Heures d'ouverture",
+        "booking_link": "Lien de réservation",
+        "location_link": "Lien de localisation",
+        "brand_tone": "Ton de la marque",
+        "lang_default": "Langue par défaut",
+        
+        # Plan & Limits
+        "plan_title": "Plan et limites",
+        "plan_button": "Voir les détails du plan",
+        "plan_caption": "Plan actuel et limites d'utilisation",
+        "current_plan": "Plan actuel",
+        "plan_free": "Gratuit (Local)",
+        "max_threads": "Fils max",
+        "max_replies": "Réponses max",
+        "unlimited": "Illimité",
         
         # Auth
         "sign_in": "Se connecter",

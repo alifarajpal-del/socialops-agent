@@ -60,6 +60,7 @@ from ui_components.inbox_view import inbox_view
 from ui_components.leads_view import leads_view
 from ui_components.replies_view import replies_view
 from ui_components.settings_channels_view import settings_channels_view
+from ui_components.workspace_view import workspace_view
 
 PAGE_SUBTITLES = {
     "dashboard": "Health Dashboard",
@@ -67,6 +68,7 @@ PAGE_SUBTITLES = {
     "vault": "Medical Vault",
     "settings": "Settings & Theme",
     "channels": "Channel Integrations",
+    "workspace": "Business Profile",
 }
 
 
@@ -200,6 +202,44 @@ def _render_settings_inner() -> None:
     
     st.divider()
     
+    # Workspace Profile
+    st.markdown("### 🏢 Workspace Profile")
+    if st.button("✏️ Edit Business Profile", use_container_width=True):
+        go_to("workspace")
+    
+    st.divider()
+    
+    # Plan & Limits (Sprint 4)
+    st.markdown("### 📊 Plan & Limits")
+    from services.settings_flags import get_plan, get_plan_limits, enable_billing
+    
+    plan = get_plan()
+    limits = get_plan_limits()
+    
+    col1, col2 = st.columns(2)
+    
+    with col1:
+        st.metric("Current Plan", plan.capitalize())
+        st.caption("Local mode (no billing)")
+    
+    with col2:
+        if limits['max_threads'] == -1:
+            st.metric("Max Threads", "Unlimited")
+        else:
+            st.metric("Max Threads", limits['max_threads'])
+        
+        if limits['max_replies'] == -1:
+            st.metric("Max Replies", "Unlimited")
+        else:
+            st.metric("Max Replies", limits['max_replies'])
+    
+    if enable_billing():
+        st.info("💰 Billing enabled - Upgrade available")
+    else:
+        st.info("💡 Tip: All features work locally without payment")
+    
+    st.divider()
+    
     # Link to CRM/Leads (Sprint 2)
     st.markdown(f"### 📊 {t('crm_leads_title')}")
     if st.button(f"👥 {t('crm_leads_button')}", use_container_width=True):
@@ -266,7 +306,7 @@ def main() -> None:
     page = get_active_page()
 
     # Don't show header/back button for inbox (has its own header)
-    if page not in ["inbox", "channels", "leads", "replies"]:
+    if page not in ["inbox", "channels", "leads", "replies", "workspace"]:
         render_brand_header(subtitle=PAGE_SUBTITLES.get(page, "BioGuard AI"))
         if page != "dashboard" and st.session_state.get("nav_stack"):
             if st.button("⬅️ رجوع", key="back_btn_top"):
@@ -286,6 +326,8 @@ def main() -> None:
         render_settings_page()
     elif page == "channels":
         settings_channels_view()
+    elif page == "workspace":
+        workspace_view()
 
     render_bottom_navigation()
 
