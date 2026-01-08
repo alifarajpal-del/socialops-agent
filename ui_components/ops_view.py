@@ -30,6 +30,22 @@ def ops_view():
         st.title(f"📊 {get_text('ops_title', lang)}")
         st.caption(get_text('ops_caption', lang))
         
+        # Demo Status Banner (Sprint 5.4)
+        from services.demo_seed import get_demo_stats
+        
+        col_demo, col_refresh_demo = st.columns([4, 1])
+        
+        with col_demo:
+            stats = get_demo_stats()
+            if not stats['exists']:
+                st.info(get_text('demo_status_empty', lang))
+            else:
+                st.success(f"{get_text('demo_status_present', lang)} {stats['threads']} threads, {stats['leads']} leads, {stats['tasks']} tasks, {stats['replies']} replies")
+        
+        with col_refresh_demo:
+            if st.button(f"🔄 {get_text('refresh_demo_status', lang)}", use_container_width=True, key="refresh_ops_demo"):
+                st.rerun()
+        
         st.divider()
         
         # SLA Status Section

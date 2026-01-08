@@ -22,6 +22,117 @@ def _is_demo_id(value: str) -> bool:
     return any(pattern in value for pattern in ['demo_salon_', 'demo_store_', 'demo_clinic_'])
 
 
+def demo_exists(db_path: Optional[str] = None) -> bool:
+    """
+    Check if any demo data exists in the database.
+    
+    Args:
+        db_path: Optional database path (uses get_db_path() if None)
+    
+    Returns:
+        True if any demo thread exists, False otherwise
+    """
+    if db_path is None:
+        db_path = get_db_path()
+    
+    try:
+        conn = sqlite3.connect(db_path)
+        cursor = conn.cursor()
+        
+        cursor.execute("""
+            SELECT COUNT(*) FROM threads 
+            WHERE thread_id LIKE 'demo_salon_%' 
+               OR thread_id LIKE 'demo_store_%' 
+               OR thread_id LIKE 'demo_clinic_%'
+        """)
+        count = cursor.fetchone()[0]
+        conn.close()
+        
+        return count > 0
+    except Exception as e:
+        logger.error(f"Error checking demo existence: {e}", exc_info=True)
+        return False
+
+
+def get_demo_stats(db_path: Optional[str] = None) -> dict:
+    """
+    Get statistics about demo data in the database.
+    
+    Safe to call on empty database.
+    
+    Args:
+        db_path: Optional database path (uses get_db_path() if None)
+    
+    Returns:
+        Dict with structure: {
+            "exists": bool,
+            "threads": int,
+            "leads": int,
+            "tasks": int,
+            "replies": int
+        }
+    """
+    if db_path is None:
+        db_path = get_db_path()
+    
+    stats = {
+        'exists': False,
+        'threads': 0,
+        'leads': 0,
+        'tasks': 0,
+        'replies': 0
+    }
+    
+    try:
+        conn = sqlite3.connect(db_path)
+        cursor = conn.cursor()
+        
+        # Count demo threads
+        cursor.execute("""
+            SELECT COUNT(*) FROM threads 
+            WHERE thread_id LIKE 'demo_salon_%' 
+               OR thread_id LIKE 'demo_store_%' 
+               OR thread_id LIKE 'demo_clinic_%'
+        """)
+        stats['threads'] = cursor.fetchone()[0]
+        
+        # Count demo leads (linked by thread_id)
+        cursor.execute("""
+            SELECT COUNT(*) FROM leads 
+            WHERE thread_id LIKE 'demo_salon_%' 
+               OR thread_id LIKE 'demo_store_%' 
+               OR thread_id LIKE 'demo_clinic_%'
+        """)
+        stats['leads'] = cursor.fetchone()[0]
+        
+        # Count demo tasks (linked by related_thread_id)
+        cursor.execute("""
+            SELECT COUNT(*) FROM tasks 
+            WHERE related_thread_id LIKE 'demo_salon_%' 
+               OR related_thread_id LIKE 'demo_store_%' 
+               OR related_thread_id LIKE 'demo_clinic_%'
+        """)
+        stats['tasks'] = cursor.fetchone()[0]
+        
+        # Count demo replies (identified by tags)
+        cursor.execute("""
+            SELECT COUNT(*) FROM replies 
+            WHERE tags LIKE '%salon%' 
+               OR tags LIKE '%store%' 
+               OR tags LIKE '%clinic%'
+        """)
+        stats['replies'] = cursor.fetchone()[0]
+        
+        conn.close()
+        
+        stats['exists'] = stats['threads'] > 0
+        
+        return stats
+    except Exception as e:
+        logger.error(f"Error getting demo stats: {e}", exc_info=True)
+        return stats
+
+
 def seed_demo_all(db_path: Optional[str] = None) -> dict:
     """
     Seed database with demo data for all sectors (salon, store, clinic).

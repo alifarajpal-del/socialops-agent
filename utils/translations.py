@@ -109,7 +109,7 @@ TRANSLATIONS = {
         "export_threads": "Export Threads",
         "export_all": "Export All (ZIP)",
         
-        # Demo Seed (Sprint 5.3)
+        # Demo Seed (Sprint 5.3 & 5.4)
         "load_demo": "Load Demo Inbox",
         "demo_exists": "Demo data already exists",
         "demo_loaded": "Demo loaded",
@@ -119,6 +119,16 @@ TRANSLATIONS = {
         "regenerate_demo": "Regenerate",
         "clear_demo": "Clear",
         "bulk_empty_hint": "No threads yet. Load demo data to get started.",
+        
+        # Demo Status (Sprint 5.4)
+        "demo_status_title": "Demo Status",
+        "demo_status_empty": "No demo data found. Load demo to explore the app.",
+        "demo_status_present": "Demo data is loaded.",
+        "refresh_demo_status": "Refresh",
+        "confirm_clear_demo": "This will permanently delete demo data. Are you sure?",
+        "confirm_regenerate_demo": "This will clear and regenerate demo data. Continue?",
+        "confirm": "Confirm",
+        "cancel": "Cancel",
         
         "scanned_image": "Scanned Image",
         
@@ -239,7 +249,7 @@ TRANSLATIONS = {
         "export_threads": "تصدير المحادثات",
         "export_all": "تصدير الكل (ZIP)",
         
-        # Demo Seed (Sprint 5.3)
+        # Demo Seed (Sprint 5.3 & 5.4)
         "load_demo": "تحميل بيانات تجريبية",
         "demo_exists": "البيانات التجريبية موجودة بالفعل",
         "demo_loaded": "تم تحميل البيانات التجريبية",
@@ -249,6 +259,16 @@ TRANSLATIONS = {
         "regenerate_demo": "إعادة توليد",
         "clear_demo": "مسح",
         "bulk_empty_hint": "لا توجد محادثات بعد. قم بتحميل بيانات تجريبية للبدء.",
+        
+        # Demo Status (Sprint 5.4)
+        "demo_status_title": "حالة الديمو",
+        "demo_status_empty": "لا توجد بيانات ديمو. حمّل الديمو لاستكشاف التطبيق.",
+        "demo_status_present": "بيانات الديمو محمّلة.",
+        "refresh_demo_status": "تحديث",
+        "confirm_clear_demo": "سيتم حذف بيانات الديمو نهائيًا. هل أنت متأكد؟",
+        "confirm_regenerate_demo": "سيتم مسح الديمو وإعادة توليده. هل تريد المتابعة؟",
+        "confirm": "تأكيد",
+        "cancel": "إلغاء",
         
         # Auth
         "sign_in": "تسجيل الدخول",
@@ -368,7 +388,7 @@ TRANSLATIONS = {
         "export_threads": "Exporter les fils",
         "export_all": "Tout exporter (ZIP)",
         
-        # Demo Seed (Sprint 5.3)
+        # Demo Seed (Sprint 5.3 & 5.4)
         "load_demo": "Charger des données de démonstration",
         "demo_exists": "Les données de démonstration existent déjà",
         "demo_loaded": "Démonstration chargée",
@@ -378,6 +398,16 @@ TRANSLATIONS = {
         "regenerate_demo": "Régénérer",
         "clear_demo": "Effacer",
         "bulk_empty_hint": "Aucun fil pour l'instant. Chargez des données de démonstration pour commencer.",
+        
+        # Demo Status (Sprint 5.4)
+        "demo_status_title": "Statut Démo",
+        "demo_status_empty": "Aucune donnée de démonstration. Chargez la démo pour explorer l'application.",
+        "demo_status_present": "Les données de démonstration sont chargées.",
+        "refresh_demo_status": "Rafraîchir",
+        "confirm_clear_demo": "Cela supprimera définitivement les données de démo. Êtes-vous sûr ?",
+        "confirm_regenerate_demo": "Cela effacera et régénérera la démo. Continuer ?",
+        "confirm": "Confirmer",
+        "cancel": "Annuler",
         
         # Auth
         "sign_in": "Se connecter",
