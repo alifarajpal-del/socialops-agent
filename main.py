@@ -1,6 +1,6 @@
 """
-BioGuard AI - Native Mobile Experience
-Modular UI with bottom navigation, theme wheel, and AR camera.
+SocialOps Agent - Social Media Operations Platform
+Modular UI with bottom navigation, theme wheel, and operations dashboard.
 """
 
 import os
@@ -21,12 +21,12 @@ def _get_page_icon():
         try:
             return Image.open(logo_path)
         except Exception:
-            return "🧬"
-    return "🧬"
+            return "💬"
+    return "💬"
 
 
 st.set_page_config(
-    page_title="BioGuard AI",
+    page_title="SocialOps Agent",
     page_icon=_get_page_icon(),
     layout="wide",
     initial_sidebar_state="collapsed",

@@ -253,14 +253,14 @@ def render_oauth_login() -> None:
         logo_image.save(buffer, format="PNG")
         logo_b64 = base64.b64encode(buffer.getvalue()).decode()
         st.markdown(
-            f'<img src="data:image/png;base64,{logo_b64}" class="oauth-logo-img" alt="BioGuard Logo"/>',
+            f'<img src="data:image/png;base64,{logo_b64}" class="oauth-logo-img" alt="SocialOps Logo"/>',
             unsafe_allow_html=True
         )
     else:
         st.markdown('<div class="oauth-logo">🧬</div>', unsafe_allow_html=True)
     st.markdown(
         '''
-        <div class="oauth-title">BioGuard AI</div>
+        <div class="oauth-title">SocialOps Agent</div>
         <div class="oauth-subtitle">
             Secure health & nutrition assistant<br>
             Privacy-first · Real-time · Predictive

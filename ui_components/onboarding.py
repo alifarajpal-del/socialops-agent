@@ -11,7 +11,7 @@ def get_screens(lang: str) -> list:
         {
             "title": "حماية صحتك تبدأ من هنا",
             "body": """
-            **BioGuard AI** يساعدك على:
+            **SocialOps Agent** يساعدك على:
             - 📊 تحليل المنتجات الغذائية فوراً
             - ⚠️ اكتشاف المخاطر الصحية والحساسية
             - 🎯 الحصول على توصيات مخصصة
@@ -99,7 +99,7 @@ def render_onboarding() -> None:
     
     st.markdown('<div class="onboarding-container">', unsafe_allow_html=True)
     
-    st.markdown('<div class="welcome-title">مرحباً بك في BioGuard AI 🛡️</div>', unsafe_allow_html=True)
+    st.markdown('<div class="welcome-title">مرحباً بك في SocialOps Agent 💬</div>', unsafe_allow_html=True)
     
     for screen in screens:
         st.markdown(f'''

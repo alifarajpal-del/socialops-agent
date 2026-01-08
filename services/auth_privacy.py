@@ -102,7 +102,7 @@ class AuthPrivacyManager:
         
         return totp.provisioning_uri(
             name=user_email,
-            issuer_name='BioGuard AI'
+            issuer_name='SocialOps Agent'
         )
     
     def verify_2fa_token(self, user_id: str, token: str) -> bool:

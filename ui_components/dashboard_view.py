@@ -33,6 +33,49 @@ def _render_dashboard_inner() -> None:
     
     log_user_action(logger, 'dashboard_view', {})
     
+    # Hero Header (Rebranding)
+    st.markdown(f"""
+    <div style="padding: 1.5rem 0; margin-bottom: 1.5rem; border-bottom: 1px solid {theme.get('background_secondary', '#e0e0e0')};">
+        <h1 style="font-size: 2rem; font-weight: 700; color: {theme.get('text_primary', '#000')}; margin: 0 0 0.5rem 0; display: flex; align-items: center; gap: 0.5rem;">
+            💬 {t('app_title')}
+        </h1>
+        <p style="font-size: 1rem; color: {theme.get('text_secondary', '#666')}; margin: 0;">
+            {t('app_subtitle')}
+        </p>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    # Quick KPI Cards
+    from database.db_manager import get_db_path
+    import sqlite3
+    
+    col_k1, col_k2, col_k3 = st.columns(3)
+    
+    try:
+        conn = sqlite3.connect(get_db_path())
+        cursor = conn.cursor()
+        
+        with col_k1:
+            cursor.execute("SELECT COUNT(*) FROM threads")
+            thread_count = cursor.fetchone()[0]
+            st.metric(t('app_hero_threads'), thread_count, delta=None)
+        
+        with col_k2:
+            cursor.execute("SELECT COUNT(*) FROM leads")
+            lead_count = cursor.fetchone()[0]
+            st.metric(t('app_hero_leads'), lead_count, delta=None)
+        
+        with col_k3:
+            cursor.execute("SELECT COUNT(*) FROM tasks WHERE status != 'completed'")
+            task_count = cursor.fetchone()[0]
+            st.metric(t('app_hero_tasks'), task_count, delta=None)
+        
+        conn.close()
+    except Exception as e:
+        logger.error(f"Failed to fetch KPI metrics: {e}")
+    
+    st.divider()
+    
     st.markdown(f"## 🏠 {t('dashboard_title')}")
     
     # Demo Status Section (Sprint 5.4 & 5.6)

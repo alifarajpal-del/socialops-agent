@@ -1,1 +1,1 @@
-"""Utility functions for BioGuard AI."""
+"""Utility functions for SocialOps Agent."""

@@ -1,1 +1,1 @@
-"""UI components for the BioGuard AI native mobile experience."""
+"""UI components for the SocialOps Agent platform."""

@@ -4,7 +4,7 @@ import streamlit as st
 
 _STRINGS = {
     "en": {
-        "app_name": "BioGuard AI",
+        "app_name": "SocialOps Agent",
         "dashboard_title": "Dashboard",
         "scan_title": "Scan",
         "vault_title": "Vault",
@@ -96,10 +96,10 @@ _STRINGS = {
         "email": "Email",
         "password": "Password",
         "password_confirm": "Confirm Password",
-        "login_title": "Welcome to BioGuard AI",
+        "login_title": "Welcome to SocialOps Agent",
         "login_subtitle": "Sign in to your account",
         "register_title": "Create an Account",
-        "register_subtitle": "Join BioGuard AI",
+        "register_subtitle": "Join SocialOps Agent",
         "login_button": "Sign In",
         "register_button": "Create Account",
         "already_have_account": "Already have an account?",
@@ -122,7 +122,7 @@ _STRINGS = {
         "is_admin": "Admin",
     },
     "ar": {
-        "app_name": "BioGuard AI",
+        "app_name": "SocialOps Agent",
         "dashboard_title": "لوحة التحكم",
         "scan_title": "الكاميرا",
         "vault_title": "المخزن",
@@ -214,10 +214,10 @@ _STRINGS = {
         "email": "البريد الإلكتروني",
         "password": "كلمة المرور",
         "password_confirm": "تأكيد كلمة المرور",
-        "login_title": "مرحبا بك في BioGuard AI",
+        "login_title": "مرحبا بك في SocialOps Agent",
         "login_subtitle": "سجل الدخول إلى حسابك",
         "register_title": "إنشاء حساب جديد",
-        "register_subtitle": "انضم إلى BioGuard AI",
+        "register_subtitle": "انضم إلى SocialOps Agent",
         "login_button": "دخول",
         "register_button": "إنشاء حساب",
         "already_have_account": "هل لديك حساب بالفعل؟",

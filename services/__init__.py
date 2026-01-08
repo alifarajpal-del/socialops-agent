@@ -1,1 +1,1 @@
-"""Microservices module for BioGuard AI."""
+"""Microservices module for SocialOps Agent."""

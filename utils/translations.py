@@ -1,7 +1,14 @@
-"""Multi-language translations for BioGuard AI."""
+"""Multi-language translations for SocialOps Agent."""
 
 TRANSLATIONS = {
     "en": {
+        # Hero (Rebranding)
+        "app_title": "SocialOps Agent",
+        "app_subtitle": "Social Media Operations Platform - Manage conversations, leads & tasks",
+        "app_hero_threads": "Active Threads",
+        "app_hero_leads": "Total Leads",
+        "app_hero_tasks": "Open Tasks",
+        
         # Navigation
         "dashboard": "Dashboard",
         "inbox": "Inbox",
@@ -9,15 +16,15 @@ TRANSLATIONS = {
         "settings": "Settings",
         
         # Common
-        "welcome": "Welcome to BioGuard AI",
+        "welcome": "Welcome to SocialOps Agent",
         "back": "Back",
         "retry": "Retry",
         "error_occurred": "An error occurred. Please try again.",
         
         # Onboarding
         "lets_start": "Let's Start",
-        "onboarding_title_1": "Welcome to BioGuard AI",
-        "onboarding_body_1": "AI-powered health assistant for real-time nutrition and product analysis.",
+        "onboarding_title_1": "Welcome to SocialOps Agent",
+        "onboarding_body_1": "AI-powered social media operations platform for managing conversations, leads, and tasks.",
         "onboarding_title_2": "Privacy First",
         "onboarding_body_2": "Your data is stored on your device/account with optional sync for your medical files.",
         "onboarding_title_3": "How Scanning Works",
@@ -168,6 +175,13 @@ TRANSLATIONS = {
     },
     
     "ar": {
+        # Hero (Rebranding)
+        "app_title": "SocialOps Agent",
+        "app_subtitle": "منصة إدارة عمليات السوشيال ميديا - المحادثات والعملاء والمهام",
+        "app_hero_threads": "المحادثات النشطة",
+        "app_hero_leads": "إجمالي العملاء",
+        "app_hero_tasks": "المهام المفتوحة",
+        
         # Navigation
         "dashboard": "الرئيسية",
         "inbox": "البريد",
@@ -175,15 +189,15 @@ TRANSLATIONS = {
         "settings": "الإعدادات",
         
         # Common
-        "welcome": "مرحباً بك في BioGuard AI",
+        "welcome": "مرحباً بك في SocialOps Agent",
         "back": "رجوع",
         "retry": "إعادة المحاولة",
         "error_occurred": "حدث خطأ. الرجاء المحاولة مرة أخرى.",
         
         # Onboarding
         "lets_start": "لنبدأ",
-        "onboarding_title_1": "مرحباً بك في BioGuard AI",
-        "onboarding_body_1": "مساعد صحي مدعّم بالذكاء الاصطناعي لتحليل التغذية والمنتجات في الوقت الفعلي.",
+        "onboarding_title_1": "مرحباً بك في SocialOps Agent",
+        "onboarding_body_1": "منصة عمليات السوشيال ميديا بالذكاء الاصطناعي لإدارة المحادثات والعملاء والمهام.",
         "onboarding_title_2": "الخصوصية أولاً",
         "onboarding_body_2": "يتم حفظ بياناتك على جهازك/حسابك مع مزامنة اختيارية لملفاتك الطبية.",
         "onboarding_title_3": "كيف يعمل المسح",
@@ -333,6 +347,13 @@ TRANSLATIONS = {
     },
     
     "fr": {
+        # Hero (Rebranding)
+        "app_title": "SocialOps Agent",
+        "app_subtitle": "Plateforme d'opérations médias sociaux - Conversations, prospects et tâches",
+        "app_hero_threads": "Fils actifs",
+        "app_hero_leads": "Total des prospects",
+        "app_hero_tasks": "Tâches ouvertes",
+        
         # Navigation
         "dashboard": "Tableau de bord",
         "scan": "Scanner",
@@ -341,15 +362,15 @@ TRANSLATIONS = {
         "settings": "Paramètres",
         
         # Common
-        "welcome": "Bienvenue sur BioGuard AI",
+        "welcome": "Bienvenue sur SocialOps Agent",
         "back": "Retour",
         "retry": "Réessayer",
         "error_occurred": "Une erreur s'est produite. Veuillez réessayer.",
         
         # Onboarding
         "lets_start": "Commençons",
-        "onboarding_title_1": "Bienvenue sur BioGuard AI",
-        "onboarding_body_1": "Assistant de santé alimenté par l'IA pour l'analyse nutritionnelle et des produits en temps réel.",
+        "onboarding_title_1": "Bienvenue sur SocialOps Agent",
+        "onboarding_body_1": "Plateforme d'opérations médias sociaux alimentée par l'IA pour gérer les conversations, prospects et tâches.",
         "onboarding_title_2": "Confidentialité d'abord",
         "onboarding_body_2": "Vos données sont stockées sur votre appareil/compte avec synchronisation optionnelle pour vos dossiers médicaux.",
         "onboarding_title_3": "Comment fonctionne le scan",

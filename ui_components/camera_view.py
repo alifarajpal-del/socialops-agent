@@ -694,7 +694,7 @@ def _render_camera_inner() -> None:
         if st.button("⬅️ Back", key="camera_back_home"):
             go_back()
 
-        render_brand_watermark("BioGuard AI")
+        render_brand_watermark("SocialOps Agent")
 
         _inject_camera_css()
 
@@ -787,7 +787,7 @@ def _render_camera_inner() -> None:
 
         # Start WebRTC with custom processor
         ctx = webrtc_streamer(
-            key="bioguard-ar-live",
+            key="socialops-ar-live",
             mode=WebRtcMode.SENDRECV,
             rtc_configuration=rtc_config,
             media_stream_constraints=constraints,

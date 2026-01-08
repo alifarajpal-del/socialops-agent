@@ -1,5 +1,5 @@
 """
-Pytest configuration and fixtures for BioGuard AI tests.
+Pytest configuration and fixtures for SocialOps Agent tests.
 """
 
 import pytest

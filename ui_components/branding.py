@@ -1,4 +1,4 @@
-"""Branding helpers for BioGuard AI logo usage across screens."""
+"""Branding helpers for SocialOps Agent logo usage across screens."""
 
 import base64
 from functools import lru_cache
@@ -101,7 +101,7 @@ def render_brand_header(subtitle: str = "") -> None:
     """
 
     logo_html = (
-        f'<img src="data:image/png;base64,{logo_b64}" alt="BioGuard AI logo" class="brand-logo" />'
+        f'<img src="data:image/png;base64,{logo_b64}" alt="SocialOps Agent logo" class="brand-logo" />'
         if logo_b64 else
         '<div class="brand-emoji">🛡️</div>'
     )
@@ -110,14 +110,14 @@ def render_brand_header(subtitle: str = "") -> None:
     <div class="brand-header">
         {logo_html}
         <div class="brand-copy">
-            <div class="brand-title">BioGuard AI</div>
+            <div class="brand-title">SocialOps Agent</div>
             {subtitle_html}
         </div>
     </div>
     """, unsafe_allow_html=True)
 
 
-def render_brand_watermark(label: str = "BioGuard AI") -> None:
+def render_brand_watermark(label: str = "SocialOps Agent") -> None:
     """Render a small floating brand watermark for immersive views like camera."""
     theme = get_current_theme()
     logo_b64 = load_logo_base64()
@@ -179,7 +179,7 @@ def render_brand_watermark(label: str = "BioGuard AI") -> None:
     """
 
     logo_html = (
-        f'<img src="data:image/png;base64,{logo_b64}" alt="BioGuard AI logo" />'
+        f'<img src="data:image/png;base64,{logo_b64}" alt="SocialOps Agent logo" />'
         if logo_b64 else
         '<div class="wm-emoji">🛡️</div>'
     )

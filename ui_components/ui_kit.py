@@ -1,5 +1,5 @@
 """UI Kit: Consistent cards, badges, metrics, and component system.
-Enterprise-grade design system for BioGuard AI.
+Enterprise-grade design system for SocialOps Agent.
 """
 
 import streamlit as st
