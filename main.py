@@ -115,9 +115,9 @@ PAGE_SUBTITLES = {
 def init_session_state() -> None:
     """Initialize session state variables."""
     if "user_id" not in st.session_state:
-        st.session_state.user_id = None
+        st.session_state.user_id = "default_user"  # Auto-login as default user
     if "authenticated" not in st.session_state:
-        st.session_state.authenticated = False
+        st.session_state.authenticated = True  # Always authenticated by default
     if "user_profile" not in st.session_state:
         st.session_state.user_profile = None
     if "active_theme" not in st.session_state:
@@ -132,7 +132,7 @@ def init_session_state() -> None:
     get_lang()  # This will set to "en" if not already set
     ensure_nav_state()
     if "onboarding_done" not in st.session_state:
-        st.session_state.onboarding_done = False
+        st.session_state.onboarding_done = True  # Skip onboarding by default
     
     # Register plugins (Sprint A)
     if "plugins_registered" not in st.session_state:
@@ -367,13 +367,15 @@ def main() -> None:
     st.markdown(MOBILE_VIEWPORT, unsafe_allow_html=True)
     inject_global_css()
 
-    if not st.session_state.authenticated:
-        render_auth_screen()
-        return
+    # Skip authentication - go directly to app
+    # if not st.session_state.authenticated:
+    #     render_auth_screen()
+    #     return
 
-    if not st.session_state.onboarding_done:
-        render_onboarding()
-        return
+    # Skip onboarding - go directly to app  
+    # if not st.session_state.onboarding_done:
+    #     render_onboarding()
+    #     return
 
     def _handle_swipe_navigation() -> None:
         """Update current_page based on swipe gestures."""
