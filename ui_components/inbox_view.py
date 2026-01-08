@@ -12,10 +12,11 @@ Displays conversation threads from all platforms with:
 import streamlit as st
 import json
 import logging
-from datetime import datetime
+from datetime import datetime, timedelta
 from typing import Optional
 
 from services.inbox_store import get_inbox_store
+from services.crm_store import CRMStore
 from services.inbox_engine import get_lang
 from services.plugins_registry import route_to_plugin
 from services.settings_flags import enable_send
@@ -169,6 +170,80 @@ def render_thread_detail(store, thread_id):
         for msg in messages:
             st.markdown(f"**{msg['sender_name']}** · {_format_timestamp(msg['timestamp'])}")
             st.info(msg['text'])
+    
+    st.divider()
+    
+    # CRM Actions
+    with ui_kit.card(title="CRM Actions", icon="📊"):
+        crm = CRMStore()
+        existing_lead = crm.get_lead_by_thread(thread_id)
+        
+        if existing_lead:
+            st.success(f"✅ Lead #{existing_lead['id']}: {existing_lead['name'] or 'Unnamed'}")
+            st.caption(f"Status: {existing_lead['status'].upper()}")
+            
+            # Quick tags
+            current_tags = existing_lead.get('tags', [])
+            tag_options = ["hot-lead", "follow-up", "vip", "new-customer", "returning"]
+            updated_tags = st.multiselect(
+                "Tags",
+                options=tag_options,
+                default=current_tags,
+                key=f"tags_{thread_id}"
+            )
+            
+            if updated_tags != current_tags:
+                if st.button("💾 Save Tags", key=f"save_tags_{thread_id}"):
+                    crm.set_lead_tags(existing_lead['id'], updated_tags)
+                    st.success("Tags updated!")
+                    st.rerun()
+            
+            # Add note
+            new_note = st.text_area(
+                "Add Note",
+                placeholder="Enter note about this lead...",
+                key=f"note_{thread_id}",
+                height=80
+            )
+            
+            if new_note and st.button("📝 Add Note", key=f"add_note_{thread_id}"):
+                crm.add_lead_note(existing_lead['id'], new_note)
+                st.success("Note added!")
+                st.rerun()
+            
+            # Show existing notes
+            if existing_lead.get('notes'):
+                with st.expander("📋 View Notes"):
+                    st.text(existing_lead['notes'])
+            
+            # Follow-up task
+            col1, col2 = st.columns(2)
+            with col1:
+                if st.button("⏰ Follow-up in 24h", key=f"followup_{thread_id}", use_container_width=True):
+                    due_at = (datetime.utcnow() + timedelta(hours=24)).isoformat()
+                    crm.create_task(
+                        title=f"Follow up with {last_msg['sender_name']}",
+                        due_at_iso=due_at,
+                        lead_id=existing_lead['id'],
+                        thread_id=thread_id,
+                        task_type="followup"
+                    )
+                    st.success("✅ Task created!")
+            
+            with col2:
+                if st.button("📁 View in Leads", key=f"view_lead_{thread_id}", use_container_width=True):
+                    from ui_components.router import go_to
+                    st.session_state.selected_lead_id = existing_lead['id']
+                    go_to('leads')
+                    st.rerun()
+        else:
+            st.info("No lead created for this conversation yet")
+            
+            if st.button("➕ Create Lead", key=f"create_lead_{thread_id}", type="primary", use_container_width=True):
+                lead_name = last_msg.get('sender_name', 'Unknown')
+                lead_id = crm.create_lead_from_thread(thread_id, thread_info['platform'], lead_name)
+                st.success(f"✅ Lead #{lead_id} created!")
+                st.rerun()
     
     st.divider()
     

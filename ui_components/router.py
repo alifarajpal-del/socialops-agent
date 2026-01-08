@@ -2,7 +2,7 @@
 
 import streamlit as st
 
-PAGES = ["dashboard", "inbox", "vault", "settings", "channels"]
+PAGES = ["dashboard", "inbox", "leads", "vault", "settings", "channels"]
 
 
 def ensure_nav_state() -> None:

@@ -57,6 +57,7 @@ except ImportError:
 
 from ui_components.camera_view import render_camera_view as render_camera_legacy
 from ui_components.inbox_view import inbox_view
+from ui_components.leads_view import leads_view
 from ui_components.settings_channels_view import settings_channels_view
 
 PAGE_SUBTITLES = {
@@ -248,7 +249,7 @@ def main() -> None:
     page = get_active_page()
 
     # Don't show header/back button for inbox (has its own header)
-    if page not in ["inbox", "channels"]:
+    if page not in ["inbox", "channels", "leads"]:
         render_brand_header(subtitle=PAGE_SUBTITLES.get(page, "BioGuard AI"))
         if page != "dashboard" and st.session_state.get("nav_stack"):
             if st.button("⬅️ رجوع", key="back_btn_top"):
@@ -258,6 +259,8 @@ def main() -> None:
         render_dashboard()
     elif page == "inbox":
         inbox_view()
+    elif page == "leads":
+        leads_view()
     elif page == "vault":
         render_vault()
     elif page == "settings":
