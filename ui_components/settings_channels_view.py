@@ -9,7 +9,7 @@ import streamlit as st
 import logging
 from typing import Dict, Any, List
 
-from ui_components import ui_kit
+from ui_components.ui_kit import inject_ui_kit_css, ui_page, ui_card, ui_badge, card
 
 logger = logging.getLogger(__name__)
 
@@ -82,7 +82,7 @@ def check_whatsapp_credentials() -> Dict[str, Any]:
 
 def render_meta_section():
     """Render Meta (Instagram/Facebook) integration status."""
-    with ui_kit.card(title="Meta Platform (Instagram & Facebook)", icon="📷"):
+    with card(title="Meta Platform (Instagram & Facebook)", icon="📷"):
         status = check_meta_credentials()
         
         if status['configured']:
@@ -135,7 +135,7 @@ def render_meta_section():
 
 def render_whatsapp_section():
     """Render WhatsApp Business API integration status."""
-    with ui_kit.card(title="WhatsApp Business API", icon="💬"):
+    with card(title="WhatsApp Business API", icon="💬"):
         status = check_whatsapp_credentials()
         
         if status['configured']:
@@ -183,7 +183,7 @@ def render_whatsapp_section():
 def settings_channels_view():
     """Main entry point for channel settings view."""
     try:
-        ui_kit.inject_ui_kit_css()
+        inject_ui_kit_css()
         
         st.title("🔌 Channel Integrations")
         st.caption("Configure Instagram, Facebook, and WhatsApp connections")

@@ -10,7 +10,7 @@ from datetime import datetime
 
 from services.crm_store import CRMStore
 from services.inbox_store import get_inbox_store
-from ui_components import ui_kit
+from ui_components.ui_kit import inject_ui_kit_css, ui_page, ui_card, ui_badge, card
 from ui_components.router import go_to
 
 logger = logging.getLogger(__name__)
@@ -28,7 +28,7 @@ def render_lead_card(lead: dict, crm: CRMStore):
     """Render a single lead card."""
     lead_id = lead['id']
     
-    with ui_kit.card(title=f"Lead #{lead_id}", icon="👤"):
+    with card(title=f"Lead #{lead_id}", icon="👤"):
         # Lead name
         name = lead.get('name') or 'Unnamed Lead'
         st.markdown(f"### {name}")
@@ -90,7 +90,7 @@ def render_lead_card(lead: dict, crm: CRMStore):
 
 def render_tasks_section(crm: CRMStore):
     """Render tasks section."""
-    with ui_kit.card(title="Upcoming Tasks", icon="✅"):
+    with card(title="Upcoming Tasks", icon="✅"):
         tasks = crm.list_tasks(include_completed=False)
         
         if not tasks:
@@ -127,10 +127,10 @@ def leads_view():
     try:
         # Inject UI Kit CSS with theme
         theme = st.session_state.get("theme", "light")
-        ui_kit.inject_ui_kit_css(theme)
+        inject_ui_kit_css(theme)
         
         # Page header with UI Kit
-        ui_kit.ui_page(
+        ui_page(
             title="Leads Pipeline",
             subtitle="Manage your leads through the sales pipeline",
             icon="📊"
@@ -140,13 +140,13 @@ def leads_view():
         crm = CRMStore()
         
         # Tasks section at top in card
-        with ui_kit.ui_card(title="Upcoming Tasks", icon="✅"):
+        with ui_card(title="Upcoming Tasks", icon="✅"):
             render_tasks_section(crm)
         
         st.divider()
         
         # Filters in card
-        with ui_kit.ui_card(title="Filters", icon="🔍"):
+        with ui_card(title="Filters", icon="🔍"):
             status_filter = st.selectbox(
                 "Status",
                 options=['all', 'new', 'qualified', 'followup', 'won', 'lost'],

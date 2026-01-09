@@ -13,7 +13,7 @@ from typing import Dict
 from services.crm_store import CRMStore
 from services.inbox_store import get_inbox_store
 from services.inbox_engine import compute_sla_status
-from ui_components import ui_kit
+from ui_components.ui_kit import inject_ui_kit_css, ui_page, ui_card, ui_badge, ui_kpi
 from utils.i18n import get_lang
 from utils.translations import get_text
 
@@ -25,12 +25,12 @@ def ops_view():
     try:
         # Inject UI Kit CSS with theme support
         theme = st.session_state.get("theme", "light")
-        ui_kit.inject_ui_kit_css(theme)
+        inject_ui_kit_css(theme)
         
         lang = get_lang()
         
         # Page header with ui_kit
-        ui_kit.ui_page(
+        ui_page(
             title=get_text('ops_title', lang),
             subtitle=get_text('ops_caption', lang),
             icon="📊"
@@ -55,7 +55,7 @@ def ops_view():
         st.divider()
         
         # Search & Filter Controls (Sprint 5.5) - wrapped in card
-        with ui_kit.ui_card(title=get_text('ops_search', lang), icon="🧰"):
+        with ui_card(title=get_text('ops_search', lang), icon="🧰"):
             col_search, col_sector, col_status, col_sort = st.columns([3, 2, 2, 2])
             
             with col_search:
@@ -93,25 +93,25 @@ def ops_view():
         st.divider()
         
         # SLA Status Section - wrapped in card
-        with ui_kit.ui_card(title=get_text('ops_sla_title', lang), icon="⏱️"):
+        with ui_card(title=get_text('ops_sla_title', lang), icon="⏱️"):
             _render_sla_metrics(search_query, sector_filter, status_filter, sort_option)
         
         st.divider()
         
         # Tasks Section - wrapped in card
-        with ui_kit.ui_card(title=get_text('ops_tasks_title', lang), icon="✅"):
+        with ui_card(title=get_text('ops_tasks_title', lang), icon="✅"):
             _render_tasks_metrics(search_query, sector_filter, status_filter, sort_option)
         
         st.divider()
         
         # Leads Section - wrapped in card
-        with ui_kit.ui_card(title=get_text('ops_leads_title', lang), icon="👤"):
+        with ui_card(title=get_text('ops_leads_title', lang), icon="👤"):
             _render_leads_metrics(search_query, sector_filter, status_filter, sort_option)
         
         st.divider()
         
         # Demo Activity Section (Sprint 5.6) - wrapped in card
-        with ui_kit.ui_card(title=get_text('demo_activity_title', lang), icon="🧪"):
+        with ui_card(title=get_text('demo_activity_title', lang), icon="🧪"):
             _render_demo_activity(lang)
     
     except Exception as e:
@@ -171,13 +171,13 @@ def _render_sla_metrics(search_query="", sector_filter="all", status_filter="all
         col1, col2, col3 = st.columns(3)
         
         with col1:
-            ui_kit.ui_kpi("🔴 Urgent", str(sla_counts['urgent']))
+            ui_kpi("🔴 Urgent", str(sla_counts['urgent']))
         
         with col2:
-            ui_kit.ui_kpi("🟡 Warning", str(sla_counts['warning']))
+            ui_kpi("🟡 Warning", str(sla_counts['warning']))
         
         with col3:
-            ui_kit.ui_kpi("🟢 OK", str(sla_counts['ok']))
+            ui_kpi("🟢 OK", str(sla_counts['ok']))
     
     except Exception as e:
         logger.error(f"SLA metrics error: {e}", exc_info=True)
@@ -246,13 +246,13 @@ def _render_tasks_metrics(search_query="", sector_filter="all", status_filter="a
         
         with col1:
             delta_str = f"-{overdue_count}" if overdue_count > 0 else None
-            ui_kit.ui_kpi("⚠️ Overdue", str(overdue_count), delta=delta_str)
+            ui_kpi("⚠️ Overdue", str(overdue_count), delta=delta_str)
         
         with col2:
-            ui_kit.ui_kpi("📅 Due Today", str(today_count))
+            ui_kpi("📅 Due Today", str(today_count))
         
         with col3:
-            ui_kit.ui_kpi("📆 Upcoming", str(upcoming_count))
+            ui_kpi("📆 Upcoming", str(upcoming_count))
         
         # Show overdue tasks list
         if overdue_count > 0:
@@ -315,19 +315,19 @@ def _render_leads_metrics(search_query="", sector_filter="all", status_filter="a
         col1, col2, col3, col4, col5 = st.columns(5)
         
         with col1:
-            ui_kit.ui_kpi("🆕 New", str(status_counts['new']))
+            ui_kpi("🆕 New", str(status_counts['new']))
         
         with col2:
-            ui_kit.ui_kpi("💬 Contacted", str(status_counts['contacted']))
+            ui_kpi("💬 Contacted", str(status_counts['contacted']))
         
         with col3:
-            ui_kit.ui_kpi("⭐ Qualified", str(status_counts['qualified']))
+            ui_kpi("⭐ Qualified", str(status_counts['qualified']))
         
         with col4:
-            ui_kit.ui_kpi("✅ Converted", str(status_counts['converted']))
+            ui_kpi("✅ Converted", str(status_counts['converted']))
         
         with col5:
-            ui_kit.ui_kpi("❌ Lost", str(status_counts['lost']))
+            ui_kpi("❌ Lost", str(status_counts['lost']))
     
     except Exception as e:
         logger.error(f"Leads metrics error: {e}", exc_info=True)

@@ -22,7 +22,7 @@ from services.plugins_registry import route_to_plugin
 from services.settings_flags import enable_send
 from services.workspace_store import WorkspaceStore
 from services.template_fill import fill_placeholders
-from ui_components import ui_kit
+from ui_components.ui_kit import inject_ui_kit_css, ui_page, ui_card, ui_badge, card
 
 logger = logging.getLogger(__name__)
 
@@ -61,23 +61,23 @@ def inbox_view():
     try:
         # Inject UI Kit CSS with theme
         theme = st.session_state.get("theme", "light")
-        ui_kit.inject_ui_kit_css(theme)
+        inject_ui_kit_css(theme)
         
         # Page header
-        ui_kit.ui_page(
+        ui_page(
             title="Inbox",
             subtitle="Manage conversations from all platforms",
             icon="📬"
         )
         
         # JSON import section in card
-        with ui_kit.ui_card(title="Manual Import (Testing)", icon="📥"):
+        with ui_card(title="Manual Import (Testing)", icon="📥"):
             render_json_import()
         
         st.divider()
         
         # Layout: filters + thread list + detail
-        with ui_kit.ui_card(title="Filters", icon="🔍"):
+        with ui_card(title="Filters", icon="🔍"):
             platform_filter = st.selectbox(
                 "Platform",
                 options=['all', 'instagram', 'facebook', 'whatsapp'],
@@ -88,7 +88,7 @@ def inbox_view():
         col_list, col_detail = st.columns([1, 2])
         
         with col_list:
-            with ui_kit.ui_card(title="Threads", icon="💬"):
+            with ui_card(title="Threads", icon="💬"):
                 store = get_inbox_store()
                 render_thread_list(store, platform_filter)
         
@@ -217,7 +217,7 @@ def render_thread_detail(store, thread_id):
     st.divider()
     
     # Messages timeline
-    with ui_kit.card(title="Messages", icon="💬"):
+    with card(title="Messages", icon="💬"):
         for msg in messages:
             st.markdown(f"**{msg['sender_name']}** · {_format_timestamp(msg['timestamp'])}")
             st.info(msg['text'])
@@ -225,7 +225,7 @@ def render_thread_detail(store, thread_id):
     st.divider()
     
     # CRM Actions
-    with ui_kit.card(title="CRM Actions", icon="📊"):
+    with card(title="CRM Actions", icon="📊"):
         crm = CRMStore()
         existing_lead = crm.get_lead_by_thread(thread_id)
         
@@ -338,7 +338,7 @@ def render_thread_detail(store, thread_id):
     st.divider()
     
     # Reply section
-    with ui_kit.card(title="AI Suggested Reply", icon="🤖"):
+    with card(title="AI Suggested Reply", icon="🤖"):
         # Get plugin and generate suggestion
         last_msg = messages[-1]
         lang = get_lang()
@@ -446,7 +446,7 @@ def render_thread_detail(store, thread_id):
 def _old_inbox_view():
     """Old inbox view - kept for reference."""
     try:
-        ui_kit.inject_ui_kit_css()
+        inject_ui_kit_css()
         
         # Header
         st.title("📬 Unified Inbox")

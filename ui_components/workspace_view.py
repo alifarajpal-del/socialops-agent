@@ -8,7 +8,7 @@ import streamlit as st
 import logging
 
 from services.workspace_store import WorkspaceStore
-from ui_components import ui_kit
+from ui_components.ui_kit import inject_ui_kit_css, ui_page, ui_card, ui_badge, card
 from utils.i18n import get_lang
 from utils.translations import get_text
 
@@ -20,12 +20,12 @@ def workspace_view():
     try:
         # Inject UI Kit CSS with theme
         theme = st.session_state.get("theme", "light")
-        ui_kit.inject_ui_kit_css(theme)
+        inject_ui_kit_css(theme)
         
         lang = get_lang()
         
         # Page header with UI Kit
-        ui_kit.ui_page(
+        ui_page(
             title=get_text('workspace_title', lang),
             subtitle=get_text('workspace_caption', lang),
             icon="🏢"
@@ -36,7 +36,7 @@ def workspace_view():
         profile = workspace_store.get_profile() or {}
         
         # Edit form in card
-        with ui_kit.ui_card(title=get_text('workspace_title', lang), icon="✏️"):
+        with ui_card(title=get_text('workspace_title', lang), icon="✏️"):
             with st.form(key="workspace_profile_form"):
                 st.markdown(f"### {get_text('workspace_title', lang)}")
                 
@@ -126,7 +126,7 @@ def workspace_view():
         # Show preview
         if profile:
             st.divider()
-            with ui_kit.card(title="Profile Preview", icon="👁️"):
+            with card(title="Profile Preview", icon="👁️"):
                 st.markdown(f"**{profile.get('business_name', 'N/A')}**")
                 st.caption(f"{profile.get('business_type', 'N/A').capitalize()} · {profile.get('city', 'N/A')}")
                 

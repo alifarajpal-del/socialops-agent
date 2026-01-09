@@ -8,7 +8,7 @@ import streamlit as st
 import logging
 
 from services.search_service import search_all, search_threads, search_leads, search_replies
-from ui_components import ui_kit
+from ui_components.ui_kit import inject_ui_kit_css, ui_page, ui_card, ui_badge, card
 from ui_components.router import go_to
 from utils.i18n import get_lang
 from utils.translations import get_text
@@ -19,7 +19,7 @@ logger = logging.getLogger(__name__)
 def search_view():
     """Main search view with tabs for different result types."""
     try:
-        ui_kit.inject_ui_kit_css()
+        inject_ui_kit_css()
         
         lang = get_lang()
         
@@ -78,7 +78,7 @@ def _render_results(results: list, lang: str):
     st.caption(f"Found {len(results)} result(s)")
     
     for result in results:
-        with ui_kit.card(title=_get_result_title(result), icon=_get_result_icon(result)):
+        with card(title=_get_result_title(result), icon=_get_result_icon(result)):
             st.caption(f"Type: {result['type'].capitalize()}")
             st.text(result['preview'])
             

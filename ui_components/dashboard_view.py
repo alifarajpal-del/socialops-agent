@@ -11,7 +11,7 @@ from datetime import datetime, timedelta
 from ui_components.theme_wheel import get_current_theme
 from ui_components.error_ui import safe_render
 from ui_components.micro_ux import skeleton_card, inject_skeleton_css
-from ui_components import ui_kit
+from ui_components.ui_kit import inject_ui_kit_css, ui_page, ui_card, ui_kpi, ui_badge, card
 from utils.logging_setup import get_logger, log_user_action
 from utils.i18n import t, get_lang
 
@@ -27,13 +27,13 @@ def _render_dashboard_inner() -> None:
     # Inject CSS with theme support
     theme = st.session_state.get("theme", "light")
     inject_skeleton_css()
-    ui_kit.inject_ui_kit_css(theme)
+    inject_ui_kit_css(theme)
     
     log_user_action(logger, 'dashboard_view', {})
     lang = get_lang()
     
     # 1) Hero Header with UI Kit
-    ui_kit.ui_page(
+    ui_page(
         title="SocialOps Agent",
         subtitle="Social Media Operations Platform - Manage conversations, leads & tasks",
         icon="💬"
@@ -51,17 +51,17 @@ def _render_dashboard_inner() -> None:
         with col_k1:
             cursor.execute("SELECT COUNT(*) FROM threads")
             thread_count = cursor.fetchone()[0]
-            ui_kit.ui_kpi("💬 Active Threads", str(thread_count))
+            ui_kpi("💬 Active Threads", str(thread_count))
         
         with col_k2:
             cursor.execute("SELECT COUNT(*) FROM leads")
             lead_count = cursor.fetchone()[0]
-            ui_kit.ui_kpi("👥 Total Leads", str(lead_count))
+            ui_kpi("👥 Total Leads", str(lead_count))
         
         with col_k3:
             cursor.execute("SELECT COUNT(*) FROM tasks WHERE status != 'completed'")
             task_count = cursor.fetchone()[0]
-            ui_kit.ui_kpi("📋 Open Tasks", str(task_count))
+            ui_kpi("📋 Open Tasks", str(task_count))
         
         conn.close()
     except Exception as e:
@@ -70,7 +70,7 @@ def _render_dashboard_inner() -> None:
     st.divider()
     
     # 3) Primary Action Row (Demo Management)
-    with ui_kit.ui_card(title="Demo Data Management", icon="🧪"):
+    with ui_card(title="Demo Data Management", icon="🧪"):
         demo_col1, demo_col2, demo_col3 = st.columns(3)
         
         if 'demo_busy' not in st.session_state:
@@ -120,7 +120,7 @@ def _render_dashboard_inner() -> None:
     st.divider()
     
     # 4) Status Area
-    with ui_kit.ui_card(title="Demo Status", icon="📊"):
+    with ui_card(title="Demo Status", icon="📊"):
         from services.demo_seed import get_demo_stats
         
         col_status, col_refresh = st.columns([4, 1])
@@ -144,7 +144,7 @@ def _render_dashboard_inner() -> None:
     col1, col2, col3 = st.columns(3)
     
     with col1:
-        with ui_kit.ui_card(title="Inbox", icon="📬"):
+        with ui_card(title="Inbox", icon="📬"):
             st.markdown("Manage conversations from all platforms")
             if st.button("Open Inbox →", use_container_width=True, key="nav_inbox"):
                 from ui_components.router import go_to
@@ -152,7 +152,7 @@ def _render_dashboard_inner() -> None:
                 st.rerun()
     
     with col2:
-        with ui_kit.ui_card(title="Daily Operations", icon="🛠️"):
+        with ui_card(title="Daily Operations", icon="🛠️"):
             st.markdown("SLA monitoring, tasks & lead pipeline")
             if st.button("Open Ops →", use_container_width=True, key="nav_ops"):
                 from ui_components.router import go_to
@@ -160,7 +160,7 @@ def _render_dashboard_inner() -> None:
                 st.rerun()
     
     with col3:
-        with ui_kit.ui_card(title="Leads", icon="👥"):
+        with ui_card(title="Leads", icon="👥"):
             st.markdown("CRM pipeline & customer management")
             if st.button("Open Leads →", use_container_width=True, key="nav_leads"):
                 from ui_components.router import go_to

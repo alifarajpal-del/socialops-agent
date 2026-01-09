@@ -9,7 +9,7 @@ import logging
 from typing import Optional
 
 from services.replies_store import RepliesStore
-from ui_components import ui_kit
+from ui_components.ui_kit import inject_ui_kit_css, ui_page, ui_card, ui_badge, card, pills_row
 from utils.i18n import get_lang
 
 logger = logging.getLogger(__name__)
@@ -94,7 +94,7 @@ def render_reply_form(reply_id: Optional[int] = None):
 
 def render_reply_card(reply: dict):
     """Render a single reply card."""
-    with ui_kit.card():
+    with card():
         col1, col2 = st.columns([3, 1])
         
         with col1:
@@ -108,7 +108,7 @@ def render_reply_card(reply: dict):
             
             # Tags
             if reply['tags']:
-                ui_kit.pills_row(reply['tags'])
+                pills_row(reply['tags'])
         
         with col2:
             # Actions
@@ -127,7 +127,7 @@ def render_reply_card(reply: dict):
 def replies_view():
     """Main replies management view."""
     try:
-        ui_kit.inject_ui_kit_css()
+        inject_ui_kit_css()
         
         # Header
         st.title("💬 Replies Library")
@@ -141,7 +141,7 @@ def replies_view():
         # Seed button (if table empty)
         replies_count = len(replies_store.list_replies())
         if replies_count == 0:
-            with ui_kit.card(title="Get Started", icon="🌱"):
+            with card(title="Get Started", icon="🌱"):
                 st.info("Your replies library is empty. Seed with default templates to get started!")
                 if st.button("🌱 Seed Default Replies (10 templates)", use_container_width=True, type="primary"):
                     count = replies_store.seed_defaults()
