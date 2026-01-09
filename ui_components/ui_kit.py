@@ -13,13 +13,13 @@ BadgeKind = Literal["info", "success", "warning", "danger", "muted", "primary"]
 # Design Tokens - Digital Luxury
 tokens = {
     "spacing": {"xs": "0.25rem", "sm": "0.5rem", "md": "1rem", "lg": "1.5rem", "xl": "2rem"},
-    "radius": {"sm": "6px", "md": "12px", "lg": "16px"},  # Increased for premium feel
+    "radius": {"sm": "8px", "md": "14px", "lg": "18px"},
     "shadow": {
-        "sm": "0 4px 12px rgba(0,0,0,0.3)",
-        "md": "0 8px 24px rgba(0,0,0,0.4)",
-        "deep": "0 20px 40px rgba(0,0,0,0.6)"  # Ambient occlusion
+        "sm": "0 2px 8px rgba(0,0,0,0.15)",
+        "md": "0 4px 16px rgba(0,0,0,0.25)",
+        "deep": "0 8px 32px rgba(0,0,0,0.35)"
     },
-    "blur": {"glass": "20px", "heavy": "30px"}  # For glassmorphism
+    "blur": {"glass": "20px", "heavy": "30px"}
 }
 
 # Theme Colors - Cold Royal Obsidian (Digital Luxury)
@@ -89,9 +89,14 @@ def inject_ui_kit_css(theme: str = "light") -> None:
         /* Typography Hierarchy */
         h1, h2, h3, .ui-heading {{
             font-family: 'Playfair Display', serif !important;
-            font-weight: 700 !important;
+            font-weight: 600 !important;
             letter-spacing: -0.02em !important;
-        }}
+            line-height: 1.2 !important;
+        }
+        
+        h1 { font-size: 2.5rem !important; }
+        h2 { font-size: 2rem !important; }
+        h3 { font-size: 1.5rem !important; }
         
         .ui-data, .ui-mono, .ui-kpi-value, .metric-value {{
             font-family: 'JetBrains Mono', monospace !important;
@@ -173,29 +178,13 @@ def inject_ui_kit_css(theme: str = "light") -> None:
         
         /* UI Card - Gradient Border + Noise Texture + Deep Shadow */
         .ui-card {{
-            position: relative;
             background: {c['card_bg']} !important;
-            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.02'/%3E%3C/svg%3E") !important;
-            border: 1px solid transparent;
+            border: 1px solid rgba(212, 175, 55, 0.15);
             border-radius: {t['radius']['md']};
             padding: {t['spacing']['md']};
             margin-bottom: {t['spacing']['md']};
-            box-shadow: {t['shadow']['deep']};
+            box-shadow: {t['shadow']['md']};
             opacity: 1 !important;
-            background-clip: padding-box;
-        }}
-        
-        .ui-card::before {{
-            content: '';
-            position: absolute;
-            top: -1px;
-            left: -1px;
-            right: -1px;
-            bottom: -1px;
-            border-radius: {t['radius']['md']};
-            background: linear-gradient(135deg, #E3DAC9 0%, #C5A059 50%, transparent 100%);
-            z-index: -1;
-            opacity: 0.4;
         }}
         
         .ui-card-title {{
@@ -207,29 +196,13 @@ def inject_ui_kit_css(theme: str = "light") -> None:
         
         /* KPI Metric - Luxury with gradient border */
         .ui-kpi {{
-            position: relative;
             background: {c['card_bg']} !important;
-            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.02'/%3E%3C/svg%3E") !important;
-            border: 1px solid transparent;
+            border: 1px solid rgba(212, 175, 55, 0.15);
             border-radius: {t['radius']['md']};
             padding: {t['spacing']['lg']};
             text-align: center;
-            box-shadow: {t['shadow']['deep']};
+            box-shadow: {t['shadow']['md']};
             opacity: 1 !important;
-            background-clip: padding-box;
-        }}
-        
-        .ui-kpi::before {{
-            content: '';
-            position: absolute;
-            top: -1px;
-            left: -1px;
-            right: -1px;
-            bottom: -1px;
-            border-radius: {t['radius']['md']};
-            background: linear-gradient(135deg, #E3DAC9 0%, #C5A059 50%, transparent 100%);
-            z-index: -1;
-            opacity: 0.3;
         }}
         
         .ui-kpi-label {{
