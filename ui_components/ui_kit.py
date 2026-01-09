@@ -92,11 +92,11 @@ def inject_ui_kit_css(theme: str = "light") -> None:
             font-weight: 600 !important;
             letter-spacing: -0.02em !important;
             line-height: 1.2 !important;
-        }
+        }}
         
-        h1 { font-size: 2.5rem !important; }
-        h2 { font-size: 2rem !important; }
-        h3 { font-size: 1.5rem !important; }
+        h1 {{ font-size: 2.5rem !important; }}
+        h2 {{ font-size: 2rem !important; }}
+        h3 {{ font-size: 1.5rem !important; }}
         
         .ui-data, .ui-mono, .ui-kpi-value, .metric-value {{
             font-family: 'JetBrains Mono', monospace !important;
